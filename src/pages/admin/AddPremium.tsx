@@ -120,7 +120,7 @@ const AddPremium = () => {
           .from("user_subscriptions")
           .select("*")
           .eq("user_id", user.id)
-          .single();
+          .maybeSingle();
 
         if (existingSub) {
           // تحديث الاشتراك الموجود

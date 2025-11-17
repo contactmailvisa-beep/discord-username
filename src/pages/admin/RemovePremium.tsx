@@ -54,13 +54,18 @@ const RemovePremium = () => {
       const results: SearchResult[] = [];
       for (const profile of profiles || []) {
         // التحقق من وجود اشتراك بريميوم
-        const { data: subscription } = await supabase
+        const { data: subscription, error: subError } = await supabase
           .from("user_subscriptions")
           .select("*")
           .eq("user_id", profile.id)
           .eq("plan_type", "premium")
           .eq("status", "active")
-          .single();
+          .maybeSingle();
+
+        // Log for debugging
+        if (subError) {
+          console.error("Error checking subscription:", subError);
+        }
 
         results.push({
           id: profile.id,
