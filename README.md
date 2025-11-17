@@ -1,73 +1,203 @@
-# Welcome to your Lovable project
+---
 
-## Project info
+# **DUC — Discord Username Checker**
 
-**URL**: https://lovable.dev/projects/f19ec0c7-e427-47a2-8f60-11a53e3e1ac6
+# **DUC — منصة لفحص وتوليد يوزرات Discord**
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## **Overview**
 
-**Use Lovable**
+## **نظرة عامة**
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/f19ec0c7-e427-47a2-8f60-11a53e3e1ac6) and start prompting.
+DUC is an advanced platform designed to analyze, generate, and validate Discord usernames with high accuracy and modern intelligence.
+It is built using **TypeScript, React, Vite, Tailwind CSS, shadcn/ui**, and fully integrated with **Supabase** (Database, Auth, API Functions).
 
-Changes made via Lovable will be committed automatically to this repo.
+DUC يقدم نظامًا احترافيًا لفحص وتوليد معرفات Discord بدقة وسرعة عالية، مع واجهة حديثة وتجربة استخدام سلسة، وربط كامل مع Supabase للحصول على أداء موثوق وقوي.
 
-**Use your preferred IDE**
+---
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## **Features**
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## **الميزات الأساسية**
 
-Follow these steps:
+### **1. Username Generation & Checking**
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### **1. توليد وفحص اليوزرات**
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+* Generate up to **10 usernames** at once
+* Smart pattern analysis
+* Availability checking (Available ✔️ / Taken ❌)
+* Fast response using Supabase API Functions
 
-# Step 3: Install the necessary dependencies.
-npm i
+يمكنك توليد ما يصل إلى **10 يوزرات** دفعة واحدة، مع تحليل ذكي للنمط وفحص فوري لمعرفة ما إذا كان اليوزر متاح أو محجوز، مع سرعة عالية في الرد.
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+---
 
-**Edit a file directly in GitHub**
+### **2. Manual Check**
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### **2. الفحص اليدوي**
 
-**Use GitHub Codespaces**
+Write any username manually, and the system will instantly check availability.
+Ideal for precise checking.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+يمكنك كتابة أي اسم يدويًا وسيقوم النظام بفحصه فورًا.
+خاصية ممتازة للفحص السريع والدقيق.
 
-## What technologies are used for this project?
+---
 
-This project is built with:
+### **3. Authentication System**
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### **3. نظام تسجيل الدخول**
 
-## How can I deploy this project?
+* Email + Password
+* Google Login
+* Discord Login
+* Secure authentication via Supabase Auth
 
-Simply open [Lovable](https://lovable.dev/projects/f19ec0c7-e427-47a2-8f60-11a53e3e1ac6) and click on Share -> Publish.
+يدعم تسجيل الدخول عبر الإيميل، كلمة المرور، Google، أو Discord
+مع نظام أمان متكامل من Supabase.
 
-## Can I connect a custom domain to my Lovable project?
+---
 
-Yes, you can!
+## **Premium Plan — $3/month**
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## **الباقة المميزة — 3 دولار شهريًا**
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Premium users receive:
+يحصل مستخدمو البريميوم على:
+
+* Check every **5 minutes**
+
+* **50 usernames** per batch
+
+* Unlimited tokens
+
+* Saved logs
+
+* Processing priority
+
+* Advanced generation mode
+
+* Priority support
+
+* Premium badge
+
+* فحص كل **5 دقائق**
+
+* فحص **50 يوزر** في الدفعة
+
+* عدد غير محدود من التوكنات
+
+* حفظ السجلات
+
+* أولوية في المعالجة
+
+* توليد متقدم
+
+* دعم مميز
+
+* شارة بريميوم خاصة داخل الحساب
+
+---
+
+## **Architecture & Technology Stack**
+
+## **البنية التقنية للتطبيق**
+
+| Layer      | Technologies                                                  |
+| ---------- | ------------------------------------------------------------- |
+| Frontend   | React • TypeScript • Vite • Tailwind • shadcn/ui              |
+| Backend    | Supabase DB • Supabase Auth • Supabase API Functions          |
+| Deployment | Vercel • Cloudflare Pages • Netlify • Discloud • Node Hosting |
+
+التطبيق مبني باستخدام أحدث التقنيات:
+واجهة React احترافية، نظام قواعد بيانات Supabase، API Functions للمعالجة،
+وقابل للنشر على عدة منصات استضافة حديثة.
+
+---
+
+## **Deployment Options**
+
+## **خيارات النشر**
+
+### **Vercel**
+
+الأفضل لمشاريع React + Vite بفضل السرعة والدعم القوي.
+
+### **Netlify**
+
+ممتاز لتطبيقات الواجهة الأمامية.
+
+### **Cloudflare Pages**
+
+* أداء عالي جدًا
+* دعم Workers و Edge Functions
+
+### **Discloud**
+
+منصة قوية لاستضافة:
+
+* APIs
+* خدمات Node
+* Discord Bots
+* Background Jobs
+
+### **Self-hosted Node**
+
+إمكانية نشر المشروع على أي VPS للحصول على التحكم الكامل.
+
+---
+
+## **About DUC**
+
+## **عن منصة DUC**
+
+DUC provides:
+يقدم DUC:
+
+* Accurate username validation
+
+* Smart username generation
+
+* Supabase-powered backend
+
+* Premium membership system
+
+* Fast & modern interface
+
+* Scalable architecture
+
+* API-driven processing
+
+* فحص دقيق لليوزرات
+
+* توليد ذكي ومتطور
+
+* ربط كامل مع Supabase
+
+* نظام عضوية مميزة
+
+* واجهة حديثة وسريعة
+
+* بنية قوية قابلة للتوسع
+
+* معالجة متقدمة عبر API Functions
+
+**All rights reserved for DUC.**
+**جميع الحقوق محفوظة لـ DUC.**
+
+---
+
+## **Safety & Trust**
+
+## **الأمان والثقة**
+
+DUC is **100% safe**.
+It does **NOT** harm or interact with your Discord account.
+It performs only username pattern analysis and availability checks.
+
+DUC آمن 100% ولا يتسبب بأي ضرر لحسابك على Discord.
+لا يستخدم أي إجراءات ممنوعة، ويقتصر عمله على فحص اليوزرات فقط.
+
+---
