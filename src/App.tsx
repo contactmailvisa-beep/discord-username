@@ -21,6 +21,45 @@ import Payment from "./pages/Payment";
 const queryClient = new QueryClient();
 
 const App = () => {
+
+useEffect(() => {
+  const removeLovable = () => {
+    const selectors = [
+      '#lovable-badge',
+      '[id*="lovable"]',
+      '[class*="lovable"]',
+      'a[href*="lovable"]',
+      'iframe[src*="lovable"]',
+      'script[src*="lovable"]',
+      '[data-testid*="lovable"]'
+    ];
+
+    selectors.forEach((selector) => {
+      document.querySelectorAll(selector).forEach((el) => {
+        el.remove();
+      });
+    });
+  };
+
+  // حذف متواصل كل 10 ملي ثانية لضمان عدم ظهوره حتى لحظة
+  const killer = setInterval(removeLovable, 10);
+
+  // مراقبة DOM لأي عنصر جديد
+  const observer = new MutationObserver(removeLovable);
+  observer.observe(document.documentElement, {
+    childList: true,
+    subtree: true,
+  });
+
+  // حذف دائم عند التحميل
+  removeLovable();
+
+  return () => {
+    clearInterval(killer);
+    observer.disconnect();
+  };
+}, []);
+  
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
