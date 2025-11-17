@@ -309,7 +309,7 @@ const Auth = () => {
             <button
               type="button"
               onClick={() => setIsLogin(!isLogin)}
-              className="text-sm text-text-link hover:underline transition-smooth"
+              className="text-sm text-text-link hover:underline transition-all duration-200 ease-out"
             >
               {isLogin
                 ? "ليس لديك حساب؟ سجل الآن"

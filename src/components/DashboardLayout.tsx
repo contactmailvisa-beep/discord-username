@@ -121,19 +121,19 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       <button
         onClick={() => navigate(path)}
         className={cn(
-          "w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-smooth",
+          "w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ease-out",
           "hover:bg-background-accent group",
           isActive && "bg-background-accent"
         )}
       >
         <div className={cn(
-          "flex-shrink-0 transition-smooth",
+          "flex-shrink-0 transition-all duration-200 ease-out",
           isActive ? "text-primary" : "text-text-muted group-hover:text-foreground"
         )}>
           {icon}
         </div>
         <span className={cn(
-          "flex-1 text-right font-medium transition-smooth",
+          "flex-1 text-right font-medium transition-all duration-200 ease-out",
           isActive ? "text-foreground" : "text-text-muted group-hover:text-foreground"
         )}>
           {label}
@@ -174,7 +174,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         <div className="p-4 border-b border-border">
           <button
             onClick={() => navigate("/dashboard/profile")}
-            className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-background-accent transition-smooth group"
+            className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-background-accent transition-all duration-200 ease-out group"
           >
             <Avatar className="h-10 w-10 ring-2 ring-primary/20">
               <AvatarImage src={profile?.avatar_url || user?.user_metadata?.avatar_url} />

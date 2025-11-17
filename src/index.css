@@ -121,12 +121,12 @@ All colors MUST be HSL.
   }
   
   .discord-button {
-    @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 font-medium transition-smooth;
+    @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 font-medium transition-all duration-200 ease-out;
     @apply hover:scale-105 active:scale-95;
   }
   
   .discord-input {
-    @apply w-full rounded-md border-none bg-background-accent px-4 py-2.5 text-foreground transition-smooth;
+    @apply w-full rounded-md border-none bg-background-accent px-4 py-2.5 text-foreground transition-all duration-200 ease-out;
     @apply focus:ring-2 focus:ring-primary focus:outline-none;
   }
   
