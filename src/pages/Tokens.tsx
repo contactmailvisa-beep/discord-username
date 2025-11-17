@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Key, Plus, Trash2, Edit, CheckCircle2, AlertCircle, Eye, EyeOff, Clock } from "lucide-react";
+import { Key, Plus, Trash2, Edit, CheckCircle2, AlertCircle, Clock } from "lucide-react";
 
 interface Token {
   id: string;
@@ -27,7 +27,6 @@ const Tokens = () => {
   const [editingToken, setEditingToken] = useState<Token | null>(null);
   const [tokenName, setTokenName] = useState("");
   const [tokenValue, setTokenValue] = useState("");
-  const [showToken, setShowToken] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     loadTokens();
@@ -251,20 +250,9 @@ const Tokens = () => {
                         </div>
                       </div>
                       <div className="flex items-center gap-2 mb-2">
-                        <code className="text-sm text-text-muted bg-background-tertiary px-3 py-1 rounded font-mono">
-                          {showToken[token.id] ? token.token_value : maskToken(token.token_value)}
+                        <code className="text-sm text-text-muted bg-background-tertiary px-3 py-1.5 rounded font-mono">
+                          {maskToken(token.token_value)}
                         </code>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setShowToken(prev => ({ ...prev, [token.id]: !prev[token.id] }))}
-                        >
-                          {showToken[token.id] ? (
-                            <EyeOff className="h-4 w-4" />
-                          ) : (
-                            <Eye className="h-4 w-4" />
-                          )}
-                        </Button>
                       </div>
                       <div className="flex items-center gap-4 text-sm text-text-muted">
                         <span className="flex items-center gap-1">

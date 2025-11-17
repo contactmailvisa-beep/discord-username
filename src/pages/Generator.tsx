@@ -126,25 +126,65 @@ const Generator = () => {
     return username;
   };
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     const targetCount = Math.min(count[0], MAX_USERNAMES);
     const usernames: GeneratedUsername[] = [];
     const generated = new Set<string>();
 
-    while (usernames.length < targetCount) {
-      const username = generateUsername();
-      if (username && username.length >= 3 && username.length <= 12 && !generated.has(username)) {
-        generated.add(username);
-        usernames.push({
-          username,
-          checking: false,
-          available: null,
-        });
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error("يجب تسجيل الدخول");
+        return;
       }
-    }
 
-    setGeneratedUsernames(usernames);
-    toast.success(`تم توليد ${usernames.length} يوزر`);
+      // Get all previously checked usernames from database
+      const { data: checkedUsernames } = await supabase
+        .from("check_history")
+        .select("username_checked");
+
+      const checkedSet = new Set(checkedUsernames?.map(u => u.username_checked.toLowerCase()) || []);
+
+      // Generate usernames and ensure they haven't been checked before
+      let attempts = 0;
+      const maxAttempts = targetCount * 100; // Prevent infinite loop
+
+      while (usernames.length < targetCount && attempts < maxAttempts) {
+        const username = generateUsername();
+        const lowerUsername = username?.toLowerCase();
+        
+        if (
+          username && 
+          username.length >= 3 && 
+          username.length <= 12 && 
+          !generated.has(lowerUsername) &&
+          !checkedSet.has(lowerUsername)
+        ) {
+          generated.add(lowerUsername);
+          usernames.push({
+            username,
+            checking: false,
+            available: null,
+          });
+        }
+        attempts++;
+      }
+
+      if (usernames.length < targetCount) {
+        toast.warning(`تم توليد ${usernames.length} يوزر فقط`, {
+          description: "معظم الخيارات تم فحصها مسبقاً"
+        });
+      } else {
+        toast.success(`تم توليد ${usernames.length} يوزر جديد لم يتم فحصه من قبل`);
+      }
+
+      setGeneratedUsernames(usernames);
+    } catch (error: any) {
+      console.error("Error generating usernames:", error);
+      toast.error("خطأ في التوليد", {
+        description: error.message
+      });
+    }
   };
 
   const handleCheckAll = async () => {
