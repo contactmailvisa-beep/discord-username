@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
-import { Sparkles, CheckCircle2, XCircle, Loader2, AlertCircle, Download, Save, Clock } from "lucide-react";
+import { Wand2, CheckCircle2, XCircle, Loader2, AlertCircle, Download, Save, Clock } from "lucide-react";
 
 interface GeneratedUsername {
   username: string;
@@ -262,7 +262,7 @@ const Generator = () => {
       <div className="space-y-6 animate-slide-up">
         <div>
           <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
-            <Sparkles className="h-8 w-8 text-primary" />
+            <Wand2 className="h-8 w-8 text-primary" />
             توليد يوزرات
           </h1>
           <p className="text-text-muted mt-1">
@@ -371,7 +371,7 @@ const Generator = () => {
                 onClick={handleGenerate}
                 className="w-full discord-button bg-primary hover:bg-primary/90"
               >
-                <Sparkles className="h-5 w-5" />
+                <Wand2 className="h-5 w-5" />
                 توليد
               </Button>
             </CardContent>
@@ -422,7 +422,7 @@ const Generator = () => {
               {generatedUsernames.length === 0 ? (
                 <div className="text-center py-12">
                   <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
-                    <Sparkles className="h-8 w-8 text-primary" />
+                    <Wand2 className="h-8 w-8 text-primary" />
                   </div>
                   <h3 className="text-lg font-semibold text-foreground mb-2">
                     لم يتم التوليد بعد
