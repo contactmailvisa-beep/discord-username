@@ -17,7 +17,7 @@
 
     <meta
       name="keywords"
-      content="Discord, ديسكورد, يوزرات ديسكورد, فحص يوزرات, Discord username checker, فحص اسم مستخدم, تحقق من اليوزر, يوزر رباعي, يوزر خماسي, يوزر ثلاثي, اسم ديسكورد, Username availability"
+      content="Discord, ديسكورد, يوزرات ديسكورد, فحص يوزرات, Discord username checker, فحص اسم مستخدم، تحقق من اليوزر، يوزر رباعي، يوزر خماسي، اسم ديسكورد، Username availability"
     />
 
     <meta name="author" content="Discord Username Checker" />
@@ -43,6 +43,7 @@
     <!-- ========================= -->
     <!--         Styles           -->
     <!-- ========================= -->
+
     <style>
       body {
         margin: 0;
@@ -55,6 +56,7 @@
         align-items: center;
         flex-direction: column;
         text-align: center;
+        position: relative; /* مهم لوضع الفوتر */
       }
 
       h1 {
@@ -71,29 +73,29 @@
       }
 
       /* ========================= */
-      /* 🔥 Footer (نسخة ناعمة وجميلة) */
+      /* 🔥 Footer تحت بالمنتصف   */
       /* ========================= */
-footer {
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  padding: 12px 24px;
-  background: linear-gradient(145deg, #1a1a1a, #0b0b0b);
-  color: #63b3ff; /* الأزرق الناعم */
-  font-size: 1.1rem;
-  border-radius: 18px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(8px);
-  user-select: none;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  opacity: 0.9;
-}
+      footer {
+        position: fixed;
+        bottom: 22px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 12px 24px;
+        background: linear-gradient(145deg, #1a1a1a, #0b0b0b);
+        color: #63b3ff;
+        font-size: 1rem;
+        border-radius: 18px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(8px);
+        user-select: none;
+        opacity: 0.9;
+        transition: opacity 0.25s ease, transform 0.25s ease;
+      }
 
-footer:hover {
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1.03);
-}
+      footer:hover {
+        opacity: 1;
+        transform: translateX(-50%) scale(1.04);
+      }
     </style>
   </head>
 
