@@ -17,6 +17,31 @@ const ManualCheck = () => {
   const [timeRemaining, setTimeRemaining] = useState<string>("");
 
   useEffect(() => {
+    // Restore cooldown from localStorage on mount
+    const restoreCooldown = () => {
+      try {
+        const savedCooldown = localStorage.getItem('manual_check_cooldown');
+        if (savedCooldown) {
+          const cooldownData = JSON.parse(savedCooldown);
+          const cooldownTime = new Date(cooldownData.nextCheckTime);
+          
+          if (cooldownTime.getTime() > Date.now()) {
+            setNextCheckTime(cooldownTime);
+            setCanCheck(false);
+          } else {
+            localStorage.removeItem('manual_check_cooldown');
+          }
+        }
+      } catch (error) {
+        console.error("Error restoring cooldown:", error);
+        localStorage.removeItem('manual_check_cooldown');
+      }
+    };
+    
+    restoreCooldown();
+  }, []);
+
+  useEffect(() => {
     if (nextCheckTime) {
       const interval = setInterval(() => {
         const now = new Date();
@@ -26,6 +51,7 @@ const ManualCheck = () => {
           setCanCheck(true);
           setNextCheckTime(null);
           setTimeRemaining("");
+          localStorage.removeItem('manual_check_cooldown');
         } else {
           const minutes = Math.floor(diff / 60000);
           const seconds = Math.floor((diff % 60000) / 1000);
@@ -89,6 +115,11 @@ const ManualCheck = () => {
         setNextCheckTime(cooldownTime);
         setCanCheck(false);
         
+        // Save to localStorage
+        localStorage.setItem('manual_check_cooldown', JSON.stringify({
+          nextCheckTime: cooldownTime.toISOString()
+        }));
+        
         toast.error(`لحماية الحساب من الحظر. تم وضعك بتقييد مؤقت بسبب rate limited الخاص بدسكورد. يرجى الانتضار لمدة ${minutes} دقيقة و ${seconds} ثانية ثم المحاولة مرة اخرى`);
         return;
       }
@@ -107,6 +138,11 @@ const ManualCheck = () => {
       const cooldownTime = new Date(Date.now() + 120000);
       setNextCheckTime(cooldownTime);
       setCanCheck(false);
+      
+      // Save to localStorage
+      localStorage.setItem('manual_check_cooldown', JSON.stringify({
+        nextCheckTime: cooldownTime.toISOString()
+      }));
 
     } catch (error: any) {
       console.error("Error checking username:", error);

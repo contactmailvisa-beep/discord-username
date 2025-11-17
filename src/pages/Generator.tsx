@@ -41,7 +41,32 @@ const Generator = () => {
 
   useEffect(() => {
     checkCooldown();
+    restoreRateLimitFromStorage();
   }, []);
+
+  const restoreRateLimitFromStorage = () => {
+    try {
+      const savedCooldown = localStorage.getItem('generator_rate_limit_cooldown');
+      if (savedCooldown) {
+        const cooldownData = JSON.parse(savedCooldown);
+        const cooldownTime = new Date(cooldownData.nextCheckTime);
+        
+        // Check if cooldown is still active
+        if (cooldownTime.getTime() > Date.now()) {
+          setNextCheckTime(cooldownTime);
+          setCanCheck(false);
+          setRateLimitMessage(cooldownData.rateLimitMessage || "");
+          setChecksAfterRateLimit(cooldownData.checksAfterRateLimit || 0);
+        } else {
+          // Cooldown expired, clear storage
+          localStorage.removeItem('generator_rate_limit_cooldown');
+        }
+      }
+    } catch (error) {
+      console.error("Error restoring rate limit from storage:", error);
+      localStorage.removeItem('generator_rate_limit_cooldown');
+    }
+  };
 
   useEffect(() => {
     if (nextCheckTime) {
@@ -54,7 +79,9 @@ const Generator = () => {
           setNextCheckTime(null);
           setTimeRemaining("");
           setRateLimitMessage("");
-          setChecksAfterRateLimit(1); // Start counting after cooldown ends
+          setChecksAfterRateLimit(1);
+          // Clear from localStorage when cooldown ends
+          localStorage.removeItem('generator_rate_limit_cooldown');
         } else {
           const minutes = Math.floor(diff / 60000);
           const seconds = Math.floor((diff % 60000) / 1000);
@@ -259,22 +286,43 @@ const Generator = () => {
             // If this is happening again within first 10 checks, force 10 minute pause
             if (checksAfterRateLimit > 0 && checksAfterRateLimit <= 10) {
               const forcedCooldown = new Date(Date.now() + 600000); // 10 minutes
+              const message = "تم وضعك بتوقف إجباري لمدة 10 دقائق بسبب تكرار rate limit. سيتم استئناف الفحص تلقائياً";
+              
               setNextCheckTime(forcedCooldown);
               setCanCheck(false);
-              setRateLimitMessage("تم وضعك بتوقف إجباري لمدة 10 دقائق بسبب تكرار rate limit. سيتم استئناف الفحص تلقائياً");
+              setRateLimitMessage(message);
+              
+              // Save to localStorage
+              localStorage.setItem('generator_rate_limit_cooldown', JSON.stringify({
+                nextCheckTime: forcedCooldown.toISOString(),
+                rateLimitMessage: message,
+                checksAfterRateLimit: checksAfterRateLimit
+              }));
+              
               toast.error("توقف إجباري 10 دقائق بسبب تكرار rate limit");
               
               // Auto resume after 10 minutes
               setTimeout(() => {
                 setChecksAfterRateLimit(0);
+                localStorage.removeItem('generator_rate_limit_cooldown');
                 toast.info("تم استئناف الفحص تلقائياً");
               }, 600000);
             } else {
               const cooldownTime = new Date(Date.now() + retryAfter * 1000);
+              const message = `لحماية الحساب من الحظر. تم وضعك بتقييد مؤقت بسبب rate limited الخاص بدسكورد. يرجى الانتضار لمدة ${minutes} دقيقة و ${seconds} ثانية ثم المحاولة مرة اخرى`;
+              
               setNextCheckTime(cooldownTime);
               setCanCheck(false);
-              setRateLimitMessage(`لحماية الحساب من الحظر. تم وضعك بتقييد مؤقت بسبب rate limited الخاص بدسكورد. يرجى الانتضار لمدة ${minutes} دقيقة و ${seconds} ثانية ثم المحاولة مرة اخرى`);
-              toast.error(rateLimitMessage);
+              setRateLimitMessage(message);
+              
+              // Save to localStorage
+              localStorage.setItem('generator_rate_limit_cooldown', JSON.stringify({
+                nextCheckTime: cooldownTime.toISOString(),
+                rateLimitMessage: message,
+                checksAfterRateLimit: 0
+              }));
+              
+              toast.error(message);
             }
             
             setLoading(false);
