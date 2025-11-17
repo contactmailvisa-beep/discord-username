@@ -153,108 +153,84 @@ const Generator = () => {
       return;
     }
 
-    setLoading(true);
-    setGeneratedUsernames(prev =>
-      prev.map(u => ({ ...u, checking: true }))
-    );
+    if (generatedUsernames.length === 0) {
+      toast.error("لا توجد يوزرات للفحص");
+      return;
+    }
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      // Get active token
-      const { data: tokenData } = await supabase
-        .rpc("get_next_active_token", { p_user_id: user.id });
-
-      if (!tokenData || tokenData.length === 0) {
-        toast.error("لا توجد توكنات نشطة", {
-          description: "أضف توكن نشط أولاً",
-        });
+      if (!user) {
+        toast.error("يجب تسجيل الدخول");
         return;
       }
 
-      const token = tokenData[0];
+      // Check if user has active tokens
+      const { data: tokens } = await supabase
+        .from("user_tokens")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("is_active", true);
 
-      // Check each username
+      if (!tokens || tokens.length === 0) {
+        toast.error("يجب إضافة توكن واحد على الأقل في صفحة التوكنات");
+        return;
+      }
+
+      // Update cooldown
+      await supabase.rpc("update_last_check", { p_user_id: user.id });
+      await checkCooldown();
+
+      setLoading(true);
+      toast.info("جاري الفحص...", {
+        description: "قد يستغرق هذا بعض الوقت",
+      });
+
+      // Check all usernames with 10 second delay between each
       for (let i = 0; i < generatedUsernames.length; i++) {
-        const username = generatedUsernames[i].username;
+        setGeneratedUsernames(prev =>
+          prev.map((u, idx) =>
+            idx === i ? { ...u, checking: true } : u
+          )
+        );
 
         try {
-          const response = await fetch("https://discord.com/api/v9/users/@me/pomelo-attempt", {
-            method: "POST",
-            headers: {
-              "Authorization": token.token_value,
-              "Content-Type": "application/json",
-              "Origin": "https://discord.com",
+          const { data, error } = await supabase.functions.invoke("check-discord-username", {
+            body: {
+              username: generatedUsernames[i].username,
+              userId: user.id,
             },
-            body: JSON.stringify({ username }),
           });
 
-          const isAvailable = response.status === 200 || response.status === 400;
-          const data = await response.json();
-          
+          if (error) throw error;
+
           setGeneratedUsernames(prev =>
             prev.map((u, idx) =>
-              idx === i ? { ...u, checking: false, available: !data.taken } : u
+              idx === i ? { ...u, checking: false, available: data.success ? data.available : null } : u
             )
           );
 
-          // Save to history
-          await supabase.from("check_history").insert({
-            user_id: user.id,
-            username_checked: username,
-            is_available: !data.taken,
-            token_used: token.token_id,
-            response_time: 0,
-          });
-
-          // Save available usernames
-          if (!data.taken) {
-            await supabase.from("saved_usernames").insert({
-              user_id: user.id,
-              username,
-            });
+          if (data.success && data.available) {
+            toast.success(`${generatedUsernames[i].username} متاح! ✓`);
           }
-
-          // Rate limit delay
-          await new Promise(resolve => setTimeout(resolve, 10000));
-        } catch (error) {
+        } catch (error: any) {
+          console.error("Error checking username:", error);
           setGeneratedUsernames(prev =>
             prev.map((u, idx) =>
               idx === i ? { ...u, checking: false, available: null } : u
             )
           );
         }
+
+        if (i < generatedUsernames.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 10000));
+        }
       }
 
-      // Update cooldown
-      await supabase.rpc("update_last_check", { p_user_id: user.id });
-      
-      // Update stats
-      const availableCount = generatedUsernames.filter(u => u.available === true).length;
-      
-      const { data: currentStats } = await supabase
-        .from("user_stats")
-        .select("total_checks, available_found")
-        .eq("user_id", user.id)
-        .single();
-
-      if (currentStats) {
-        await supabase
-          .from("user_stats")
-          .update({
-            total_checks: (currentStats.total_checks || 0) + generatedUsernames.length,
-            available_found: (currentStats.available_found || 0) + availableCount,
-          })
-          .eq("user_id", user.id);
-      }
-
-      toast.success("اكتمل الفحص!");
-      checkCooldown();
+      toast.success("تم الفحص بنجاح!");
     } catch (error: any) {
-      toast.error("خطأ في الفحص", {
-        description: error.message,
-      });
+      console.error("Error checking usernames:", error);
+      toast.error("حدث خطأ أثناء الفحص");
     } finally {
       setLoading(false);
     }

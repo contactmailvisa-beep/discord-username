@@ -34,21 +34,41 @@ const Premium = () => {
     }
   };
 
-  const handleUpgrade = () => {
-    toast.info("جاري فتح صفحة الدفع...", {
-      description: "سيتم توجيهك إلى PayPal لإتمام الدفع",
-    });
+  const handleUpgrade = async () => {
+    try {
+      setProcessingPayment(true);
+      
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error("يجب تسجيل الدخول أولاً");
+        return;
+      }
 
-    // PayPal integration will be added in edge function
-    const paypalEmail = "tpnaltbn@gmail.com";
-    const amount = "3.00";
-    const currency = "USD";
-    
-    // This would open PayPal checkout
-    window.open(
-      `https://www.paypal.com/paypalme/${paypalEmail}/${amount}${currency}`,
-      "_blank"
-    );
+      toast.info("جاري فتح صفحة الدفع...", {
+        description: "سيتم توجيهك إلى PayPal لإتمام الدفع",
+      });
+
+      // PayPal Subscribe Button URL
+      const paypalUrl = new URL("https://www.paypal.com/cgi-bin/webscr");
+      paypalUrl.searchParams.set("cmd", "_xclick-subscriptions");
+      paypalUrl.searchParams.set("business", "tpnaltbn@gmail.com");
+      paypalUrl.searchParams.set("item_name", "Premium Plan - Discord Username Checker");
+      paypalUrl.searchParams.set("a3", "3"); // $3 per month
+      paypalUrl.searchParams.set("p3", "1"); // every 1 period
+      paypalUrl.searchParams.set("t3", "M"); // M = Monthly
+      paypalUrl.searchParams.set("src", "1"); // recurring
+      paypalUrl.searchParams.set("currency_code", "USD");
+      paypalUrl.searchParams.set("custom", user.id); // user ID for tracking
+      paypalUrl.searchParams.set("return", `${window.location.origin}/premium`);
+      paypalUrl.searchParams.set("cancel_return", `${window.location.origin}/premium`);
+
+      window.open(paypalUrl.toString(), "_blank");
+    } catch (error: any) {
+      console.error("Error initiating payment:", error);
+      toast.error("حدث خطأ في فتح صفحة الدفع");
+    } finally {
+      setProcessingPayment(false);
+    }
   };
 
   const features = {
