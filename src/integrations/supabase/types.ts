@@ -2481,6 +2481,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_admin_by_email: { Args: never; Returns: boolean }
       is_admin_user: { Args: never; Returns: boolean }
       is_story_recipient: {
         Args: { _story_id: string; _user_id: string }
