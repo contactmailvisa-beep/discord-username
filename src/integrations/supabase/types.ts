@@ -148,6 +148,71 @@ export type Database = {
           },
         ]
       }
+      check_cooldowns: {
+        Row: {
+          checks_remaining: number | null
+          id: string
+          last_check_at: string | null
+          reset_at: string | null
+          user_id: string
+        }
+        Insert: {
+          checks_remaining?: number | null
+          id?: string
+          last_check_at?: string | null
+          reset_at?: string | null
+          user_id: string
+        }
+        Update: {
+          checks_remaining?: number | null
+          id?: string
+          last_check_at?: string | null
+          reset_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      check_history: {
+        Row: {
+          api_response: Json | null
+          checked_at: string | null
+          id: string
+          is_available: boolean
+          response_time: number | null
+          token_used: string | null
+          user_id: string
+          username_checked: string
+        }
+        Insert: {
+          api_response?: Json | null
+          checked_at?: string | null
+          id?: string
+          is_available: boolean
+          response_time?: number | null
+          token_used?: string | null
+          user_id: string
+          username_checked: string
+        }
+        Update: {
+          api_response?: Json | null
+          checked_at?: string | null
+          id?: string
+          is_available?: boolean
+          response_time?: number | null
+          token_used?: string | null
+          user_id?: string
+          username_checked?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "check_history_token_used_fkey"
+            columns: ["token_used"]
+            isOneToOne: false
+            referencedRelation: "user_tokens"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       command_cooldowns: {
         Row: {
           command: string
@@ -1331,6 +1396,33 @@ export type Database = {
           },
         ]
       }
+      saved_usernames: {
+        Row: {
+          id: string
+          is_claimed: boolean | null
+          notes: string | null
+          saved_at: string | null
+          user_id: string
+          username: string
+        }
+        Insert: {
+          id?: string
+          is_claimed?: boolean | null
+          notes?: string | null
+          saved_at?: string | null
+          user_id: string
+          username: string
+        }
+        Update: {
+          id?: string
+          is_claimed?: boolean | null
+          notes?: string | null
+          saved_at?: string | null
+          user_id?: string
+          username?: string
+        }
+        Relationships: []
+      }
       scheduled_messages: {
         Row: {
           content: string
@@ -2067,6 +2159,36 @@ export type Database = {
           },
         ]
       }
+      user_stats: {
+        Row: {
+          available_found: number | null
+          created_at: string | null
+          id: string
+          last_active: string | null
+          tokens_added: number | null
+          total_checks: number | null
+          user_id: string
+        }
+        Insert: {
+          available_found?: number | null
+          created_at?: string | null
+          id?: string
+          last_active?: string | null
+          tokens_added?: number | null
+          total_checks?: number | null
+          user_id: string
+        }
+        Update: {
+          available_found?: number | null
+          created_at?: string | null
+          id?: string
+          last_active?: string | null
+          tokens_added?: number | null
+          total_checks?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_status: {
         Row: {
           custom_status: string | null
@@ -2101,6 +2223,81 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_subscriptions: {
+        Row: {
+          created_at: string | null
+          current_period_end: string | null
+          current_period_start: string | null
+          id: string
+          paypal_subscription_id: string | null
+          plan_type: string
+          status: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          paypal_subscription_id?: string | null
+          plan_type?: string
+          status?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          paypal_subscription_id?: string | null
+          plan_type?: string
+          status?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_tokens: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          last_used_at: string | null
+          rate_limit_reset: string | null
+          token_name: string
+          token_value: string
+          updated_at: string | null
+          usage_count: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_used_at?: string | null
+          rate_limit_reset?: string | null
+          token_name?: string
+          token_value: string
+          updated_at?: string | null
+          usage_count?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_used_at?: string | null
+          rate_limit_reset?: string | null
+          token_name?: string
+          token_value?: string
+          updated_at?: string | null
+          usage_count?: number | null
+          user_id?: string
+        }
+        Relationships: []
       }
       voucher_generation_log: {
         Row: {
@@ -2206,6 +2403,14 @@ export type Database = {
           previous_value: number
         }[]
       }
+      can_user_check: {
+        Args: { p_user_id: string }
+        Returns: {
+          can_check: boolean
+          next_check_at: string
+          plan_type: string
+        }[]
+      }
       can_view_story: {
         Args: { _story_id: string; _user_id: string }
         Returns: boolean
@@ -2243,6 +2448,14 @@ export type Database = {
           username: string
         }[]
       }
+      get_next_active_token: {
+        Args: { p_user_id: string }
+        Returns: {
+          token_id: string
+          token_name: string
+          token_value: string
+        }[]
+      }
       get_story_analytics: {
         Args: { p_days?: number; p_user_id: string }
         Returns: {
@@ -2271,6 +2484,7 @@ export type Database = {
         Returns: boolean
       }
       is_user_banned: { Args: { _user_id: string }; Returns: boolean }
+      update_last_check: { Args: { p_user_id: string }; Returns: undefined }
     }
     Enums: {
       activity_type:
