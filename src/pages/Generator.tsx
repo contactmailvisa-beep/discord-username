@@ -26,6 +26,7 @@ const Generator = () => {
   const [count, setCount] = useState([10]);
   const [minLength, setMinLength] = useState([4]);
   const [maxLength, setMaxLength] = useState([12]);
+  const MAX_USERNAMES = 10;
   const [prefix, setPrefix] = useState("");
   const [includeNumbers, setIncludeNumbers] = useState(true);
   const [includeLetters, setIncludeLetters] = useState(true);
@@ -126,10 +127,11 @@ const Generator = () => {
   };
 
   const handleGenerate = () => {
+    const targetCount = Math.min(count[0], MAX_USERNAMES);
     const usernames: GeneratedUsername[] = [];
     const generated = new Set<string>();
 
-    while (usernames.length < count[0]) {
+    while (usernames.length < targetCount) {
       const username = generateUsername();
       if (username && username.length >= 3 && username.length <= 12 && !generated.has(username)) {
         generated.add(username);
@@ -296,7 +298,7 @@ const Generator = () => {
                   value={count}
                   onValueChange={setCount}
                   min={1}
-                  max={50}
+                  max={10}
                   step={1}
                   className="mt-2"
                 />
