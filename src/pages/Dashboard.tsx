@@ -176,7 +176,7 @@ const Dashboard = () => {
             className="discord-button bg-primary hover:bg-primary/90"
           >
             <Wand2 className="h-5 w-5" />
-            توليد يوزرات
+            فحص التوفر
             <ArrowRight className="h-5 w-5" />
           </Button>
         </div>
@@ -262,7 +262,7 @@ const Dashboard = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Wand2 className="h-5 w-5 text-primary" />
-                توليد يوزرات
+                فحص التوفر
               </CardTitle>
               <CardDescription>
                 ابدأ بتوليد يوزرات جديدة وفحص توفرها
