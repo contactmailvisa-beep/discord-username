@@ -9,7 +9,7 @@ import {
   CheckCircle2, 
   Clock, 
   ArrowRight,
-  Sparkles,
+  Wand2,
   Shield,
   Zap,
 } from "lucide-react";
@@ -175,7 +175,7 @@ const Dashboard = () => {
             onClick={() => navigate("/dashboard/generator")}
             className="discord-button bg-primary hover:bg-primary/90"
           >
-            <Sparkles className="h-5 w-5" />
+            <Wand2 className="h-5 w-5" />
             توليد يوزرات
             <ArrowRight className="h-5 w-5" />
           </Button>
@@ -261,7 +261,7 @@ const Dashboard = () => {
           <Card className="bg-card border-border hover:border-primary/50 transition-all duration-200 ease-out">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-primary" />
+                <Wand2 className="h-5 w-5 text-primary" />
                 توليد يوزرات
               </CardTitle>
               <CardDescription>
