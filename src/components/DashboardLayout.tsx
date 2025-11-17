@@ -19,6 +19,7 @@ import {
   UserPlus,
   UserMinus,
   Shield,
+  Search,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -117,7 +118,8 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const navItems: NavItemProps[] = [
     { icon: <Home className="h-5 w-5" />, label: "الصفحة الرئيسية", path: "/dashboard" },
     { icon: <Key className="h-5 w-5" />, label: "التوكنات", path: "/dashboard/tokens" },
-    { icon: <Wand2 className="h-5 w-5" />, label: "توليد يوزرات", path: "/dashboard/generator" },
+    { icon: <Wand2 className="h-5 w-5" />, label: "فحص التوفر", path: "/dashboard/generator" },
+    { icon: <Search className="h-5 w-5" />, label: "الفحص اليدوي", path: "/dashboard/manual-check" },
     { icon: <History className="h-5 w-5" />, label: "سجل الفحوصات", path: "/dashboard/history" },
     { icon: <TrendingUp className="h-5 w-5" />, label: "الإحصائيات", path: "/dashboard/stats" },
     { 

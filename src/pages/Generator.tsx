@@ -21,6 +21,8 @@ const Generator = () => {
   const [canCheck, setCanCheck] = useState(true);
   const [nextCheckTime, setNextCheckTime] = useState<Date | null>(null);
   const [timeRemaining, setTimeRemaining] = useState<string>("");
+  const [rateLimitMessage, setRateLimitMessage] = useState<string>("");
+  const [checksAfterRateLimit, setChecksAfterRateLimit] = useState<number>(0);
   
   // Generation settings
   const [count, setCount] = useState([10]);
@@ -51,6 +53,8 @@ const Generator = () => {
           setCanCheck(true);
           setNextCheckTime(null);
           setTimeRemaining("");
+          setRateLimitMessage("");
+          setChecksAfterRateLimit(1); // Start counting after cooldown ends
         } else {
           const minutes = Math.floor(diff / 60000);
           const seconds = Math.floor((diff % 60000) / 1000);
@@ -246,6 +250,37 @@ const Generator = () => {
 
           if (error) throw error;
 
+          // Check for rate limit in response
+          if (data.response?.message?.includes("rate limited")) {
+            const retryAfter = data.response?.retry_after || 1800; // Default 30 minutes
+            const minutes = Math.floor(retryAfter / 60);
+            const seconds = Math.floor(retryAfter % 60);
+            
+            // If this is happening again within first 10 checks, force 10 minute pause
+            if (checksAfterRateLimit > 0 && checksAfterRateLimit <= 10) {
+              const forcedCooldown = new Date(Date.now() + 600000); // 10 minutes
+              setNextCheckTime(forcedCooldown);
+              setCanCheck(false);
+              setRateLimitMessage("تم وضعك بتوقف إجباري لمدة 10 دقائق بسبب تكرار rate limit. سيتم استئناف الفحص تلقائياً");
+              toast.error("توقف إجباري 10 دقائق بسبب تكرار rate limit");
+              
+              // Auto resume after 10 minutes
+              setTimeout(() => {
+                setChecksAfterRateLimit(0);
+                toast.info("تم استئناف الفحص تلقائياً");
+              }, 600000);
+            } else {
+              const cooldownTime = new Date(Date.now() + retryAfter * 1000);
+              setNextCheckTime(cooldownTime);
+              setCanCheck(false);
+              setRateLimitMessage(`لحماية الحساب من الحظر. تم وضعك بتقييد مؤقت بسبب rate limited الخاص بدسكورد. يرجى الانتضار لمدة ${minutes} دقيقة و ${seconds} ثانية ثم المحاولة مرة اخرى`);
+              toast.error(rateLimitMessage);
+            }
+            
+            setLoading(false);
+            return; // Stop checking
+          }
+
           setGeneratedUsernames(prev =>
             prev.map((u, idx) =>
               idx === i ? { ...u, checking: false, available: data.success ? data.available : null } : u
@@ -254,6 +289,11 @@ const Generator = () => {
 
           if (data.success && data.available) {
             toast.success(`${generatedUsernames[i].username} متاح! ✓`);
+          }
+          
+          // Increment checks after rate limit
+          if (checksAfterRateLimit > 0 && checksAfterRateLimit < 10) {
+            setChecksAfterRateLimit(prev => prev + 1);
           }
         } catch (error: any) {
           console.error("Error checking username:", error);
@@ -303,7 +343,7 @@ const Generator = () => {
         <div>
           <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
             <Wand2 className="h-8 w-8 text-primary" />
-            توليد يوزرات
+            فحص التوفر
           </h1>
           <p className="text-text-muted mt-1">
             ولّد يوزرات Discord مخصصة وافحص توفرها
@@ -316,8 +356,30 @@ const Generator = () => {
               <div className="flex items-center gap-3">
                 <Clock className="h-6 w-6 text-warning flex-shrink-0" />
                 <div>
-                  <h3 className="font-semibold text-foreground">انتظر قبل الفحص التالي</h3>
-                  <p className="text-sm text-text-muted">الوقت المتبقي: {timeRemaining}</p>
+                  <p className="font-semibold text-warning">
+                    {rateLimitMessage || "يجب الانتظار قبل الفحص التالي"}
+                  </p>
+                  <p className="text-sm text-text-muted mt-1">
+                    الوقت المتبقي: {timeRemaining}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {checksAfterRateLimit > 0 && checksAfterRateLimit <= 10 && (
+          <Card className="bg-info/10 border-info">
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-3">
+                <AlertCircle className="h-6 w-6 text-info flex-shrink-0" />
+                <div>
+                  <p className="font-semibold text-info">
+                    تحذير: أنت في فترة المراقبة
+                  </p>
+                  <p className="text-sm text-text-muted mt-1">
+                    الفحوصات المتبقية قبل الوضع الآمن: {10 - checksAfterRateLimit}
+                  </p>
                 </div>
               </div>
             </CardContent>
