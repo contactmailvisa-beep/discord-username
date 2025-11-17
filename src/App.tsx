@@ -23,6 +23,20 @@ const queryClient = new QueryClient();
 const App = () => {
 
 useEffect(() => {
+  // 1) بناء طبقة تغطي مكان البادج قبل ظهوره
+  const cover = document.createElement("div");
+  cover.id = "lovable-cover";
+  cover.style.position = "fixed";
+  cover.style.bottom = "0";
+  cover.style.right = "0";
+  cover.style.width = "300px";
+  cover.style.height = "300px";
+  cover.style.zIndex = "999999";
+  cover.style.background = "transparent"; 
+  cover.style.pointerEvents = "none";
+  document.body.appendChild(cover);
+
+  // Selectors تحذف البادج
   const selectors = [
     '#lovable-badge',
     '[id*="lovable"]',
@@ -39,21 +53,18 @@ useEffect(() => {
     });
   };
 
-  // 🔥 أول تنظيف لحظي ومباشر
+  // 2) إزالة قوية + متكررة
   removeLovable();
-
-  // 🔥 تنظيف microtask — أسرع من setTimeout
   Promise.resolve().then(removeLovable);
 
-  // 🔥 تشغيل تنظيف مستمر بأعلى سرعة ممكنة بدون frame delay
   let rafId: number;
-  const frameLoop = () => {
+  const loop = () => {
     removeLovable();
-    rafId = requestAnimationFrame(frameLoop);
+    rafId = requestAnimationFrame(loop);
   };
-  frameLoop();
+  loop();
 
-  // 🔥 مراقبة أي تغيير في DOM في نفس اللحظة اللي يحصل فيها
+  // 3) MutationObserver يراقب DOM ويحذف لحظيًا
   const observer = new MutationObserver(() => {
     removeLovable();
   });
@@ -63,9 +74,18 @@ useEffect(() => {
     subtree: true,
   });
 
+  // 4) بعد التأكد من مسح البادج بالكامل… نخفي الـ Cover بسلاسة
+  setTimeout(() => {
+    cover.style.transition = "opacity 200ms ease-out";
+    cover.style.opacity = "0";
+
+    setTimeout(() => cover.remove(), 250);
+  }, 500);
+
   return () => {
     cancelAnimationFrame(rafId);
     observer.disconnect();
+    cover.remove();
   };
 }, []);
   
