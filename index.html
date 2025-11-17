@@ -41,7 +41,6 @@
         text-align: center;
       }
 
-      /* Footer */
       footer {
         position: fixed;
         bottom: 22px;
@@ -54,7 +53,6 @@
         border-radius: 18px;
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
         backdrop-filter: blur(8px);
-        user-select: none;
         opacity: 0.9;
         transition: opacity 0.25s ease, transform 0.25s ease;
       }
@@ -70,14 +68,13 @@
 
       #lovable-cover {
         position: fixed;
-        top: 24px;
-        right: 24px;
-        width: 220px;
-        height: 52px;
-
-        background: #1E1F22;       /* نفس لون الصورة بالضبط */
-        border-radius: 12px;       /* حواف ناعمة مثل البادج */
-        z-index: 99999999;         /* فوق كل شيء */
+        bottom: 24px; /* تحت */
+        right: 24px;  /* يمين */
+        width: 260px; /* عرض أكبر من البادج */
+        height: 80px; /* ارتفاع يغطي كامل البادج */
+        background: #2A2C32; /* لون الصورة EXACT */
+        border-radius: 12px;
+        z-index: 9999999999; /* أعلى من كل شيء */
         pointer-events: none;
       }
     </style>
@@ -85,7 +82,7 @@
 
   <body>
 
-    <!-- ⭐ غطاء بادج Lovable (يظهر فورًا قبل أي JS) -->
+    <!-- غطاء يغطي البادج تماماً -->
     <div id="lovable-cover"></div>
 
     <div id="root"></div>
@@ -94,7 +91,7 @@
 
     <script type="module" src="/src/main.tsx"></script>
 
-    <!-- ⭐ إزالة الغطاء بعد ثانية -->
+    <!-- إزالة الغطاء بعد ثانية -->
     <script>
       setTimeout(() => {
         const cover = document.getElementById("lovable-cover");
