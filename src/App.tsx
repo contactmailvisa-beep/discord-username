@@ -17,6 +17,8 @@ import Premium from "./pages/Premium";
 import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
 import Payment from "./pages/Payment";
+import AddPremium from "./pages/admin/AddPremium";
+import RemovePremium from "./pages/admin/RemovePremium";
 
 const queryClient = new QueryClient();
 
@@ -108,6 +110,8 @@ useEffect(() => {
             <Route path="/dashboard/settings" element={<Settings />} />
             <Route path="/dashboard/profile" element={<Profile />} />
             <Route path="/payment" element={<Payment />} />
+            <Route path="/admin/premium/add" element={<AddPremium />} />
+            <Route path="/admin/premium/remove" element={<RemovePremium />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
