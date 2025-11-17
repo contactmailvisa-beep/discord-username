@@ -183,7 +183,7 @@ const Dashboard = () => {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="bg-card border-border hover:border-primary/50 transition-smooth">
+          <Card className="bg-card border-border hover:border-primary/50 transition-all duration-200 ease-out">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -197,7 +197,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-card border-border hover:border-success/50 transition-smooth">
+          <Card className="bg-card border-border hover:border-success/50 transition-all duration-200 ease-out">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -211,7 +211,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-card border-border hover:border-blurple/50 transition-smooth">
+          <Card className="bg-card border-border hover:border-blurple/50 transition-all duration-200 ease-out">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -226,7 +226,7 @@ const Dashboard = () => {
           </Card>
 
           <Card className={cn(
-            "bg-card border-border transition-smooth",
+            "bg-card border-border transition-all duration-200 ease-out",
             subscription?.plan_type === "premium"
               ? "hover:border-success/50"
               : "hover:border-warning/50"
@@ -258,7 +258,7 @@ const Dashboard = () => {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Card className="bg-card border-border hover:border-primary/50 transition-smooth">
+          <Card className="bg-card border-border hover:border-primary/50 transition-all duration-200 ease-out">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-primary" />
@@ -279,7 +279,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-card border-border hover:border-success/50 transition-smooth">
+          <Card className="bg-card border-border hover:border-success/50 transition-all duration-200 ease-out">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Clock className="h-5 w-5 text-success" />

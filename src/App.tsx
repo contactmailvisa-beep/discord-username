@@ -8,6 +8,13 @@ import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import SelectUsername from "./pages/SelectUsername";
 import Dashboard from "./pages/Dashboard";
+import Tokens from "./pages/Tokens";
+import Generator from "./pages/Generator";
+import History from "./pages/History";
+import Stats from "./pages/Stats";
+import Premium from "./pages/Premium";
+import Settings from "./pages/Settings";
+import Profile from "./pages/Profile";
 
 const queryClient = new QueryClient();
 
@@ -22,7 +29,13 @@ const App = () => (
           <Route path="/auth" element={<Auth />} />
           <Route path="/select-username" element={<SelectUsername />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/dashboard/*" element={<Dashboard />} />
+          <Route path="/dashboard/tokens" element={<Tokens />} />
+          <Route path="/dashboard/generator" element={<Generator />} />
+          <Route path="/dashboard/history" element={<History />} />
+          <Route path="/dashboard/stats" element={<Stats />} />
+          <Route path="/dashboard/premium" element={<Premium />} />
+          <Route path="/dashboard/settings" element={<Settings />} />
+          <Route path="/dashboard/profile" element={<Profile />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
