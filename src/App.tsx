@@ -23,39 +23,48 @@ const queryClient = new QueryClient();
 const App = () => {
 
 useEffect(() => {
-  const removeLovable = () => {
-    const selectors = [
-      '#lovable-badge',
-      '[id*="lovable"]',
-      '[class*="lovable"]',
-      'a[href*="lovable"]',
-      'iframe[src*="lovable"]',
-      'script[src*="lovable"]',
-      '[data-testid*="lovable"]'
-    ];
+  const selectors = [
+    '#lovable-badge',
+    '[id*="lovable"]',
+    '[class*="lovable"]',
+    'a[href*="lovable"]',
+    'iframe[src*="lovable"]',
+    'script[src*="lovable"]',
+    '[data-testid*="lovable"]'
+  ];
 
+  const removeLovable = () => {
     selectors.forEach((selector) => {
-      document.querySelectorAll(selector).forEach((el) => {
-        el.remove();
-      });
+      document.querySelectorAll(selector).forEach(el => el.remove());
     });
   };
 
-  // حذف متواصل كل 10 ملي ثانية لضمان عدم ظهوره حتى لحظة
-  const killer = setInterval(removeLovable, 10);
+  // 🔥 أول تنظيف لحظي ومباشر
+  removeLovable();
 
-  // مراقبة DOM لأي عنصر جديد
-  const observer = new MutationObserver(removeLovable);
+  // 🔥 تنظيف microtask — أسرع من setTimeout
+  Promise.resolve().then(removeLovable);
+
+  // 🔥 تشغيل تنظيف مستمر بأعلى سرعة ممكنة بدون frame delay
+  let rafId: number;
+  const frameLoop = () => {
+    removeLovable();
+    rafId = requestAnimationFrame(frameLoop);
+  };
+  frameLoop();
+
+  // 🔥 مراقبة أي تغيير في DOM في نفس اللحظة اللي يحصل فيها
+  const observer = new MutationObserver(() => {
+    removeLovable();
+  });
+
   observer.observe(document.documentElement, {
     childList: true,
     subtree: true,
   });
 
-  // حذف دائم عند التحميل
-  removeLovable();
-
   return () => {
-    clearInterval(killer);
+    cancelAnimationFrame(rafId);
     observer.disconnect();
   };
 }, []);
