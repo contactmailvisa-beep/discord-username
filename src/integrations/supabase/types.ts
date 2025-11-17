@@ -1219,6 +1219,7 @@ export type Database = {
           created_at: string | null
           discord_id: string
           discriminator: string | null
+          email: string | null
           id: string
           updated_at: string | null
           username: string
@@ -1229,6 +1230,7 @@ export type Database = {
           created_at?: string | null
           discord_id: string
           discriminator?: string | null
+          email?: string | null
           id: string
           updated_at?: string | null
           username: string
@@ -1239,6 +1241,7 @@ export type Database = {
           created_at?: string | null
           discord_id?: string
           discriminator?: string | null
+          email?: string | null
           id?: string
           updated_at?: string | null
           username?: string

@@ -45,8 +45,8 @@ const RemovePremium = () => {
     try {
       const { data: profiles, error } = await supabase
         .from("profiles")
-        .select("id, username, avatar_url, discord_id")
-        .or(`username.ilike.%${query}%,discord_id.ilike.%${query}%`)
+        .select("id, username, avatar_url, email")
+        .or(`username.ilike.%${query}%,email.ilike.%${query}%`)
         .limit(10);
 
       if (error) throw error;
@@ -66,7 +66,7 @@ const RemovePremium = () => {
           id: profile.id,
           username: profile.username,
           avatar_url: profile.avatar_url,
-          email: `${profile.discord_id}@discord`,
+          email: profile.email || '',
           hasPremium: !!subscription,
         });
       }
