@@ -4,6 +4,7 @@ import DashboardLayout from "@/components/DashboardLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import { History as HistoryIcon, CheckCircle2, XCircle, Download, Trash2, Search, Calendar } from "lucide-react";
 import { format } from "date-fns";
@@ -289,8 +290,9 @@ const History = () => {
         ) : (
           <Card className="bg-card border-border">
             <CardContent className="pt-6">
-              <div className="space-y-2">
-                {filteredHistory.map((record) => (
+              <ScrollArea className="h-[600px] pr-4">
+                <div className="space-y-2">
+                  {filteredHistory.slice(0, 10).map((record) => (
                   <div
                     key={record.id}
                     className={`p-4 rounded-lg border ${
@@ -327,6 +329,7 @@ const History = () => {
                   </div>
                 ))}
               </div>
+              </ScrollArea>
             </CardContent>
           </Card>
         )}

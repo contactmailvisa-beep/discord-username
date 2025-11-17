@@ -12,7 +12,7 @@ import {
   LogOut, 
   User, 
   ChevronRight,
-  Sparkles,
+  Wand2,
   History,
   TrendingUp,
   Menu,
@@ -110,7 +110,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const navItems: NavItemProps[] = [
     { icon: <Home className="h-5 w-5" />, label: "الصفحة الرئيسية", path: "/dashboard" },
     { icon: <Key className="h-5 w-5" />, label: "التوكنات", path: "/dashboard/tokens" },
-    { icon: <Sparkles className="h-5 w-5" />, label: "توليد يوزرات", path: "/dashboard/generator" },
+    { icon: <Wand2 className="h-5 w-5" />, label: "توليد يوزرات", path: "/dashboard/generator" },
     { icon: <History className="h-5 w-5" />, label: "سجل الفحوصات", path: "/dashboard/history" },
     { icon: <TrendingUp className="h-5 w-5" />, label: "الإحصائيات", path: "/dashboard/stats" },
     { 
@@ -136,34 +136,34 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const SidebarContent = () => (
     <>
       {/* Profile Section */}
-      <div className="p-4 border-b border-border">
+      <div className="p-6 border-b border-border/50">
         <button
           onClick={() => {
             navigate("/dashboard/profile");
             setSidebarOpen(false);
           }}
-          className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-background-accent transition-all duration-200 ease-out group"
+          className="w-full flex items-center gap-4 p-4 rounded-xl hover:bg-background-accent/50 transition-all duration-300 ease-out group backdrop-blur-sm"
         >
-          <Avatar className="h-10 w-10 ring-2 ring-primary/20">
+          <Avatar className="h-12 w-12 ring-2 ring-primary/30 group-hover:ring-primary/50 transition-all">
             <AvatarImage src={profile?.avatar_url || user?.user_metadata?.avatar_url} />
-            <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+            <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-primary font-bold text-lg">
               {profile?.username?.[0]?.toUpperCase() || "U"}
             </AvatarFallback>
           </Avatar>
           <div className="flex-1 text-right">
-            <p className="font-semibold text-foreground group-hover:text-primary transition-smooth">
+            <p className="font-bold text-foreground group-hover:text-primary transition-smooth text-base">
               {profile?.username || "User"}
             </p>
-            <p className="text-xs text-text-muted">
-              {subscription?.plan_type === "premium" ? "بريميوم" : "مجاني"}
+            <p className="text-xs text-text-muted font-medium mt-0.5">
+              {subscription?.plan_type === "premium" ? "🌟 بريميوم" : "مجاني"}
             </p>
           </div>
-          <User className="h-4 w-4 text-text-muted group-hover:text-primary transition-smooth" />
+          <User className="h-5 w-5 text-text-muted group-hover:text-primary transition-smooth" />
         </button>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+      <nav className="flex-1 p-4 space-y-1.5 overflow-hidden">
         {navItems.map((item, index) => (
           <button
             key={index}
@@ -172,26 +172,26 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               setSidebarOpen(false);
             }}
             className={cn(
-              "w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ease-out",
-              "hover:bg-background-accent group",
-              location.pathname === item.path && "bg-background-accent"
+              "w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-300 ease-out",
+              "hover:bg-background-accent/70 group relative overflow-hidden",
+              location.pathname === item.path && "bg-gradient-to-r from-primary/10 to-primary/5 border-r-2 border-primary"
             )}
           >
             <div className={cn(
-              "transition-all duration-200 ease-out",
-              location.pathname === item.path ? "text-primary" : "text-text-muted group-hover:text-foreground"
+              "transition-all duration-300 ease-out z-10",
+              location.pathname === item.path ? "text-primary scale-110" : "text-text-muted group-hover:text-primary group-hover:scale-105"
             )}>
               {item.icon}
             </div>
             <span className={cn(
-              "flex-1 text-right font-medium transition-all duration-200 ease-out",
+              "flex-1 text-right font-semibold transition-all duration-300 ease-out z-10",
               location.pathname === item.path ? "text-foreground" : "text-text-muted group-hover:text-foreground"
             )}>
               {item.label}
             </span>
             {item.badge && (
               <span className={cn(
-                "px-2 py-0.5 text-xs font-semibold rounded-full",
+                "px-2.5 py-1 text-xs font-bold rounded-full z-10 transition-all",
                 subscription?.plan_type === "premium"
                   ? "bg-success/20 text-success"
                   : "bg-primary/20 text-primary"
@@ -200,7 +200,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               </span>
             )}
             {location.pathname === item.path && (
-              <ChevronRight className="h-4 w-4 text-primary flex-shrink-0" />
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent" />
             )}
           </button>
         ))}
