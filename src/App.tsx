@@ -15,6 +15,7 @@ import Stats from "./pages/Stats";
 import Premium from "./pages/Premium";
 import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
+import Payment from "./pages/Payment";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,7 @@ const App = () => (
           <Route path="/dashboard/premium" element={<Premium />} />
           <Route path="/dashboard/settings" element={<Settings />} />
           <Route path="/dashboard/profile" element={<Profile />} />
+          <Route path="/payment" element={<Payment />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

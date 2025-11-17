@@ -59,8 +59,8 @@ const Premium = () => {
       paypalUrl.searchParams.set("src", "1"); // recurring
       paypalUrl.searchParams.set("currency_code", "USD");
       paypalUrl.searchParams.set("custom", user.id); // user ID for tracking
-      paypalUrl.searchParams.set("return", `${window.location.origin}/premium`);
-      paypalUrl.searchParams.set("cancel_return", `${window.location.origin}/premium`);
+      paypalUrl.searchParams.set("return", `${window.location.origin}/payment?status=success&payment_id=PAYPAL_PAYMENT_ID&custom=${user.id}`);
+      paypalUrl.searchParams.set("cancel_return", `${window.location.origin}/dashboard/premium`);
 
       window.open(paypalUrl.toString(), "_blank");
     } catch (error: any) {
