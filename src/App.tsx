@@ -21,33 +21,6 @@ import Payment from "./pages/Payment";
 const queryClient = new QueryClient();
 
 const App = () => {
-
-  // -------------------------------
-  // 🔥 كود حذف Lovable Badge نهائياً
-  // -------------------------------
-  useEffect(() => {
-    const removeLovable = () => {
-      const badge = document.getElementById("lovable-badge");
-      const closeBtn = document.getElementById("lovable-badge-close");
-      const links = document.querySelectorAll('a[href*="lovable.dev"]');
-
-      if (badge) badge.remove();
-      if (closeBtn) closeBtn.remove();
-      links.forEach((l) => l.remove());
-    };
-
-    // نحاول نحذف العنصر خلال 3 ثواني
-    const interval = setInterval(removeLovable, 200);
-    setTimeout(() => clearInterval(interval), 3000);
-
-    // لو انحقن DOM جديد
-    const observer = new MutationObserver(removeLovable);
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    return () => observer.disconnect();
-  }, []);
-  // -------------------------------
-
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
