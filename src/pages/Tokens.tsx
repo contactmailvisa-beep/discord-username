@@ -152,11 +152,6 @@ const Tokens = () => {
     }
   };
 
-  const maskToken = (token: string) => {
-    if (token.length <= 10) return token;
-    return token.substring(0, 10) + "*".repeat(token.length - 10);
-  };
-
   const openEditDialog = (token: Token) => {
     setEditingToken(token);
     setTokenName(token.token_name);
@@ -248,11 +243,6 @@ const Tokens = () => {
                         }`}>
                           {token.is_active ? "نشط" : "معطل"}
                         </div>
-                      </div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <code className="text-sm text-text-muted bg-background-tertiary px-3 py-1.5 rounded font-mono">
-                          {maskToken(token.token_value)}
-                        </code>
                       </div>
                       <div className="flex items-center gap-4 text-sm text-text-muted">
                         <span className="flex items-center gap-1">
