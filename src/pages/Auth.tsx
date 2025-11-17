@@ -283,25 +283,23 @@ const Auth = () => {
             </div>
           </div>
 
-          <div className="space-y-3">
+          <div className="flex items-center justify-center gap-4">
             <Button
               type="button"
               variant="outline"
-              className="w-full discord-button border-border hover:bg-background-accent"
+              className="w-14 h-14 rounded-full p-0 border-border hover:bg-background-accent transition-all"
               onClick={() => handleOAuthLogin("google")}
             >
-              <GoogleIcon className="h-5 w-5" />
-              المتابعة مع Google
+              <GoogleIcon className="h-6 w-6" />
             </Button>
 
             <Button
               type="button"
               variant="outline"
-              className="w-full discord-button border-border hover:bg-background-accent"
+              className="w-14 h-14 rounded-full p-0 border-border hover:bg-background-accent transition-all"
               onClick={() => handleOAuthLogin("discord")}
             >
-              <DiscordIcon className="h-5 w-5" />
-              المتابعة مع Discord
+              <DiscordIcon className="h-6 w-6" />
             </Button>
           </div>
 
