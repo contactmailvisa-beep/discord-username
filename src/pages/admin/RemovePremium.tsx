@@ -63,9 +63,11 @@ const RemovePremium = () => {
           .maybeSingle();
 
         // Log for debugging
-        if (subError) {
-          console.error("Error checking subscription:", subError);
-        }
+        console.log(`User ${profile.username} (${profile.id}):`, {
+          hasSubscription: !!subscription,
+          subscription,
+          error: subError
+        });
 
         results.push({
           id: profile.id,
@@ -87,6 +89,12 @@ const RemovePremium = () => {
   };
 
   const handleSelectUser = (user: SearchResult) => {
+    console.log("Attempting to select user:", {
+      username: user.username,
+      hasPremium: user.hasPremium,
+      user
+    });
+    
     if (!user.hasPremium) {
       toast.error("هذا المستخدم ليس لديه اشتراك بريميوم نشط");
       return;
@@ -94,6 +102,7 @@ const RemovePremium = () => {
     
     if (!selectedUsers.find(u => u.id === user.id)) {
       setSelectedUsers([...selectedUsers, user]);
+      toast.success(`تم اختيار ${user.username}`);
     }
     setSearchQuery("");
     setSearchResults([]);
