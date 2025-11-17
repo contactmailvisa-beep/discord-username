@@ -41,17 +41,26 @@
   color: #888;
 }
 
-/* Hide Lovable badge completely */
+/* Hide Lovable badge completely – enhanced version */
 #lovable-badge,
-[id*="lovable-badge"],
-[class*="lovable-badge"],
-iframe[src*="lovable"] {
+[id*="lovable"],
+[class*="lovable"],
+a[href*="lovable"],
+iframe[src*="lovable"],
+script[src*="lovable"],
+div[data-testid*="lovable"],
+*#lovable-badge,
+*[id*="lovable-badge"],
+*[src*="lovable"],
+*[href*="lovable"] {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
   pointer-events: none !important;
-  position: absolute !important;
   width: 0 !important;
   height: 0 !important;
+  position: absolute !important;
   overflow: hidden !important;
+  z-index: -999999 !important;
 }
+
