@@ -16,6 +16,9 @@ import {
   History,
   TrendingUp,
   Menu,
+  UserPlus,
+  UserMinus,
+  Shield,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -40,6 +43,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isEmailUser, setIsEmailUser] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     loadUserData();
@@ -71,6 +75,9 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       // Check if user is email user (has password)
       const providers = authUser.app_metadata?.providers || [];
       setIsEmailUser(providers.includes('email') || authUser.app_metadata?.provider === 'email');
+      
+      // Check if user is admin
+      setIsAdmin(authUser.email === "flepower7@gmail.com");
 
       // Load profile
       const { data: profileData } = await supabase
@@ -121,6 +128,11 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     },
     ...(isEmailUser ? [{ icon: <Settings className="h-5 w-5" />, label: "الإعدادات", path: "/dashboard/settings" }] : []),
   ];
+
+  const adminItems: NavItemProps[] = isAdmin ? [
+    { icon: <UserPlus className="h-5 w-5" />, label: "إضافة للبريميوم", path: "/admin/premium/add" },
+    { icon: <UserMinus className="h-5 w-5" />, label: "حذف من البريميوم", path: "/admin/premium/remove" },
+  ] : [];
 
   if (loading) {
     return (
@@ -205,6 +217,53 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           </button>
         ))}
       </nav>
+
+      {/* Admin Section */}
+      {adminItems.length > 0 && (
+        <div className="px-4 pb-4 border-t border-border/50">
+          <div className="flex items-center gap-2 px-4 py-3 text-xs font-semibold text-text-muted uppercase tracking-wider">
+            <Shield className="h-4 w-4 text-primary" />
+            إدارة النظام
+          </div>
+          <div className="space-y-1.5">
+            {adminItems.map((item, index) => (
+              <button
+                key={item.path}
+                onClick={() => {
+                  navigate(item.path);
+                  setSidebarOpen(false);
+                }}
+                className={cn(
+                  "w-full flex items-center gap-3 px-4 py-3 rounded-xl relative overflow-hidden group transition-all duration-300 ease-out backdrop-blur-sm hover:scale-[1.02] active:scale-[0.98]",
+                  location.pathname === item.path 
+                    ? "bg-primary/10 text-primary shadow-lg shadow-primary/20" 
+                    : "hover:bg-background-accent/80 text-text-muted hover:text-foreground"
+                )}
+                style={{
+                  animationDelay: `${index * 50}ms`,
+                  animationFillMode: 'both'
+                }}
+              >
+                <div className={cn(
+                  "transition-transform duration-300 group-hover:scale-110",
+                  location.pathname === item.path ? "text-primary" : "text-text-muted group-hover:text-foreground"
+                )}>
+                  {item.icon}
+                </div>
+                <span className={cn(
+                  "font-medium transition-colors duration-300",
+                  location.pathname === item.path ? "text-foreground" : "text-text-muted group-hover:text-foreground"
+                )}>
+                  {item.label}
+                </span>
+                {location.pathname === item.path && (
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent" />
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Logout */}
       <div className="p-4 border-t border-border">
