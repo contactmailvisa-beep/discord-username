@@ -4,7 +4,7 @@ import DashboardLayout from "@/components/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Crown, Zap, CheckCircle2, Clock, Infinity, Shield, Star, Key, Target } from "lucide-react";
+import { Crown, Zap, CheckCircle2, Clock, Infinity, Shield, Star, Key, Target, XCircle } from "lucide-react";
 
 const Premium = () => {
   const [subscription, setSubscription] = useState<any>(null);
@@ -200,20 +200,5 @@ const Premium = () => {
     </DashboardLayout>
   );
 };
-
-const XCircle = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <circle cx="12" cy="12" r="10" />
-    <path d="m15 9-6 6m0-6 6 6" />
-  </svg>
-);
-
-const Target = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <circle cx="12" cy="12" r="10" />
-    <circle cx="12" cy="12" r="6" />
-    <circle cx="12" cy="12" r="2" />
-  </svg>
-);
 
 export default Premium;
