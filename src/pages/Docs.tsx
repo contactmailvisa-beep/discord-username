@@ -100,7 +100,7 @@ const Docs = () => {
           onClose={() => setIsSidebarOpen(false)}
         />
         
-        <main className="flex-1 lg:ml-72 overflow-y-auto bg-[#0a0b0e]">
+        <main className="flex-1 lg:ml-[280px] overflow-y-auto bg-[#0a0b0e]">
           <div className="container max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             {renderSection()}
           </div>
