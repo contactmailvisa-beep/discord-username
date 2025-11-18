@@ -1,0 +1,2 @@
+const BestPractices = () => <div className="space-y-4"><h1 className="text-4xl font-bold">Best Practices</h1><p className="text-muted-foreground">Secure your API keys, implement retry logic, cache results, respect rate limits.</p></div>;
+export default BestPractices;

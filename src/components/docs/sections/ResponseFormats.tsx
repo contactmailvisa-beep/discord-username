@@ -1,0 +1,2 @@
+const ResponseFormats = () => <div className="space-y-4"><h1 className="text-4xl font-bold">Response Formats</h1><p className="text-muted-foreground">All responses in JSON format with results array containing username, available, and status fields.</p></div>;
+export default ResponseFormats;

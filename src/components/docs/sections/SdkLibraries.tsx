@@ -1,0 +1,2 @@
+const SdkLibraries = () => <div className="space-y-4"><h1 className="text-4xl font-bold">SDKs</h1><p className="text-muted-foreground">Official SDKs coming soon for JavaScript, Python, and more.</p></div>;
+export default SdkLibraries;

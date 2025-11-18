@@ -1,0 +1,2 @@
+const SecurityGuide = () => <div className="space-y-4"><h1 className="text-4xl font-bold">Security</h1><p className="text-muted-foreground">Never expose API keys, use environment variables, rotate keys regularly.</p></div>;
+export default SecurityGuide;

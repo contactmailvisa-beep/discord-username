@@ -1,239 +1,569 @@
----
+# 🚀 DUC — Discord Username Checker API
 
-# **DUC — Discord Username Checker**
-
-# **DUC — منصة لفحص وتوليد يوزرات Discord**
-
----
-
-## **Overview**
-
-## **نظرة عامة**
-
-DUC is an advanced platform designed to analyze, generate, and validate Discord usernames with high accuracy and modern intelligence.
-It is built using **TypeScript, React, Vite, Tailwind CSS, shadcn/ui**, and fully integrated with **Supabase** (Database, Auth, API Functions).
-
-DUC يقدم نظامًا احترافيًا لفحص وتوليد معرفات Discord بدقة وسرعة عالية، مع واجهة حديثة وتجربة استخدام سلسة، وربط كامل مع Supabase للحصول على أداء موثوق وقوي.
+<div align="center">
+  <img src="./src/assets/duc-logo.png" alt="DUC Logo" width="150" height="150" />
+  <h3>The Ultimate Discord Username Availability Checker</h3>
+  <p>Fast, Reliable, and Developer-Friendly API</p>
+</div>
 
 ---
 
-## **Features**
+## 📖 Overview
 
-## **الميزات الأساسية**
+**DUC (Discord Username Checker)** is a powerful platform that allows developers to check Discord username availability programmatically using real Discord API calls. Our service provides a comprehensive API that can be integrated into any application, website, or Discord bot.
 
-### **1. Username Generation & Checking**
+### ✨ Key Features
 
-### **1. توليد وفحص اليوزرات**
-
-* Generate up to **10 usernames** at once
-* Smart pattern analysis
-* Availability checking (Available ✔️ / Taken ❌)
-* Fast response using Supabase API Functions
-
-يمكنك توليد ما يصل إلى **10 يوزرات** دفعة واحدة، مع تحليل ذكي للنمط وفحص فوري لمعرفة ما إذا كان اليوزر متاح أو محجوز، مع سرعة عالية في الرد.
+- ✅ **Real-Time Checking** - Direct integration with Discord's API for accurate results
+- 🔐 **API Key Authentication** - Secure access with personal API keys
+- 🚀 **High Performance** - Fast response times with intelligent rate limiting
+- 📊 **Usage Analytics** - Track your API usage and statistics
+- 🔄 **Token Rotation** - Automatic Discord token management
+- 💎 **Premium Plans** - Enhanced limits for power users
 
 ---
 
-### **2. Manual Check**
+## 🎯 API Features
 
-### **2. الفحص اليدوي**
+### API Key System
 
-Write any username manually, and the system will instantly check availability.
-Ideal for precise checking.
+Each user can generate multiple API keys with customizable settings:
 
-يمكنك كتابة أي اسم يدويًا وسيقوم النظام بفحصه فورًا.
-خاصية ممتازة للفحص السريع والدقيق.
+- **Custom Labels** - Name your API keys for easy identification
+- **Usage Tracking** - Monitor requests, last used time, and statistics
+- **Rate Limiting** - Built-in protection against abuse
+- **Easy Management** - Generate, rename, revoke, or reset keys instantly
 
----
+### Rate Limits
 
-### **3. Authentication System**
-
-### **3. نظام تسجيل الدخول**
-
-* Email + Password
-* Google Login
-* Discord Login
-* Secure authentication via Supabase Auth
-
-يدعم تسجيل الدخول عبر الإيميل، كلمة المرور، Google، أو Discord
-مع نظام أمان متكامل من Supabase.
+| Plan | Daily Requests | Cooldown Between Requests | Usernames Per Request |
+|------|---------------|---------------------------|----------------------|
+| Free | 50 requests/day | 60 seconds | Up to 10 usernames |
+| Premium | 100 requests/day | 60 seconds | Up to 10 usernames |
 
 ---
 
-## **Premium Plan — $3/month**
+## 🔌 API Endpoint
 
-## **الباقة المميزة — 3 دولار شهريًا**
+### Check Username Availability
 
-Premium users receive:
-يحصل مستخدمو البريميوم على:
+**Endpoint:** `POST https://srqqxvhbzuvfjexvbkbq.supabase.co/functions/v1/check-api-username`
 
-* Check every **5 minutes**
+**Headers:**
+```
+Content-Type: application/json
+x-api-key: YOUR_API_KEY
+x-token-name: YOUR_TOKEN_NAME
+```
 
-* **50 usernames** per batch
+**Request Body:**
+```json
+{
+  "usernames": ["username1", "username2", "username3"]
+}
+```
 
-* Unlimited tokens
-
-* Saved logs
-
-* Processing priority
-
-* Advanced generation mode
-
-* Priority support
-
-* Premium badge
-
-* فحص كل **5 دقائق**
-
-* فحص **50 يوزر** في الدفعة
-
-* عدد غير محدود من التوكنات
-
-* حفظ السجلات
-
-* أولوية في المعالجة
-
-* توليد متقدم
-
-* دعم مميز
-
-* شارة بريميوم خاصة داخل الحساب
-
----
-
-## **Architecture & Technology Stack**
-
-## **البنية التقنية للتطبيق**
-
-| Layer      | Technologies                                                  |
-| ---------- | ------------------------------------------------------------- |
-| Frontend   | React • TypeScript • Vite • Tailwind • shadcn/ui              |
-| Backend    | Supabase DB • Supabase Auth • Supabase API Functions          |
-| Deployment | Vercel • Cloudflare Pages • Netlify • Discloud • Node Hosting |
-
-التطبيق مبني باستخدام أحدث التقنيات:
-واجهة React احترافية، نظام قواعد بيانات Supabase، API Functions للمعالجة،
-وقابل للنشر على عدة منصات استضافة حديثة.
+**Response:**
+```json
+{
+  "results": [
+    {
+      "username": "username1",
+      "available": true,
+      "status": "available"
+    },
+    {
+      "username": "username2",
+      "available": false,
+      "status": "taken"
+    }
+  ]
+}
+```
 
 ---
 
-## **Deployment Options**
+## 💻 Code Examples
 
-## **خيارات النشر**
+### JavaScript (Fetch API)
 
-### **Vercel**
+```javascript
+const checkUsernames = async (apiKey, tokenName, usernames) => {
+  try {
+    const response = await fetch('https://srqqxvhbzuvfjexvbkbq.supabase.co/functions/v1/check-api-username', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'x-token-name': tokenName
+      },
+      body: JSON.stringify({ usernames })
+    });
+    
+    const data = await response.json();
+    
+    if (response.ok) {
+      console.log('Results:', data.results);
+      return data.results;
+    } else {
+      console.error('Error:', data.error);
+      return null;
+    }
+  } catch (error) {
+    console.error('Request failed:', error);
+    return null;
+  }
+};
 
-الأفضل لمشاريع React + Vite بفضل السرعة والدعم القوي.
+// Usage
+const apiKey = 'duc_your_api_key_here';
+const tokenName = 'your_token_name';
+const usernames = ['cool_user', 'awesome_gamer', 'pro_dev'];
 
-### **Netlify**
+checkUsernames(apiKey, tokenName, usernames);
+```
 
-ممتاز لتطبيقات الواجهة الأمامية.
+### JavaScript (Axios)
 
-### **Cloudflare Pages**
+```javascript
+const axios = require('axios');
 
-* أداء عالي جدًا
-* دعم Workers و Edge Functions
+const checkUsernames = async (apiKey, tokenName, usernames) => {
+  try {
+    const response = await axios.post(
+      'https://srqqxvhbzuvfjexvbkbq.supabase.co/functions/v1/check-api-username',
+      { usernames },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'x-token-name': tokenName
+        }
+      }
+    );
+    
+    console.log('Results:', response.data.results);
+    return response.data.results;
+  } catch (error) {
+    console.error('Error:', error.response?.data?.error || error.message);
+    return null;
+  }
+};
 
-### **Discloud**
+// Usage
+const apiKey = 'duc_your_api_key_here';
+const tokenName = 'your_token_name';
+const usernames = ['cool_user', 'awesome_gamer', 'pro_dev'];
 
-منصة قوية لاستضافة:
+checkUsernames(apiKey, tokenName, usernames);
+```
 
-* APIs
-* خدمات Node
-* Discord Bots
-* Background Jobs
+### Python (Requests)
 
-### **Self-hosted Node**
+```python
+import requests
+import json
 
-إمكانية نشر المشروع على أي VPS للحصول على التحكم الكامل.
+def check_usernames(api_key, token_name, usernames):
+    """
+    Check Discord username availability using DUC API
+    
+    Args:
+        api_key (str): Your DUC API key
+        token_name (str): Your Discord token name
+        usernames (list): List of usernames to check (max 10)
+    
+    Returns:
+        dict: API response with results
+    """
+    url = 'https://srqqxvhbzuvfjexvbkbq.supabase.co/functions/v1/check-api-username'
+    
+    headers = {
+        'Content-Type': 'application/json',
+        'x-api-key': api_key,
+        'x-token-name': token_name
+    }
+    
+    payload = {
+        'usernames': usernames
+    }
+    
+    try:
+        response = requests.post(url, headers=headers, json=payload, timeout=60)
+        
+        if response.status_code == 200:
+            data = response.json()
+            print('Results:')
+            for result in data.get('results', []):
+                status = '✅ Available' if result['available'] else '❌ Taken'
+                print(f"  {result['username']}: {status}")
+            return data
+        else:
+            error_data = response.json()
+            print(f"Error: {error_data.get('error', 'Unknown error')}")
+            return None
+            
+    except requests.exceptions.Timeout:
+        print('Request timed out')
+        return None
+    except requests.exceptions.RequestException as e:
+        print(f'Request failed: {str(e)}')
+        return None
+
+# Usage
+if __name__ == '__main__':
+    api_key = 'duc_your_api_key_here'
+    token_name = 'your_token_name'
+    usernames = ['cool_user', 'awesome_gamer', 'pro_dev']
+    
+    check_usernames(api_key, token_name, usernames)
+```
+
+### Python (Flask Web App)
+
+```python
+from flask import Flask, request, jsonify
+import requests
+
+app = Flask(__name__)
+
+# Your DUC API credentials
+API_KEY = 'duc_your_api_key_here'
+TOKEN_NAME = 'your_token_name'
+DUC_API_URL = 'https://srqqxvhbzuvfjexvbkbq.supabase.co/functions/v1/check-api-username'
+
+@app.route('/check', methods=['POST'])
+def check_usernames():
+    """
+    Endpoint to check username availability
+    Expects JSON: {"usernames": ["user1", "user2"]}
+    """
+    data = request.get_json()
+    
+    if not data or 'usernames' not in data:
+        return jsonify({'error': 'Missing usernames parameter'}), 400
+    
+    usernames = data['usernames']
+    
+    if not isinstance(usernames, list) or len(usernames) > 10:
+        return jsonify({'error': 'Usernames must be a list with max 10 items'}), 400
+    
+    headers = {
+        'Content-Type': 'application/json',
+        'x-api-key': API_KEY,
+        'x-token-name': TOKEN_NAME
+    }
+    
+    try:
+        response = requests.post(
+            DUC_API_URL,
+            headers=headers,
+            json={'usernames': usernames},
+            timeout=60
+        )
+        
+        if response.status_code == 200:
+            return jsonify(response.json()), 200
+        else:
+            return jsonify(response.json()), response.status_code
+            
+    except requests.exceptions.Timeout:
+        return jsonify({'error': 'Request timeout'}), 408
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True, port=5000)
+```
+
+### Discord.js (Discord Bot)
+
+```javascript
+const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js');
+const fetch = require('node-fetch');
+
+// Your DUC API credentials
+const API_KEY = 'duc_your_api_key_here';
+const TOKEN_NAME = 'your_token_name';
+const DUC_API_URL = 'https://srqqxvhbzuvfjexvbkbq.supabase.co/functions/v1/check-api-username';
+
+const client = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent
+  ]
+});
+
+// Function to check usernames
+async function checkUsernames(usernames) {
+  try {
+    const response = await fetch(DUC_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': API_KEY,
+        'x-token-name': TOKEN_NAME
+      },
+      body: JSON.stringify({ usernames })
+    });
+    
+    const data = await response.json();
+    return response.ok ? data : null;
+  } catch (error) {
+    console.error('API Error:', error);
+    return null;
+  }
+}
+
+// Command handler
+client.on('messageCreate', async (message) => {
+  if (message.author.bot) return;
+  
+  // !check username1 username2 username3
+  if (message.content.startsWith('!check')) {
+    const args = message.content.split(' ').slice(1);
+    
+    if (args.length === 0) {
+      return message.reply('❌ Please provide usernames to check!\nUsage: `!check username1 username2`');
+    }
+    
+    if (args.length > 10) {
+      return message.reply('❌ Maximum 10 usernames per request!');
+    }
+    
+    const loading = await message.reply('🔍 Checking usernames...');
+    
+    const result = await checkUsernames(args);
+    
+    if (!result) {
+      return loading.edit('❌ Failed to check usernames. Please try again later.');
+    }
+    
+    // Create embed with results
+    const embed = new EmbedBuilder()
+      .setTitle('📊 Username Check Results')
+      .setColor('#5865F2')
+      .setTimestamp();
+    
+    let description = '';
+    result.results.forEach(r => {
+      const status = r.available ? '✅ **Available**' : '❌ **Taken**';
+      description += `\`${r.username}\`: ${status}\n`;
+    });
+    
+    embed.setDescription(description);
+    embed.setFooter({ text: 'Powered by DUC API' });
+    
+    loading.edit({ content: null, embeds: [embed] });
+  }
+});
+
+client.on('ready', () => {
+  console.log(`✅ Bot logged in as ${client.user.tag}`);
+});
+
+client.login('YOUR_DISCORD_BOT_TOKEN');
+```
+
+### Discord.py (Discord Bot)
+
+```python
+import discord
+from discord.ext import commands
+import requests
+import asyncio
+
+# Your DUC API credentials
+API_KEY = 'duc_your_api_key_here'
+TOKEN_NAME = 'your_token_name'
+DUC_API_URL = 'https://srqqxvhbzuvfjexvbkbq.supabase.co/functions/v1/check-api-username'
+
+# Bot setup
+intents = discord.Intents.default()
+intents.message_content = True
+bot = commands.Bot(command_prefix='!', intents=intents)
+
+def check_usernames_api(usernames):
+    """Call DUC API to check usernames"""
+    headers = {
+        'Content-Type': 'application/json',
+        'x-api-key': API_KEY,
+        'x-token-name': TOKEN_NAME
+    }
+    
+    payload = {'usernames': usernames}
+    
+    try:
+        response = requests.post(DUC_API_URL, headers=headers, json=payload, timeout=60)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            return None
+    except Exception as e:
+        print(f'API Error: {e}')
+        return None
+
+@bot.command(name='check')
+async def check_usernames(ctx, *usernames):
+    """
+    Check Discord username availability
+    Usage: !check username1 username2 username3
+    """
+    if not usernames:
+        await ctx.reply('❌ Please provide usernames to check!\nUsage: `!check username1 username2`')
+        return
+    
+    if len(usernames) > 10:
+        await ctx.reply('❌ Maximum 10 usernames per request!')
+        return
+    
+    # Send loading message
+    loading = await ctx.reply('🔍 Checking usernames...')
+    
+    # Check usernames
+    result = check_usernames_api(list(usernames))
+    
+    if not result:
+        await loading.edit(content='❌ Failed to check usernames. Please try again later.')
+        return
+    
+    # Create embed with results
+    embed = discord.Embed(
+        title='📊 Username Check Results',
+        color=discord.Color.blurple(),
+        timestamp=discord.utils.utcnow()
+    )
+    
+    description = ''
+    for r in result.get('results', []):
+        status = '✅ **Available**' if r['available'] else '❌ **Taken**'
+        description += f"`{r['username']}`: {status}\n"
+    
+    embed.description = description
+    embed.set_footer(text='Powered by DUC API')
+    
+    await loading.edit(content=None, embed=embed)
+
+@bot.event
+async def on_ready():
+    print(f'✅ Bot logged in as {bot.user.name}')
+    print(f'Bot ID: {bot.user.id}')
+
+# Run bot
+bot.run('YOUR_DISCORD_BOT_TOKEN')
+```
+
+### cURL (Command Line)
+
+```bash
+curl -X POST https://srqqxvhbzuvfjexvbkbq.supabase.co/functions/v1/check-api-username \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: duc_your_api_key_here" \
+  -H "x-token-name: your_token_name" \
+  -d '{
+    "usernames": ["cool_user", "awesome_gamer", "pro_dev"]
+  }'
+```
 
 ---
 
-## **About DUC**
+## 🔐 Getting Started
 
-## **عن منصة DUC**
+### 1. Create an Account
+Visit [discord-username.lovable.app](https://discord-username.lovable.app) and create an account.
 
-DUC provides:
-يقدم DUC:
+### 2. Add Discord Token
+Navigate to the Tokens section and add your Discord API token.
 
-* Accurate username validation
+### 3. Generate API Key
+Go to your Profile and generate a new API key with a custom label.
 
-* Smart username generation
-
-* Supabase-powered backend
-
-* Premium membership system
-
-* Fast & modern interface
-
-* Scalable architecture
-
-* API-driven processing
-
-* فحص دقيق لليوزرات
-
-* توليد ذكي ومتطور
-
-* ربط كامل مع Supabase
-
-* نظام عضوية مميزة
-
-* واجهة حديثة وسريعة
-
-* بنية قوية قابلة للتوسع
-
-* معالجة متقدمة عبر API Functions
-
-**All rights reserved for DUC.**
-**جميع الحقوق محفوظة لـ DUC.**
+### 4. Start Using
+Use the API key and token name in your requests to check usernames!
 
 ---
 
-## **Safety & Trust**
+## 📊 Response Status Codes
 
-## **الأمان والثقة**
+| Status Code | Description |
+|------------|-------------|
+| `200` | Success - Results returned |
+| `400` | Bad Request - Invalid parameters |
+| `401` | Unauthorized - Invalid API key |
+| `403` | Forbidden - User banned or insufficient permissions |
+| `408` | Request Timeout - Request took too long |
+| `429` | Rate Limited - Too many requests |
+| `500` | Internal Server Error - Server-side issue |
 
-DUC is **100% safe**.
-It does **NOT** harm or interact with your Discord account.
-It performs only username pattern analysis and availability checks.
+## ⚠️ Error Responses
 
-DUC آمن 100% ولا يتسبب بأي ضرر لحسابك على Discord.
-لا يستخدم أي إجراءات ممنوعة، ويقتصر عمله على فحص اليوزرات فقط.
+```json
+{
+  "error": "Error message description"
+}
+```
+
+Common error messages:
+- `"API key مطلوب"` - API key is required
+- `"Token name مطلوب"` - Token name is required
+- `"الحد الأقصى 10 أسماء مستخدم"` - Maximum 10 usernames per request
+- `"لقد تم حظرك من استخدام API Keys"` - You are banned from using API keys
+- `"خطأ في الاتصال"` - Connection error
+
+---
+
+## 🎁 Premium Plans
+
+Upgrade to Premium for enhanced features:
+
+- ✅ **100 Requests/Day** (vs 50 on Free)
+- ✅ **Priority Processing**
+- ✅ **Advanced Analytics**
+- ✅ **Premium Support**
+
+**Price:** $3/month via PayPal
 
 ---
 
-## **Our Official Website**
+## 🛡️ Security & Best Practices
 
-## **الموقع الرسمي الخاص بنا**
+### API Key Security
+- ✅ Never share your API keys publicly
+- ✅ Rotate keys regularly using the Reset function
+- ✅ Use environment variables to store keys
+- ✅ Monitor usage for suspicious activity
 
-## **https://discord-username.lovable.app**
+### Rate Limiting
+- ✅ Respect the 60-second cooldown between requests
+- ✅ Don't exceed daily limits
+- ✅ Implement proper error handling for rate limit responses
+
+---
+
+## 📞 Support
+
+Need help? We're here for you:
+
+- 📧 **Email:** support@discord-username.lovable.app
+- 🌐 **Website:** [discord-username.lovable.app](https://discord-username.lovable.app)
+- 📚 **Documentation:** [discord-username.lovable.app/docs](https://discord-username.lovable.app/docs)
 
 ---
 
----
+## 📄 License
 
-# ✨ **Thank You — شكرًا لاستخدامك DUC**
+All rights reserved © DUC (Discord Username Checker)
 
-<p align="center">
-  <span style="color:#4F46E5; font-size:22px; font-weight:700;">
-    Thank you for using DUC 💙
-  </span>
-  <br/>
-  <span style="color:#64748B; font-size:16px;">
-    Your trust means everything to us. We’re committed to delivering accuracy, speed, and a premium user experience.
-  </span>
-</p>
-
-<br/>
-
-<p align="center">
-  <span style="color:#4F46E5; font-size:22px; font-weight:700;">
-    شكرًا لاستخدامك منصة DUC 💙
-  </span>
-  <br/>
-  <span style="color:#64748B; font-size:16px;">
-    ثقتك تعني لنا الكثير. نعدك بتجربة احترافية ودقة عالية وسرعة في الأداء بكل وقت.
-  </span>
-</p>
+**Important Notice:** This service uses Discord's API for username checking. We are not affiliated with or endorsed by Discord Inc. Use of this service must comply with Discord's Terms of Service and API Guidelines.
 
 ---
+
+<div align="center">
+  <p>Made with ❤️ by the DUC Team</p>
+  <p>
+    <a href="https://discord-username.lovable.app">Website</a> •
+    <a href="https://discord-username.lovable.app/docs">Documentation</a> •
+    <a href="https://discord-username.lovable.app/dashboard/premium">Premium</a>
+  </p>
+</div>

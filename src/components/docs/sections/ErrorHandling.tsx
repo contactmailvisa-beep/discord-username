@@ -1,0 +1,2 @@
+const ErrorHandling = () => <div className="space-y-4"><h1 className="text-4xl font-bold">Error Handling</h1><p className="text-muted-foreground">Status codes: 200 (success), 400 (bad request), 401 (unauthorized), 429 (rate limited), 500 (server error)</p></div>;
+export default ErrorHandling;
