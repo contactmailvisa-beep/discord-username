@@ -129,30 +129,19 @@ export const ApiKeyManager = () => {
     setGenerating(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!user) return;
 
-      const { data: newKey, error: keyGenError } = await supabase
-        .rpc("generate_api_key")
-        .single();
+      const { data, error } = await supabase
+        .rpc("generate_api_key");
 
-      if (keyGenError) throw keyGenError;
-
-      const { error: insertError } = await supabase
-        .from("api_keys")
-        .insert({
-          user_id: user.id,
-          api_key: newKey,
-          label: "My API Key",
-        });
-
-      if (insertError) throw insertError;
+      if (error) throw error;
 
       toast({
-        title: "تم الإنشاء",
-        description: "تم إنشاء مفتاح API جديد بنجاح",
+        title: "نجح",
+        description: "تم إنشاء مفتاح API جديد",
       });
 
-      loadApiKeys();
+      await loadApiKeys();
     } catch (error: any) {
       toast({
         title: "خطأ",
@@ -175,25 +164,25 @@ export const ApiKeyManager = () => {
     }
 
     try {
-      const { data: newKey, error: keyGenError } = await supabase
-        .rpc("generate_api_key")
-        .single();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
 
-      if (keyGenError) throw keyGenError;
-
-      const { error } = await supabase
-        .from("api_keys")
-        .update({ api_key: newKey, last_used_at: null, requests_today: 0 })
-        .eq("id", keyId);
+      const { data, error } = await supabase
+        .rpc("generate_api_key");
 
       if (error) throw error;
 
+      await supabase
+        .from("api_keys")
+        .delete()
+        .eq("id", keyId);
+
       toast({
-        title: "تم إعادة التعيين",
-        description: "تم إعادة تعيين المفتاح بنجاح",
+        title: "نجح",
+        description: "تم إعادة تعيين المفتاح",
       });
 
-      loadApiKeys();
+      await loadApiKeys();
     } catch (error: any) {
       toast({
         title: "خطأ",
@@ -207,7 +196,7 @@ export const ApiKeyManager = () => {
     if (banInfo?.is_banned) {
       toast({
         title: "محظور",
-        description: "لا يمكنك إلغاء المفاتيح حالياً",
+        description: "لا يمكنك حذف المفاتيح حالياً",
         variant: "destructive",
       });
       return;
@@ -222,11 +211,11 @@ export const ApiKeyManager = () => {
       if (error) throw error;
 
       toast({
-        title: "تم الإلغاء",
-        description: "تم إلغاء المفتاح بنجاح",
+        title: "نجح",
+        description: "تم إلغاء المفتاح",
       });
 
-      loadApiKeys();
+      await loadApiKeys();
     } catch (error: any) {
       toast({
         title: "خطأ",
@@ -237,7 +226,7 @@ export const ApiKeyManager = () => {
   };
 
   const updateLabel = async () => {
-    if (!selectedKey || banInfo?.is_banned) return;
+    if (!selectedKey) return;
 
     try {
       const { error } = await supabase
@@ -248,12 +237,12 @@ export const ApiKeyManager = () => {
       if (error) throw error;
 
       toast({
-        title: "تم التحديث",
-        description: "تم تحديث الاسم بنجاح",
+        title: "نجح",
+        description: "تم تحديث التسمية",
       });
 
       setEditDialog(false);
-      loadApiKeys();
+      await loadApiKeys();
     } catch (error: any) {
       toast({
         title: "خطأ",
@@ -263,191 +252,213 @@ export const ApiKeyManager = () => {
     }
   };
 
-  const copyToClipboard = (text: string) => {
+  const copyToClipboard = (text: string, message: string) => {
     navigator.clipboard.writeText(text);
     toast({
-      title: "تم النسخ",
-      description: "تم نسخ المفتاح إلى الحافظة",
+      title: "نجح",
+      description: message,
     });
   };
 
-  const formatDate = (date: string | null) => {
-    if (!date) return "لم يتم الاستخدام بعد";
-    return new Date(date).toLocaleDateString("ar-EG", {
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("ar-EG", {
       year: "numeric",
-      month: "long",
+      month: "short",
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
     });
   };
 
+  const formatTimeRemaining = (expiresAt: string) => {
+    const expires = new Date(expiresAt).getTime();
+    const now = Date.now();
+    const diff = expires - now;
+    
+    if (diff <= 0) return "انتهى";
+    
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    
+    if (days > 0) return `${days} يوم ${hours} ساعة`;
+    if (hours > 0) return `${hours} ساعة ${minutes} دقيقة`;
+    return `${minutes} دقيقة`;
+  };
+
   if (loading) {
-    return <div className="text-center py-8">جاري التحميل...</div>;
+    return <div className="text-center py-4 text-xs">جاري التحميل...</div>;
   }
 
   return (
-    <div className="space-y-6">
-      {banInfo?.is_banned && cooldown > 0 && (
-        <Card className="border-destructive">
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-3 text-destructive">
-              <AlertTriangle className="h-5 w-5" />
-              <div>
-                <p className="font-semibold">تم حظر وصولك لـ API</p>
-                <p className="text-sm">{banInfo.reason}</p>
-                <p className="text-sm mt-1">
-                  الوقت المتبقي: {Math.floor(cooldown / 60)} دقيقة {cooldown % 60} ثانية
+    <Card className="max-w-md">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-lg">
+          <Key className="h-4 w-4" />
+          مفاتيح API
+        </CardTitle>
+        <CardDescription className="text-xs">
+          أنشئ وأدِر مفاتيح API الخاصة بك
+        </CardDescription>
+      </CardHeader>
+      
+      <CardContent className="space-y-3">
+        {banInfo?.is_banned && banInfo.expires_at && (
+          <div className="p-3 border border-destructive rounded-lg bg-destructive/10">
+            <div className="flex items-start gap-2">
+              <AlertTriangle className="h-4 w-4 text-destructive flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <p className="font-medium text-destructive text-sm">حسابك محظور مؤقتاً</p>
+                <p className="text-xs text-muted-foreground mt-1">{banInfo.reason}</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  ينتهي الحظر بعد: {formatTimeRemaining(banInfo.expires_at)}
                 </p>
               </div>
             </div>
-          </CardContent>
-        </Card>
-      )}
+          </div>
+        )}
 
-      <div className="flex justify-between items-center">
-        <div>
-          <h3 className="text-2xl font-bold">مفاتيح API</h3>
-          <p className="text-sm text-muted-foreground">إدارة مفاتيح الوصول لـ API</p>
-        </div>
         <Button
           onClick={generateNewKey}
-          disabled={generating || (banInfo?.is_banned && cooldown > 0)}
-          className="gap-2"
+          disabled={generating || cooldown > 0 || (banInfo?.is_banned ?? false)}
+          className="w-full text-sm"
+          size="sm"
         >
-          <Key className="h-4 w-4" />
-          إنشاء مفتاح جديد
+          <Key className="mr-2 h-3 w-3" />
+          {generating ? "جاري الإنشاء..." : cooldown > 0 ? `انتظر ${cooldown}ث` : "إنشاء مفتاح جديد"}
         </Button>
-      </div>
 
-      <div className="grid gap-4">
-        {apiKeys.map((key) => (
-          <Card key={key.id} className={key.status === "revoked" ? "opacity-50" : ""}>
-            <CardHeader>
-              <div className="flex items-start justify-between">
-                <div>
-                  <CardTitle className="text-lg">{key.label}</CardTitle>
-                  <CardDescription>
-                    تم الإنشاء: {formatDate(key.created_at)}
-                  </CardDescription>
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    onClick={() => {
-                      setSelectedKey(key);
-                      setNewLabel(key.label);
-                      setEditDialog(true);
-                    }}
-                    disabled={key.status === "revoked" || (banInfo?.is_banned && cooldown > 0)}
-                  >
-                    <Edit2 className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    onClick={() => resetKey(key.id)}
-                    disabled={key.status === "revoked" || (banInfo?.is_banned && cooldown > 0)}
-                  >
-                    <RefreshCw className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    onClick={() => revokeKey(key.id)}
-                    disabled={key.status === "revoked" || (banInfo?.is_banned && cooldown > 0)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center gap-2">
-                <code className="flex-1 bg-muted p-3 rounded text-sm font-mono">
-                  {showKey[key.id] ? key.api_key : "•".repeat(32)}
-                </code>
-                <Button
-                  size="icon"
-                  variant="outline"
-                  onClick={() => setShowKey({ ...showKey, [key.id]: !showKey[key.id] })}
-                >
-                  {showKey[key.id] ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </Button>
-                <Button
-                  size="icon"
-                  variant="outline"
-                  onClick={() => copyToClipboard(key.api_key)}
-                >
-                  <Copy className="h-4 w-4" />
-                </Button>
-              </div>
+        {apiKeys.length === 0 ? (
+          <p className="text-center text-muted-foreground text-xs py-6">
+            لا توجد مفاتيح API بعد. قم بإنشاء واحد للبدء.
+          </p>
+        ) : (
+          <div className="space-y-2">
+            {apiKeys.map((key) => (
+              <Card key={key.id} className="bg-background-secondary">
+                <CardContent className="pt-4 pb-3 space-y-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-medium truncate">{key.label || "مفتاح API"}</p>
+                      <p className="text-[10px] text-muted-foreground">
+                        {formatDate(key.created_at)}
+                      </p>
+                    </div>
+                    <div className="flex gap-0.5">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7"
+                        onClick={() => {
+                          setSelectedKey(key);
+                          setNewLabel(key.label);
+                          setEditDialog(true);
+                        }}
+                        disabled={banInfo?.is_banned ?? false}
+                      >
+                        <Edit2 className="h-3 w-3" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7"
+                        onClick={() => resetKey(key.id)}
+                        disabled={banInfo?.is_banned ?? false}
+                      >
+                        <RefreshCw className="h-3 w-3" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7"
+                        onClick={() => revokeKey(key.id)}
+                        disabled={banInfo?.is_banned ?? false}
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </div>
 
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <p className="text-muted-foreground">آخر استخدام</p>
-                  <p className="font-medium">{formatDate(key.last_used_at)}</p>
-                </div>
-                <div>
-                  <p className="text-muted-foreground">الطلبات اليوم</p>
-                  <p className="font-medium">
-                    {key.requests_today} / {key.daily_limit}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-muted-foreground">الحالة</p>
-                  <p className="font-medium">
-                    {key.status === "active" ? "نشط" : "ملغي"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-muted-foreground">معدل التحديد</p>
-                  <p className="font-medium">{key.rate_limit} ثانية</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+                  <div className="space-y-2">
+                    <div className="flex gap-1">
+                      <Input
+                        value={showKey[key.id] ? key.api_key : "•".repeat(32)}
+                        readOnly
+                        className="font-mono text-[10px] h-8"
+                      />
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => setShowKey(prev => ({ ...prev, [key.id]: !prev[key.id] }))}
+                      >
+                        {showKey[key.id] ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => copyToClipboard(key.api_key, "تم نسخ المفتاح")}
+                      >
+                        <Copy className="h-3 w-3" />
+                      </Button>
+                    </div>
 
-        {apiKeys.length === 0 && (
-          <Card>
-            <CardContent className="py-12 text-center">
-              <Key className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-              <p className="text-muted-foreground">لا توجد مفاتيح API بعد</p>
-              <p className="text-sm text-muted-foreground mt-2">
-                قم بإنشاء مفتاح API للبدء في استخدام الخدمة
-              </p>
-            </CardContent>
-          </Card>
+                    <div className="grid grid-cols-2 gap-2 text-[10px]">
+                      <div className="space-y-0.5">
+                        <p className="text-muted-foreground">الطلبات اليوم</p>
+                        <p className="font-medium">{key.requests_today} / {key.daily_limit}</p>
+                      </div>
+                      <div className="space-y-0.5">
+                        <p className="text-muted-foreground">آخر استخدام</p>
+                        <p className="font-medium">
+                          {key.last_used_at ? formatDate(key.last_used_at) : "لم يُستخدم"}
+                        </p>
+                      </div>
+                      <div className="space-y-0.5">
+                        <p className="text-muted-foreground">الحالة</p>
+                        <p className="font-medium">{key.status === "active" ? "نشط" : "معطل"}</p>
+                      </div>
+                      <div className="space-y-0.5">
+                        <p className="text-muted-foreground">الحد الزمني</p>
+                        <p className="font-medium">{key.rate_limit}ث</p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         )}
-      </div>
+      </CardContent>
 
       <Dialog open={editDialog} onOpenChange={setEditDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>تعديل اسم المفتاح</DialogTitle>
-            <DialogDescription>قم بتحديث اسم المفتاح لسهولة التعرف عليه</DialogDescription>
+            <DialogTitle>تعديل تسمية المفتاح</DialogTitle>
+            <DialogDescription>
+              أدخل تسمية جديدة لمفتاح API
+            </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="label">الاسم</Label>
-              <Input
-                id="label"
-                value={newLabel}
-                onChange={(e) => setNewLabel(e.target.value)}
-                placeholder="My API Key"
-              />
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="label">التسمية</Label>
+            <Input
+              id="label"
+              value={newLabel}
+              onChange={(e) => setNewLabel(e.target.value)}
+              placeholder="مفتاح API الخاص بي"
+            />
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditDialog(false)}>
               إلغاء
             </Button>
-            <Button onClick={updateLabel}>حفظ</Button>
+            <Button onClick={updateLabel}>
+              حفظ
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </Card>
   );
 };

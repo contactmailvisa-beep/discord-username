@@ -9,6 +9,8 @@ import { ApiKeyManager } from "@/components/ApiKeyManager";
 import { User, Mail, Calendar, Shield, Crown, CheckCircle2 } from "lucide-react";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
+import { GoogleIcon } from "@/components/icons/GoogleIcon";
+import { DiscordIcon } from "@/components/icons/DiscordIcon";
 
 const Profile = () => {
   const [user, setUser] = useState<any>(null);
@@ -49,10 +51,14 @@ const Profile = () => {
     }
   };
 
-  const getAuthProvider = () => {
-    if (user?.app_metadata?.provider === "google") return "Google";
-    if (user?.app_metadata?.provider === "discord") return "Discord";
-    return "البريد الإلكتروني";
+  const getAuthProviderIcon = () => {
+    if (user?.app_metadata?.provider === "google") {
+      return <GoogleIcon className="h-6 w-6" />;
+    }
+    if (user?.app_metadata?.provider === "discord") {
+      return <DiscordIcon className="h-6 w-6 text-[#5865F2]" />;
+    }
+    return <Mail className="h-6 w-6" />;
   };
 
   if (loading) {
@@ -105,34 +111,46 @@ const Profile = () => {
                 <CardTitle>معلومات الحساب</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label>البريد الإلكتروني</Label>
-                  <p className="text-sm text-muted-foreground">
-                    {user?.email || "غير متوفر"}
-                  </p>
+                <div className="flex items-center gap-3">
+                  <Mail className="h-5 w-5 text-primary" />
+                  <div className="flex-1 space-y-1">
+                    <Label>البريد الإلكتروني</Label>
+                    <p className="text-sm text-muted-foreground">
+                      {user?.email || "غير متوفر"}
+                    </p>
+                  </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label>طريقة التسجيل</Label>
-                  <p className="text-sm text-muted-foreground">
-                    {getAuthProvider()}
-                  </p>
+                <div className="flex items-center gap-3">
+                  <Shield className="h-5 w-5 text-primary" />
+                  <div className="flex-1 space-y-1">
+                    <Label>طريقة التسجيل</Label>
+                    <div className="flex items-center gap-2">
+                      {getAuthProviderIcon()}
+                    </div>
+                  </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label>تاريخ الإنشاء</Label>
-                  <p className="text-sm text-muted-foreground">
-                    {user?.created_at
-                      ? new Date(user.created_at).toLocaleDateString("ar-EG")
-                      : "غير متوفر"}
-                  </p>
+                <div className="flex items-center gap-3">
+                  <Calendar className="h-5 w-5 text-primary" />
+                  <div className="flex-1 space-y-1">
+                    <Label>تاريخ الإنشاء</Label>
+                    <p className="text-sm text-muted-foreground">
+                      {user?.created_at
+                        ? new Date(user.created_at).toLocaleDateString("ar-EG")
+                        : "غير متوفر"}
+                    </p>
+                  </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label>حالة البريد الإلكتروني</Label>
-                  <p className="text-sm text-muted-foreground">
-                    {user?.email_confirmed_at ? "مؤكد ✓" : "غير مؤكد"}
-                  </p>
+                <div className="flex items-center gap-3">
+                  <CheckCircle2 className="h-5 w-5 text-primary" />
+                  <div className="flex-1 space-y-1">
+                    <Label>حالة البريد الإلكتروني</Label>
+                    <p className="text-sm text-muted-foreground">
+                      {user?.email_confirmed_at ? "مؤكد ✓" : "غير مؤكد"}
+                    </p>
+                  </div>
                 </div>
 
                 {user?.user_metadata && Object.keys(user.user_metadata).length > 0 && (
