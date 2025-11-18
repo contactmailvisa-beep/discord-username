@@ -38,27 +38,34 @@ const GlobalAccount = () => {
   const [isCheckingAll, setIsCheckingAll] = useState(false);
 
   useEffect(() => {
-    restoreGlobalCooldown();
+    checkUserGlobalCooldown();
   }, []);
 
-  const restoreGlobalCooldown = () => {
+  const checkUserGlobalCooldown = async () => {
     try {
-      const savedCooldown = localStorage.getItem('global_account_cooldown');
-      if (savedCooldown) {
-        const cooldownData = JSON.parse(savedCooldown);
-        const cooldownTime = new Date(cooldownData.nextCheckTime);
-        
-        if (cooldownTime.getTime() > Date.now()) {
-          setNextCheckTime(cooldownTime);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: canUse } = await supabase
+        .rpc("can_use_global_account", { p_user_id: user.id });
+
+      if (!canUse) {
+        // User has active cooldown, get the details
+        const { data: usageData } = await supabase
+          .from("global_account_usage")
+          .select("next_available_at")
+          .eq("user_id", user.id)
+          .single();
+
+        if (usageData) {
+          const nextTime = new Date(usageData.next_available_at);
+          setNextCheckTime(nextTime);
           setCanCheck(false);
-          setRateLimitMessage(cooldownData.rateLimitMessage || "");
-        } else {
-          localStorage.removeItem('global_account_cooldown');
+          setRateLimitMessage("يجب الانتظار 12 ساعة بين كل استخدام للحساب العام");
         }
       }
     } catch (error) {
-      console.error("Error restoring cooldown:", error);
-      localStorage.removeItem('global_account_cooldown');
+      console.error("Error checking cooldown:", error);
     }
   };
 
@@ -83,6 +90,19 @@ const GlobalAccount = () => {
 
       return () => clearInterval(interval);
     }
+  }, [nextCheckTime]);
+
+  // Auto-reload cooldown when it expires
+  useEffect(() => {
+    if (!nextCheckTime) return;
+    
+    const checkExpiry = setInterval(() => {
+      if (new Date() >= nextCheckTime) {
+        checkUserGlobalCooldown();
+      }
+    }, 5000);
+
+    return () => clearInterval(checkExpiry);
   }, [nextCheckTime]);
 
   const generateUsername = () => {
@@ -146,6 +166,26 @@ const GlobalAccount = () => {
     setGeneratedUsernames(prev => prev.map(u => ({ ...u, checking: true })));
 
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error("يجب تسجيل الدخول أولاً");
+        setGeneratedUsernames(prev => prev.map(u => ({ ...u, checking: false })));
+        setIsCheckingAll(false);
+        return;
+      }
+
+      // Check if user can use global account
+      const { data: canUse } = await supabase
+        .rpc("can_use_global_account", { p_user_id: user.id });
+
+      if (!canUse) {
+        toast.error("يجب الانتظار 12 ساعة بين كل استخدام للحساب العام");
+        setGeneratedUsernames(prev => prev.map(u => ({ ...u, checking: false })));
+        setIsCheckingAll(false);
+        await checkUserGlobalCooldown();
+        return;
+      }
+
       const { data, error } = await supabase.functions.invoke("check-discord-username", {
         body: { 
           usernames: generatedUsernames.map(u => u.username),
@@ -162,12 +202,6 @@ const GlobalAccount = () => {
           setNextCheckTime(cooldownEnd);
           setCanCheck(false);
           setRateLimitMessage(data.error);
-          
-          localStorage.setItem('global_account_cooldown', JSON.stringify({
-            nextCheckTime: cooldownEnd.toISOString(),
-            rateLimitMessage: data.error
-          }));
-          
           toast.error(`تم تفعيل وقت الانتظار: ${retryAfter} ثانية`);
         } else {
           toast.error(data.error);
@@ -176,6 +210,17 @@ const GlobalAccount = () => {
         setGeneratedUsernames(prev => prev.map(u => ({ ...u, checking: false })));
         setIsCheckingAll(false);
         return;
+      }
+
+      // Record successful usage
+      const { data: nextAvailableData } = await supabase
+        .rpc("record_global_account_usage", { p_user_id: user.id });
+
+      if (nextAvailableData) {
+        const nextTime = new Date(nextAvailableData);
+        setNextCheckTime(nextTime);
+        setCanCheck(false);
+        setRateLimitMessage("يجب الانتظار 12 ساعة بين كل استخدام للحساب العام");
       }
 
       const results = data.results || {};
