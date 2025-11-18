@@ -138,7 +138,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   ] : [];
 
   const SidebarContent = () => (
-    <div className="h-full flex flex-col bg-sidebar text-sidebar-foreground rounded-3xl shadow-xl overflow-hidden">
+    <div className="h-full flex flex-col bg-background-secondary text-sidebar-foreground rounded-3xl shadow-xl overflow-hidden">
       {/* Profile Section */}
       <div className="p-6 border-b border-border/50 rounded-t-3xl flex-shrink-0">
         <button
