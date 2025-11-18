@@ -5,3 +5,12 @@ verify_jwt = false
 
 [functions.test-api]
 verify_jwt = false
+
+[functions.user]
+verify_jwt = false
+
+[functions.saved]
+verify_jwt = false
+
+[functions.stats]
+verify_jwt = false

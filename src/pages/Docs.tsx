@@ -6,6 +6,9 @@ import Introduction from "@/components/docs/sections/Introduction";
 import QuickStart from "@/components/docs/sections/QuickStart";
 import Authentication from "@/components/docs/sections/Authentication";
 import ApiEndpoints from "@/components/docs/sections/ApiEndpoints";
+import UserEndpoint from "@/components/docs/sections/UserEndpoint";
+import SavedEndpoint from "@/components/docs/sections/SavedEndpoint";
+import StatsEndpoint from "@/components/docs/sections/StatsEndpoint";
 import CodeExamples from "@/components/docs/sections/CodeExamples";
 import RateLimits from "@/components/docs/sections/RateLimits";
 import ErrorHandling from "@/components/docs/sections/ErrorHandling";
@@ -49,7 +52,13 @@ const Docs = () => {
     {
       id: "api-endpoints",
       title: "API Endpoints",
-      icon: <Terminal className="w-4 h-4" />
+      icon: <Terminal className="w-4 h-4" />,
+      subsections: [
+        { id: "check-username", title: "Check Username" },
+        { id: "user-info", title: "User Information" },
+        { id: "saved-usernames", title: "Saved Usernames" },
+        { id: "statistics", title: "Statistics" }
+      ]
     },
     {
       id: "error-handling",
@@ -72,6 +81,10 @@ const Docs = () => {
     { id: "introduction", title: "Introduction", content: "Discord Username Checker API documentation getting started overview features" },
     { id: "authentication", title: "Authentication", content: "API key authentication token bearer header authorization security" },
     { id: "api-endpoints", title: "API Endpoints", content: "check username endpoint POST request response available taken" },
+    { id: "check-username", title: "Check Username", content: "check username availability endpoint POST request usernames batch" },
+    { id: "user-info", title: "User Information", content: "user account information premium status API stats GET endpoint" },
+    { id: "saved-usernames", title: "Saved Usernames", content: "saved favorited usernames collection notes GET endpoint" },
+    { id: "statistics", title: "Statistics", content: "stats analytics token usage checks history GET endpoint" },
     { id: "error-handling", title: "Error Handling", content: "errors status codes 400 401 403 429 500 rate limit" },
     { id: "rate-limits", title: "Rate Limits", content: "limits free premium requests per day 50 100 throttling" },
     { id: "support", title: "Support", content: "help contact support discord community assistance" }
@@ -117,7 +130,14 @@ const Docs = () => {
       case "authentication":
         return <Authentication />;
       case "api-endpoints":
+      case "check-username":
         return <ApiEndpoints />;
+      case "user-info":
+        return <UserEndpoint />;
+      case "saved-usernames":
+        return <SavedEndpoint />;
+      case "statistics":
+        return <StatsEndpoint />;
       case "error-handling":
         return <ErrorHandling />;
       case "rate-limits":
