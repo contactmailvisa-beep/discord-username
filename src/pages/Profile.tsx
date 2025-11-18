@@ -4,9 +4,21 @@ import DashboardLayout from "@/components/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import { ApiKeyManager } from "@/components/ApiKeyManager";
-import { User, Mail, Calendar, Shield, Crown, CheckCircle2 } from "lucide-react";
+import { 
+  User, 
+  Mail, 
+  Calendar, 
+  Shield, 
+  Crown, 
+  CheckCircle2,
+  Key,
+  Sparkles,
+  Clock,
+  CreditCard,
+  Loader2
+} from "lucide-react";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { GoogleIcon } from "@/components/icons/GoogleIcon";
@@ -53,176 +65,251 @@ const Profile = () => {
 
   const getAuthProviderIcon = () => {
     if (user?.app_metadata?.provider === "google") {
-      return <GoogleIcon className="h-6 w-6" />;
+      return <GoogleIcon className="h-5 w-5" />;
     }
     if (user?.app_metadata?.provider === "discord") {
-      return <DiscordIcon className="h-6 w-6 text-[#5865F2]" />;
+      return <DiscordIcon className="h-5 w-5 text-[#5865F2]" />;
     }
-    return <Mail className="h-6 w-6" />;
+    return <Mail className="h-5 w-5 text-primary" />;
+  };
+
+  const getAuthProviderLabel = () => {
+    if (user?.app_metadata?.provider === "google") return "Google";
+    if (user?.app_metadata?.provider === "discord") return "Discord";
+    return "البريد الإلكتروني";
   };
 
   if (loading) {
     return (
       <DashboardLayout>
-        <div className="flex items-center justify-center h-96">
-          <div className="text-center">
-            <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-            <p className="text-text-muted">جاري التحميل...</p>
+        <div className="flex items-center justify-center h-screen">
+          <div className="text-center space-y-4">
+            <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto" />
+            <p className="text-muted-foreground">جاري تحميل البيانات...</p>
           </div>
         </div>
       </DashboardLayout>
     );
   }
 
+  const isPremium = subscription?.plan_type === "premium";
+
   return (
     <DashboardLayout>
-      <div className="min-h-screen p-4 md:p-8">
-        <div className="grid lg:grid-cols-2 gap-6 max-w-7xl mx-auto">
-          {/* Right Column - Profile Info */}
+      <div className="container max-w-7xl mx-auto p-4 md:p-8 space-y-8">
+        {/* Header Section */}
+        <div className="space-y-2">
+          <h1 className="text-3xl font-bold tracking-tight">الملف الشخصي</h1>
+          <p className="text-muted-foreground">إدارة معلومات حسابك وإعداداتك</p>
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-8">
+          {/* Right Column - Account Information */}
           <div className="space-y-6">
-            {/* Profile Header */}
-            <Card>
-              <CardHeader>
-                <div className="flex items-center gap-4">
-                  <Avatar className="h-20 w-20">
-                    <AvatarImage src={profile?.avatar_url || ""} />
-                    <AvatarFallback>
-                      {profile?.username?.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <CardTitle className="text-2xl">{profile?.username}</CardTitle>
-                    {profile?.bio && (
-                      <p className="text-muted-foreground mt-1">{profile.bio}</p>
-                    )}
-                    {subscription && (
-                      <Badge variant="secondary" className="mt-2">
-                        {subscription.plan_type === "premium" ? "بريميوم" : "مجاني"}
-                      </Badge>
-                    )}
+            {/* Profile Card */}
+            <Card className="border-border/50">
+              <CardHeader className="space-y-4 pb-4">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-4">
+                    <Avatar className="h-20 w-20 ring-2 ring-border">
+                      <AvatarImage src={profile?.avatar_url || ""} />
+                      <AvatarFallback className="bg-primary/10 text-primary text-xl font-bold">
+                        {profile?.username?.charAt(0).toUpperCase() || <User className="h-8 w-8" />}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="space-y-1">
+                      <h2 className="text-2xl font-bold">{profile?.username}</h2>
+                      <div className="flex items-center gap-2">
+                        {isPremium ? (
+                          <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0">
+                            <Crown className="h-3 w-3 mr-1" />
+                            بريميوم
+                          </Badge>
+                        ) : (
+                          <Badge variant="secondary">
+                            مجاني
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </CardHeader>
-            </Card>
 
-            {/* Account Information */}
-            <Card>
-              <CardHeader>
-                <CardTitle>معلومات الحساب</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <Mail className="h-5 w-5 text-primary" />
-                  <div className="flex-1 space-y-1">
-                    <Label>البريد الإلكتروني</Label>
-                    <p className="text-sm text-muted-foreground">
-                      {user?.email || "غير متوفر"}
-                    </p>
+              <Separator />
+
+              <CardContent className="pt-6 space-y-4">
+                <div className="space-y-4">
+                  {/* Username */}
+                  <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                    <div className="p-2 rounded-md bg-primary/10">
+                      <User className="h-4 w-4 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xs text-muted-foreground">اسم المستخدم</p>
+                      <p className="font-medium">{profile?.username}</p>
+                    </div>
                   </div>
-                </div>
 
-                <div className="flex items-center gap-3">
-                  <Shield className="h-5 w-5 text-primary" />
-                  <div className="flex-1 space-y-1">
-                    <Label>طريقة التسجيل</Label>
-                    <div className="flex items-center gap-2">
+                  {/* Email */}
+                  <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                    <div className="p-2 rounded-md bg-primary/10">
+                      <Mail className="h-4 w-4 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xs text-muted-foreground">البريد الإلكتروني</p>
+                      <p className="font-medium text-sm break-all">{user?.email}</p>
+                    </div>
+                    {user?.email_confirmed_at && (
+                      <CheckCircle2 className="h-4 w-4 text-green-500 flex-shrink-0" />
+                    )}
+                  </div>
+
+                  {/* Account Creation Date */}
+                  <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                    <div className="p-2 rounded-md bg-primary/10">
+                      <Calendar className="h-4 w-4 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xs text-muted-foreground">تاريخ الإنشاء</p>
+                      <p className="font-medium">
+                        {format(new Date(user?.created_at), "dd MMMM yyyy", { locale: ar })}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Auth Provider */}
+                  <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                    <div className="p-2 rounded-md bg-primary/10">
                       {getAuthProviderIcon()}
                     </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <Calendar className="h-5 w-5 text-primary" />
-                  <div className="flex-1 space-y-1">
-                    <Label>تاريخ الإنشاء</Label>
-                    <p className="text-sm text-muted-foreground">
-                      {user?.created_at
-                        ? new Date(user.created_at).toLocaleDateString("ar-EG")
-                        : "غير متوفر"}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <CheckCircle2 className="h-5 w-5 text-primary" />
-                  <div className="flex-1 space-y-1">
-                    <Label>حالة البريد الإلكتروني</Label>
-                    <p className="text-sm text-muted-foreground">
-                      {user?.email_confirmed_at ? "مؤكد ✓" : "غير مؤكد"}
-                    </p>
-                  </div>
-                </div>
-
-                {user?.user_metadata && Object.keys(user.user_metadata).length > 0 && (
-                  <div className="space-y-2">
-                    <Label>معلومات إضافية</Label>
-                    <div className="text-sm text-muted-foreground space-y-1">
-                      {user.user_metadata.full_name && (
-                        <p>الاسم: {user.user_metadata.full_name}</p>
-                      )}
-                      {user.user_metadata.provider_id && (
-                        <p>معرف المزود: {user.user_metadata.provider_id}</p>
-                      )}
+                    <div className="flex-1">
+                      <p className="text-xs text-muted-foreground">طريقة تسجيل الدخول</p>
+                      <p className="font-medium">{getAuthProviderLabel()}</p>
                     </div>
                   </div>
-                )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Left Column - API Keys & Subscription */}
+          <div className="space-y-6">
+            {/* API Keys Section */}
+            <Card className="border-border/50">
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-primary/10">
+                    <Key className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle>مفاتيح API</CardTitle>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      إدارة مفاتيح الوصول للواجهة البرمجية
+                    </p>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <ApiKeyManager />
               </CardContent>
             </Card>
 
             {/* Subscription Info */}
-            {subscription && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>معلومات الاشتراك</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label>نوع الخطة</Label>
-                    <p className="text-sm text-muted-foreground">
-                      {subscription.plan_type === "premium" ? "بريميوم 💎" : "مجاني"}
+            <Card className={`border-border/50 ${isPremium ? 'bg-gradient-to-br from-amber-500/5 to-orange-500/5' : ''}`}>
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <div className={`p-2 rounded-lg ${isPremium ? 'bg-gradient-to-br from-amber-500/20 to-orange-500/20' : 'bg-primary/10'}`}>
+                    {isPremium ? (
+                      <Crown className="h-5 w-5 text-amber-600" />
+                    ) : (
+                      <Shield className="h-5 w-5 text-primary" />
+                    )}
+                  </div>
+                  <div>
+                    <CardTitle>معلومات الاشتراك</CardTitle>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      تفاصيل خطة الاشتراك الحالية
                     </p>
                   </div>
+                </div>
+              </CardHeader>
 
-                  <div className="space-y-2">
-                    <Label>الحالة</Label>
-                    <Badge
-                      variant={
-                        subscription.status === "active" ? "default" : "secondary"
-                      }
-                    >
-                      {subscription.status === "active" ? "نشط" : "غير نشط"}
-                    </Badge>
+              <Separator />
+
+              <CardContent className="pt-6">
+                <div className="space-y-4">
+                  {/* Plan Type */}
+                  <div className="flex items-center justify-between p-4 rounded-lg bg-muted/50">
+                    <div className="flex items-center gap-3">
+                      <Sparkles className={`h-5 w-5 ${isPremium ? 'text-amber-600' : 'text-muted-foreground'}`} />
+                      <div>
+                        <p className="text-sm text-muted-foreground">الخطة الحالية</p>
+                        <p className="font-bold text-lg">
+                          {isPremium ? "بريميوم" : "مجاني"}
+                        </p>
+                      </div>
+                    </div>
+                    {isPremium && (
+                      <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0">
+                        نشط
+                      </Badge>
+                    )}
                   </div>
 
-                  {subscription.current_period_end && (
-                    <div className="space-y-2">
-                      <Label>تاريخ التجديد</Label>
-                      <p className="text-sm text-muted-foreground">
-                        {new Date(subscription.current_period_end).toLocaleDateString(
-                          "ar-EG"
-                        )}
+                  {subscription && (
+                    <>
+                      {/* Start Date */}
+                      <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                        <Clock className="h-4 w-4 text-primary" />
+                        <div className="flex-1">
+                          <p className="text-xs text-muted-foreground">تاريخ البداية</p>
+                          <p className="font-medium text-sm">
+                            {format(new Date(subscription.start_date), "dd MMMM yyyy", { locale: ar })}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* End Date */}
+                      {subscription.end_date && (
+                        <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                          <Calendar className="h-4 w-4 text-primary" />
+                          <div className="flex-1">
+                            <p className="text-xs text-muted-foreground">تاريخ الانتهاء</p>
+                            <p className="font-medium text-sm">
+                              {format(new Date(subscription.end_date), "dd MMMM yyyy", { locale: ar })}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Payment Method */}
+                      {subscription.paypal_subscription_id && (
+                        <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                          <CreditCard className="h-4 w-4 text-primary" />
+                          <div className="flex-1">
+                            <p className="text-xs text-muted-foreground">معرف الاشتراك</p>
+                            <p className="font-medium text-xs font-mono break-all">
+                              {subscription.paypal_subscription_id}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  {!isPremium && (
+                    <div className="p-4 rounded-lg border-2 border-dashed border-border bg-muted/30 text-center">
+                      <Crown className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                      <p className="text-sm font-medium mb-1">ترقية إلى بريميوم</p>
+                      <p className="text-xs text-muted-foreground">
+                        احصل على ميزات إضافية مع الاشتراك المميز
                       </p>
                     </div>
                   )}
-
-                  {subscription.plan_type === "premium" && (
-                    <div className="p-4 bg-primary/10 rounded-lg">
-                      <p className="text-sm font-medium">مميزات البريميوم:</p>
-                      <ul className="text-sm text-muted-foreground mt-2 space-y-1">
-                        <li>• فحص كل 5 دقائق</li>
-                        <li>• 100 طلب API يومياً</li>
-                        <li>• أولوية في الدعم</li>
-                      </ul>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            )}
-          </div>
-
-          {/* Left Column - API Keys */}
-          <div>
-            <ApiKeyManager />
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
