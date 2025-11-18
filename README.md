@@ -43,9 +43,9 @@ Each user can generate multiple API keys with customizable settings:
 
 ---
 
-## 🔌 API Endpoint
+## 🔌 API Endpoints
 
-### Check Username Availability
+### 1. Check Username Availability
 
 **Endpoint:** `POST https://srqqxvhbzuvfjexvbkbq.supabase.co/functions/v1/check-api-username`
 
@@ -81,9 +81,105 @@ x-token-name: YOUR_TOKEN_NAME
 }
 ```
 
+### 2. Get User Information
+
+**Endpoint:** `GET https://srqqxvhbzuvfjexvbkbq.supabase.co/functions/v1/user`
+
+Get detailed information about your account including premium status, API usage stats, and account details.
+
+**Headers:**
+```
+Content-Type: application/json
+x-api-key: YOUR_API_KEY
+```
+
+**Response:**
+```json
+{
+  "username": "your_username",
+  "created_at": "2024-01-01T00:00:00Z",
+  "avatar_url": "https://...",
+  "is_premium": true,
+  "premium_plan": "premium",
+  "premium_expires": "2024-12-31T23:59:59Z",
+  "api_stats": {
+    "total_keys": 3,
+    "active_keys": 2,
+    "daily_limit": 100,
+    "requests_today": 45,
+    "requests_remaining": 55
+  }
+}
+```
+
+### 3. Get Saved Usernames
+
+**Endpoint:** `GET https://srqqxvhbzuvfjexvbkbq.supabase.co/functions/v1/saved`
+
+Retrieve all your saved/favorited usernames with their notes and metadata.
+
+**Headers:**
+```
+Content-Type: application/json
+x-api-key: YOUR_API_KEY
+```
+
+**Response:**
+```json
+{
+  "total": 5,
+  "saved_usernames": [
+    {
+      "username": "cool_username",
+      "notes": "Perfect for gaming",
+      "saved_at": "2024-01-15T10:30:00Z",
+      "is_claimed": false
+    },
+    {
+      "username": "awesome_dev",
+      "notes": null,
+      "saved_at": "2024-01-14T15:20:00Z",
+      "is_claimed": false
+    }
+  ]
+}
+```
+
+### 4. Get Statistics
+
+**Endpoint:** `GET https://srqqxvhbzuvfjexvbkbq.supabase.co/functions/v1/stats`
+
+Get comprehensive statistics about your token usage, check history, and activity.
+
+**Headers:**
+```
+Content-Type: application/json
+x-api-key: YOUR_API_KEY
+```
+
+**Response:**
+```json
+{
+  "tokens": {
+    "total": 5,
+    "active": 3,
+    "inactive": 2
+  },
+  "checks": {
+    "total": 150,
+    "available_found": 45,
+    "taken_found": 105
+  },
+  "saved_usernames": 12,
+  "last_api_request": "2024-01-15T14:30:00Z"
+}
+```
+
 ---
 
 ## 💻 Code Examples
+
+### Check Username Availability
 
 ### JavaScript (Fetch API)
 
@@ -464,6 +560,238 @@ curl -X POST https://srqqxvhbzuvfjexvbkbq.supabase.co/functions/v1/check-api-use
   -d '{
     "usernames": ["cool_user", "awesome_gamer", "pro_dev"]
   }'
+```
+
+### Get User Information
+
+#### JavaScript (Fetch API)
+
+```javascript
+const getUserInfo = async (apiKey) => {
+  try {
+    const response = await fetch('https://srqqxvhbzuvfjexvbkbq.supabase.co/functions/v1/user', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey
+      }
+    });
+    
+    const data = await response.json();
+    
+    if (response.ok) {
+      console.log('User Info:', data);
+      return data;
+    } else {
+      console.error('Error:', data.error);
+      return null;
+    }
+  } catch (error) {
+    console.error('Request failed:', error);
+    return null;
+  }
+};
+
+// Usage
+const apiKey = 'duc_your_api_key_here';
+getUserInfo(apiKey);
+```
+
+#### Python
+
+```python
+import requests
+
+def get_user_info(api_key):
+    url = 'https://srqqxvhbzuvfjexvbkbq.supabase.co/functions/v1/user'
+    headers = {
+        'Content-Type': 'application/json',
+        'x-api-key': api_key
+    }
+    
+    try:
+        response = requests.get(url, headers=headers)
+        
+        if response.status_code == 200:
+            data = response.json()
+            print('User Info:', data)
+            return data
+        else:
+            print('Error:', response.json().get('error'))
+            return None
+    except Exception as e:
+        print('Request failed:', str(e))
+        return None
+
+# Usage
+api_key = 'duc_your_api_key_here'
+get_user_info(api_key)
+```
+
+#### cURL
+
+```bash
+curl -X GET https://srqqxvhbzuvfjexvbkbq.supabase.co/functions/v1/user \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: duc_your_api_key_here"
+```
+
+### Get Saved Usernames
+
+#### JavaScript (Fetch API)
+
+```javascript
+const getSavedUsernames = async (apiKey) => {
+  try {
+    const response = await fetch('https://srqqxvhbzuvfjexvbkbq.supabase.co/functions/v1/saved', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey
+      }
+    });
+    
+    const data = await response.json();
+    
+    if (response.ok) {
+      console.log('Saved Usernames:', data);
+      console.log(`Total saved: ${data.total}`);
+      return data;
+    } else {
+      console.error('Error:', data.error);
+      return null;
+    }
+  } catch (error) {
+    console.error('Request failed:', error);
+    return null;
+  }
+};
+
+// Usage
+const apiKey = 'duc_your_api_key_here';
+getSavedUsernames(apiKey);
+```
+
+#### Python
+
+```python
+import requests
+
+def get_saved_usernames(api_key):
+    url = 'https://srqqxvhbzuvfjexvbkbq.supabase.co/functions/v1/saved'
+    headers = {
+        'Content-Type': 'application/json',
+        'x-api-key': api_key
+    }
+    
+    try:
+        response = requests.get(url, headers=headers)
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"Total saved: {data['total']}")
+            print('Saved Usernames:', data['saved_usernames'])
+            return data
+        else:
+            print('Error:', response.json().get('error'))
+            return None
+    except Exception as e:
+        print('Request failed:', str(e))
+        return None
+
+# Usage
+api_key = 'duc_your_api_key_here'
+get_saved_usernames(api_key)
+```
+
+#### cURL
+
+```bash
+curl -X GET https://srqqxvhbzuvfjexvbkbq.supabase.co/functions/v1/saved \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: duc_your_api_key_here"
+```
+
+### Get Statistics
+
+#### JavaScript (Fetch API)
+
+```javascript
+const getStats = async (apiKey) => {
+  try {
+    const response = await fetch('https://srqqxvhbzuvfjexvbkbq.supabase.co/functions/v1/stats', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey
+      }
+    });
+    
+    const data = await response.json();
+    
+    if (response.ok) {
+      console.log('Statistics:', data);
+      console.log(`Total tokens: ${data.tokens.total}`);
+      console.log(`Active tokens: ${data.tokens.active}`);
+      console.log(`Total checks: ${data.checks.total}`);
+      console.log(`Available found: ${data.checks.available_found}`);
+      return data;
+    } else {
+      console.error('Error:', data.error);
+      return null;
+    }
+  } catch (error) {
+    console.error('Request failed:', error);
+    return null;
+  }
+};
+
+// Usage
+const apiKey = 'duc_your_api_key_here';
+getStats(apiKey);
+```
+
+#### Python
+
+```python
+import requests
+
+def get_stats(api_key):
+    url = 'https://srqqxvhbzuvfjexvbkbq.supabase.co/functions/v1/stats'
+    headers = {
+        'Content-Type': 'application/json',
+        'x-api-key': api_key
+    }
+    
+    try:
+        response = requests.get(url, headers=headers)
+        
+        if response.status_code == 200:
+            data = response.json()
+            print('Statistics:', data)
+            print(f"Total tokens: {data['tokens']['total']}")
+            print(f"Active tokens: {data['tokens']['active']}")
+            print(f"Total checks: {data['checks']['total']}")
+            print(f"Available found: {data['checks']['available_found']}")
+            return data
+        else:
+            print('Error:', response.json().get('error'))
+            return None
+    except Exception as e:
+        print('Request failed:', str(e))
+        return None
+
+# Usage
+api_key = 'duc_your_api_key_here'
+get_stats(api_key)
+```
+
+#### cURL
+
+```bash
+curl -X GET https://srqqxvhbzuvfjexvbkbq.supabase.co/functions/v1/stats \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: duc_your_api_key_here"
 ```
 
 ---
