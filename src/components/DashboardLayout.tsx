@@ -21,6 +21,7 @@ import {
   Shield,
   Search,
   FileText,
+  Globe,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -118,13 +119,15 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
   const navItems: NavItemProps[] = [
     { icon: <Home className="h-5 w-5" />, label: "الصفحة الرئيسية", path: "/dashboard" },
+    { icon: <Globe className="h-5 w-5" />, label: "الحساب العام", path: "/dashboard/global" },
     { icon: <Key className="h-5 w-5" />, label: "التوكنات", path: "/dashboard/tokens" },
     { icon: <Wand2 className="h-5 w-5" />, label: "فحص التوفر", path: "/dashboard/generator" },
     { icon: <Search className="h-5 w-5" />, label: "الفحص اليدوي", path: "/dashboard/manual-check" },
     { icon: <History className="h-5 w-5" />, label: "سجل الفحوصات", path: "/dashboard/history" },
     { icon: <TrendingUp className="h-5 w-5" />, label: "الإحصائيات", path: "/dashboard/stats" },
+    { icon: <FileText className="h-5 w-5" />, label: "التوثيق", path: "/docs" },
     { 
-      icon: <Crown className="h-5 w-5" />, 
+      icon: <Crown className="h-5 w-5" />,
       label: "البريميوم", 
       path: "/dashboard/premium",
       badge: subscription?.plan_type === "premium" ? "نشط" : "ترقية"
