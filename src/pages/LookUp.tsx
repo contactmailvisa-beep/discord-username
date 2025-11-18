@@ -3,7 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Search, User } from "lucide-react";
+import { Search, User, Calendar, Hash, AtSign, Shield } from "lucide-react";
+import { Card } from "@/components/ui/card";
 
 interface DiscordUser {
   id: string;
@@ -14,6 +15,7 @@ interface DiscordUser {
   banner_color: string | null;
   accent_color: number | null;
   discriminator: string;
+  public_flags: number;
 }
 
 const LookUp = () => {
@@ -35,7 +37,7 @@ const LookUp = () => {
 
   const handleLookup = async () => {
     if (!userId.trim()) {
-      toast.error("Please enter a Discord user ID");
+      toast.error("الرجاء إدخال معرف مستخدم Discord");
       return;
     }
 
@@ -55,10 +57,10 @@ const LookUp = () => {
       }
 
       setUserData(data);
-      toast.success("User data loaded successfully!");
+      toast.success("تم تحميل بيانات المستخدم بنجاح!");
     } catch (error: any) {
       console.error('Lookup error:', error);
-      toast.error(error.message || "Failed to lookup user");
+      toast.error(error.message || "فشل في البحث عن المستخدم");
     } finally {
       setLoading(false);
     }
@@ -75,82 +77,105 @@ const LookUp = () => {
     if (userData?.accent_color) {
       return hexToRgb(userData.accent_color);
     }
-    return "88, 101, 242"; // Discord's default blurple
+    return "88, 101, 242";
+  };
+
+  const getCreationDate = (id: string) => {
+    const timestamp = Number(BigInt(id) >> BigInt(22)) + 1420070400000;
+    return new Date(timestamp).toLocaleDateString('ar-SA', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
   };
 
   return (
-    <div className="min-h-screen bg-[#1e1f22] flex items-center justify-center p-4">
-      <div className="w-full max-w-3xl space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-background/95 flex items-center justify-center p-4 md:p-8">
+      <div className="w-full max-w-4xl space-y-8 animate-fade-in">
         {/* Header */}
-        <div className="text-center space-y-2">
-          <h1 className="text-4xl font-bold text-white">Lookup Discord IDs</h1>
-          <p className="text-[#b5bac1]">
-            Enter a Discord user ID to fetch profile details via our community-powered API
+        <div className="text-center space-y-3">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-4">
+            <Search className="w-8 h-8 text-primary" />
+          </div>
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent">
+            البحث عن حسابات Discord
+          </h1>
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            أدخل معرف مستخدم Discord للحصول على تفاصيل الملف الشخصي الكاملة
           </p>
         </div>
 
-        {/* Input Section */}
-        <div className="bg-[#2b2d31] rounded-xl p-6 space-y-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-[#b5bac1]">Discord ID</label>
-            <div className="flex gap-3">
-              <Input
-                type="text"
-                placeholder="000000000000000000"
-                value={userId}
-                onChange={(e) => setUserId(e.target.value)}
-                className="flex-1 bg-[#1e1f22] border-[#1e1f22] text-white placeholder:text-[#6d6f78] focus-visible:ring-[#5865f2]"
-                onKeyDown={(e) => e.key === 'Enter' && handleLookup()}
-              />
-              <Button
-                onClick={handleLookup}
-                disabled={loading || !userId.trim()}
-                className="bg-[#5865f2] hover:bg-[#4752c4] text-white px-6 rounded-md"
-              >
-                {loading ? (
-                  <span className="flex items-center gap-2">
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Searching...
-                  </span>
-                ) : (
-                  <span className="flex items-center gap-2">
-                    <Search className="w-4 h-4" />
-                    Lookup
-                  </span>
-                )}
-              </Button>
+        {/* Search Card */}
+        <Card className="p-8 bg-card/50 backdrop-blur-xl border-2 border-primary/20 shadow-2xl shadow-primary/10">
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-foreground flex items-center gap-2">
+                <Hash className="w-4 h-4 text-primary" />
+                معرف المستخدم
+              </label>
+              <div className="flex gap-3">
+                <Input
+                  type="text"
+                  placeholder="000000000000000000"
+                  value={userId}
+                  onChange={(e) => setUserId(e.target.value)}
+                  className="flex-1 h-12 bg-background/50 border-2 border-border hover:border-primary/50 focus:border-primary transition-all text-lg"
+                  onKeyDown={(e) => e.key === 'Enter' && handleLookup()}
+                />
+                <Button
+                  onClick={handleLookup}
+                  disabled={loading || !userId.trim()}
+                  size="lg"
+                  className="px-8 h-12 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all"
+                >
+                  {loading ? (
+                    <span className="flex items-center gap-2">
+                      <div className="w-5 h-5 border-3 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                      جاري البحث...
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-2">
+                      <Search className="w-5 h-5" />
+                      بحث
+                    </span>
+                  )}
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* User Profile Card */}
         {userData && (
-          <div 
-            className="bg-[#2b2d31] rounded-xl overflow-hidden animate-fade-in"
+          <Card 
+            className="overflow-hidden animate-scale-in border-2 transition-all duration-500"
             style={{
-              boxShadow: `0 0 20px rgba(${getAccentColor()}, 0.3)`
+              borderColor: `rgba(${getAccentColor()}, 0.3)`,
+              boxShadow: `0 0 40px rgba(${getAccentColor()}, 0.2), 0 0 80px rgba(${getAccentColor()}, 0.1)`
             }}
           >
             {/* Banner */}
             <div 
-              className="h-32 relative"
+              className="h-48 relative bg-gradient-to-br from-primary/20 to-primary/5"
               style={{
                 background: userData.banner 
                   ? `url(${getBannerUrl(userData.id, userData.banner)}) center/cover`
                   : userData.banner_color 
                     ? userData.banner_color
-                    : `rgb(${getAccentColor()})`
+                    : `linear-gradient(135deg, rgb(${getAccentColor()}) 0%, rgba(${getAccentColor()}, 0.7) 100%)`
               }}
-            />
+            >
+              <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent" />
+            </div>
 
             {/* Profile Content */}
-            <div className="p-6 pt-0">
+            <div className="p-8 pt-0 -mt-16 relative">
               {/* Avatar */}
-              <div className="relative -mt-16 mb-4">
+              <div className="relative inline-block mb-6">
                 <div 
-                  className="w-24 h-24 rounded-full border-8 border-[#2b2d31] overflow-hidden"
+                  className="w-32 h-32 rounded-3xl border-4 border-card overflow-hidden bg-card transition-all duration-300 hover:scale-105"
                   style={{
-                    boxShadow: `0 0 15px rgba(${getAccentColor()}, 0.5)`
+                    boxShadow: `0 0 30px rgba(${getAccentColor()}, 0.6), 0 0 60px rgba(${getAccentColor()}, 0.3)`
                   }}
                 >
                   {userData.avatar ? (
@@ -161,67 +186,96 @@ const LookUp = () => {
                     />
                   ) : (
                     <div 
-                      className="w-full h-full flex items-center justify-center text-white text-2xl font-bold"
-                      style={{ background: `rgb(${getAccentColor()})` }}
+                      className="w-full h-full flex items-center justify-center"
+                      style={{ background: `linear-gradient(135deg, rgb(${getAccentColor()}) 0%, rgba(${getAccentColor()}, 0.8) 100%)` }}
                     >
-                      <User className="w-12 h-12" />
+                      <User className="w-16 h-16 text-white" />
                     </div>
                   )}
                 </div>
+                {userData.public_flags > 0 && (
+                  <div 
+                    className="absolute -bottom-2 -right-2 w-10 h-10 rounded-full flex items-center justify-center border-2 border-card"
+                    style={{ background: `rgb(${getAccentColor()})` }}
+                  >
+                    <Shield className="w-5 h-5 text-white" />
+                  </div>
+                )}
               </div>
 
               {/* User Info */}
-              <div className="space-y-4">
-                <div>
-                  <h2 className="text-2xl font-bold text-white">
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <h2 className="text-4xl font-bold text-foreground">
                     {userData.global_name || userData.username}
                   </h2>
-                  <p className="text-[#b5bac1]">
+                  <div className="flex items-center gap-2 text-xl text-muted-foreground">
+                    <AtSign className="w-5 h-5" />
                     {userData.username}
                     {userData.discriminator !== "0" && `#${userData.discriminator}`}
-                  </p>
+                  </div>
                 </div>
 
-                {/* Additional Info */}
-                <div className="bg-[#1e1f22] rounded-lg p-4 space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-[#b5bac1] text-sm">User ID</span>
-                    <span className="text-white font-mono text-sm">{userData.id}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[#b5bac1] text-sm">Username</span>
-                    <span className="text-white text-sm">{userData.username}</span>
-                  </div>
-                  {userData.global_name && (
-                    <div className="flex justify-between">
-                      <span className="text-[#b5bac1] text-sm">Display Name</span>
-                      <span className="text-white text-sm">{userData.global_name}</span>
+                {/* Info Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Card className="p-5 bg-background/50 border-2 border-border hover:border-primary/50 transition-all">
+                    <div className="flex items-start gap-4">
+                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                        <Hash className="w-5 h-5 text-primary" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-muted-foreground mb-1">معرف المستخدم</p>
+                        <p className="text-sm font-mono text-foreground break-all">{userData.id}</p>
+                      </div>
                     </div>
+                  </Card>
+
+                  <Card className="p-5 bg-background/50 border-2 border-border hover:border-primary/50 transition-all">
+                    <div className="flex items-start gap-4">
+                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                        <AtSign className="w-5 h-5 text-primary" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-muted-foreground mb-1">اسم المستخدم</p>
+                        <p className="text-sm font-semibold text-foreground break-all">{userData.username}</p>
+                      </div>
+                    </div>
+                  </Card>
+
+                  {userData.global_name && (
+                    <Card className="p-5 bg-background/50 border-2 border-border hover:border-primary/50 transition-all">
+                      <div className="flex items-start gap-4">
+                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                          <User className="w-5 h-5 text-primary" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-muted-foreground mb-1">الاسم المعروض</p>
+                          <p className="text-sm font-semibold text-foreground break-all">{userData.global_name}</p>
+                        </div>
+                      </div>
+                    </Card>
                   )}
+
+                  <Card className="p-5 bg-background/50 border-2 border-border hover:border-primary/50 transition-all">
+                    <div className="flex items-start gap-4">
+                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                        <Calendar className="w-5 h-5 text-primary" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-muted-foreground mb-1">تاريخ الإنشاء</p>
+                        <p className="text-sm font-semibold text-foreground">{getCreationDate(userData.id)}</p>
+                      </div>
+                    </div>
+                  </Card>
                 </div>
               </div>
             </div>
-          </div>
+          </Card>
         )}
 
-        {/* Support Section */}
-        <div className="bg-[#404249] rounded-xl p-6">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <h3 className="text-lg font-semibold text-white mb-2">Support this service</h3>
-              <p className="text-[#b5bac1] text-sm">
-                We also need bot token donations to keep the lookup service running smoothly.
-              </p>
-            </div>
-            <Button className="bg-white hover:bg-gray-100 text-[#2b2d31] rounded-md whitespace-nowrap">
-              Support us
-            </Button>
-          </div>
-        </div>
-
         {/* Footer */}
-        <div className="text-center text-[#6d6f78] text-sm">
-          Not affiliated with Discord, Inc.
+        <div className="text-center text-muted-foreground text-sm">
+          غير مرتبط بشركة Discord, Inc.
         </div>
       </div>
     </div>
