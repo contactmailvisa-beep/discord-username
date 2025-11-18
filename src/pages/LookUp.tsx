@@ -91,35 +91,69 @@ const LookUp = () => {
 
   const getCreationDate = (id: string) => {
     const timestamp = Number(BigInt(id) >> BigInt(22)) + 1420070400000;
-    return new Date(timestamp).toLocaleDateString('ar-SA', { 
+    const creationDate = new Date(timestamp);
+    
+    // التاريخ الميلادي
+    const formattedDate = creationDate.toLocaleDateString('en-US', { 
       year: 'numeric', 
       month: 'long', 
       day: 'numeric' 
     });
+    
+    // حساب الوقت المنقضي
+    const now = Date.now();
+    const diff = now - timestamp;
+    
+    const seconds = Math.floor(diff / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    const weeks = Math.floor(days / 7);
+    const months = Math.floor(days / 30);
+    const years = Math.floor(days / 365);
+    
+    let timeAgo = '';
+    if (years > 0) {
+      timeAgo = `قبل ${years} ${years === 1 ? 'سنة' : 'سنوات'}`;
+    } else if (months > 0) {
+      timeAgo = `قبل ${months} ${months === 1 ? 'شهر' : 'أشهر'}`;
+    } else if (weeks > 0) {
+      timeAgo = `قبل ${weeks} ${weeks === 1 ? 'أسبوع' : 'أسابيع'}`;
+    } else if (days > 0) {
+      timeAgo = `قبل ${days} ${days === 1 ? 'يوم' : 'أيام'}`;
+    } else if (hours > 0) {
+      timeAgo = `قبل ${hours} ${hours === 1 ? 'ساعة' : 'ساعات'}`;
+    } else if (minutes > 0) {
+      timeAgo = `قبل ${minutes} ${minutes === 1 ? 'دقيقة' : 'دقائق'}`;
+    } else {
+      timeAgo = `قبل ${seconds} ${seconds === 1 ? 'ثانية' : 'ثواني'}`;
+    }
+    
+    return `${formattedDate} (${timeAgo})`;
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-background/95 flex items-center justify-center p-4 md:p-8 relative">
       <div className="w-full max-w-4xl space-y-8 animate-fade-in relative z-10">
         {/* Header */}
-        <div className="text-center space-y-3 animate-scale-in">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-4 transition-all duration-500 hover:scale-110 hover:rotate-6 hover:bg-primary/20">
+        <div className="text-center space-y-3 opacity-0 animate-[fade-in_0.6s_ease-out_forwards]">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-4 transition-all duration-500 hover:scale-110 hover:rotate-6 hover:bg-primary/20 hover:shadow-lg hover:shadow-primary/30">
             <Search className="w-8 h-8 text-primary transition-transform duration-300" />
           </div>
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent animate-[fade-in_0.6s_ease-out]">
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent">
             البحث عن حسابات Discord
           </h1>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto animate-[fade-in_0.8s_ease-out]">
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             أدخل معرف مستخدم Discord للحصول على تفاصيل الملف الشخصي الكاملة
           </p>
         </div>
 
         {/* Search Card */}
-        <Card className="p-8 bg-card/50 backdrop-blur-xl border-2 border-primary/20 shadow-2xl shadow-primary/10 transition-all duration-500 hover:shadow-3xl hover:shadow-primary/20 hover:border-primary/30 animate-[fade-in_1s_ease-out]">
+        <Card className="p-8 bg-card/50 backdrop-blur-xl border-2 border-primary/20 shadow-2xl shadow-primary/10 transition-all duration-500 hover:shadow-3xl hover:shadow-primary/20 hover:border-primary/30 hover:scale-[1.01] opacity-0 animate-[fade-in_0.8s_ease-out_0.2s_forwards]">
           <div className="space-y-4">
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-foreground flex items-center gap-2 transition-all duration-300 hover:gap-3">
-                <Hash className="w-4 h-4 text-primary transition-transform duration-300 hover:scale-125" />
+              <label className="text-sm font-semibold text-foreground flex items-center gap-2 transition-all duration-300 hover:gap-3 hover:text-primary">
+                <Hash className="w-4 h-4 text-primary transition-transform duration-300 hover:scale-125 hover:rotate-12" />
                 معرف المستخدم
               </label>
               <div className="flex gap-3">
@@ -128,14 +162,14 @@ const LookUp = () => {
                   placeholder="000000000000000000"
                   value={userId}
                   onChange={(e) => setUserId(e.target.value)}
-                  className="flex-1 h-12 bg-background/50 border-2 border-border hover:border-primary/50 focus:border-primary transition-all duration-300 text-lg focus:scale-[1.02] hover:shadow-lg hover:shadow-primary/10"
+                  className="flex-1 h-12 bg-background/50 border-2 border-border hover:border-primary/50 focus:border-primary transition-all duration-300 text-lg focus:scale-[1.01] hover:shadow-lg hover:shadow-primary/10"
                   onKeyDown={(e) => e.key === 'Enter' && handleLookup()}
                 />
                 <Button
                   onClick={handleLookup}
                   disabled={loading || !userId.trim()}
                   size="lg"
-                  className="px-8 h-12 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all duration-300 hover:scale-105 active:scale-95"
+                  className="px-8 h-12 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed group"
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">
@@ -143,8 +177,8 @@ const LookUp = () => {
                       جاري البحث...
                     </span>
                   ) : (
-                    <span className="flex items-center gap-2 transition-all duration-300 group-hover:gap-3">
-                      <Search className="w-5 h-5 transition-transform duration-300 group-hover:rotate-12" />
+                    <span className="flex items-center gap-2 transition-all duration-300">
+                      <Search className="w-5 h-5 transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110" />
                       بحث
                     </span>
                   )}
@@ -157,17 +191,18 @@ const LookUp = () => {
         {/* User Profile Card */}
         {userData && (
           <Card 
-            className="overflow-hidden border-2 transition-all duration-300 hover:scale-[1.02]"
+            className="overflow-hidden border-2 transition-all duration-500 hover:scale-[1.01]"
             style={{
               borderColor: `rgba(${getAccentColor()}, 0.3)`,
               boxShadow: `0 0 40px rgba(${getAccentColor()}, 0.2), 0 0 80px rgba(${getAccentColor()}, 0.1)`,
               opacity: isVisible ? 1 : 0,
-              transition: 'opacity 0.3s ease-in-out'
+              transform: isVisible ? 'scale(1)' : 'scale(0.95)',
+              transition: 'all 0.5s ease-in-out'
             }}
           >
             {/* Banner */}
             <div 
-              className="h-48 relative bg-gradient-to-br from-primary/20 to-primary/5"
+              className="h-48 relative bg-gradient-to-br from-primary/20 to-primary/5 transition-all duration-500"
               style={{
                 background: userData.banner 
                   ? `url(${getBannerUrl(userData.id, userData.banner)}) center/cover`
@@ -176,15 +211,15 @@ const LookUp = () => {
                     : `linear-gradient(135deg, rgb(${getAccentColor()}) 0%, rgba(${getAccentColor()}, 0.7) 100%)`
               }}
             >
-              <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent transition-opacity duration-500" />
             </div>
 
             {/* Profile Content */}
             <div className="p-8 pt-0 -mt-16 relative">
               {/* Avatar */}
-              <div className="relative inline-block mb-6">
+              <div className="relative inline-block mb-6 animate-[fade-in_0.6s_ease-out]">
                 <div 
-                  className="w-32 h-32 rounded-3xl border-4 border-card overflow-hidden bg-card transition-all duration-300 hover:scale-110 hover:rotate-3 cursor-pointer"
+                  className="w-32 h-32 rounded-3xl border-4 border-card overflow-hidden bg-card transition-all duration-500 hover:scale-110 hover:rotate-3 cursor-pointer hover:shadow-2xl"
                   style={{
                     boxShadow: `0 0 30px rgba(${getAccentColor()}, 0.6), 0 0 60px rgba(${getAccentColor()}, 0.3)`
                   }}
@@ -206,7 +241,7 @@ const LookUp = () => {
                 </div>
                 {userData.public_flags > 0 && (
                   <div 
-                    className="absolute -bottom-2 -right-2 w-10 h-10 rounded-full flex items-center justify-center border-2 border-card transition-all duration-300 hover:scale-110"
+                    className="absolute -bottom-2 -right-2 w-10 h-10 rounded-full flex items-center justify-center border-2 border-card transition-all duration-500 hover:scale-125 hover:rotate-12 animate-[fade-in_0.8s_ease-out_0.3s_backwards]"
                     style={{ 
                       background: `rgb(${getAccentColor()})`
                     }}
@@ -218,12 +253,12 @@ const LookUp = () => {
 
               {/* User Info */}
               <div className="space-y-6">
-                <div className="space-y-2">
-                  <h2 className="text-4xl font-bold text-foreground transition-all duration-300 hover:scale-105 inline-block">
+                <div className="space-y-2 animate-[fade-in_0.6s_ease-out_0.2s_backwards]">
+                  <h2 className="text-4xl font-bold text-foreground transition-all duration-300 hover:scale-105 inline-block cursor-default">
                     {userData.global_name || userData.username}
                   </h2>
-                  <div className="flex items-center gap-2 text-xl text-muted-foreground transition-all duration-300 hover:gap-3">
-                    <AtSign className="w-5 h-5 transition-transform duration-300 hover:rotate-12" />
+                  <div className="flex items-center gap-2 text-xl text-muted-foreground transition-all duration-300 hover:gap-3 hover:text-foreground cursor-default">
+                    <AtSign className="w-5 h-5 transition-transform duration-300 hover:rotate-12 hover:scale-110" />
                     {userData.username}
                     {userData.discriminator !== "0" && `#${userData.discriminator}`}
                   </div>
@@ -231,9 +266,9 @@ const LookUp = () => {
 
                 {/* Info Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Card className="p-5 bg-background/50 border-2 border-border hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group cursor-pointer">
+                  <Card className="p-5 bg-background/50 border-2 border-border hover:border-primary/50 transition-all duration-500 hover:scale-105 hover:shadow-xl hover:shadow-primary/20 group cursor-pointer animate-[fade-in_0.6s_ease-out_0.4s_backwards]">
                     <div className="flex items-start gap-4">
-                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 group-hover:bg-primary/20">
+                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 transition-all duration-500 group-hover:scale-125 group-hover:rotate-12 group-hover:bg-primary/20 group-hover:shadow-lg group-hover:shadow-primary/30">
                         <Hash className="w-5 h-5 text-primary transition-transform duration-300 group-hover:scale-125" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -243,9 +278,9 @@ const LookUp = () => {
                     </div>
                   </Card>
 
-                  <Card className="p-5 bg-background/50 border-2 border-border hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group cursor-pointer">
+                  <Card className="p-5 bg-background/50 border-2 border-border hover:border-primary/50 transition-all duration-500 hover:scale-105 hover:shadow-xl hover:shadow-primary/20 group cursor-pointer animate-[fade-in_0.6s_ease-out_0.5s_backwards]">
                     <div className="flex items-start gap-4">
-                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 group-hover:bg-primary/20">
+                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 transition-all duration-500 group-hover:scale-125 group-hover:rotate-12 group-hover:bg-primary/20 group-hover:shadow-lg group-hover:shadow-primary/30">
                         <AtSign className="w-5 h-5 text-primary transition-transform duration-300 group-hover:scale-125" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -256,9 +291,9 @@ const LookUp = () => {
                   </Card>
 
                   {userData.global_name && (
-                    <Card className="p-5 bg-background/50 border-2 border-border hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group cursor-pointer">
+                    <Card className="p-5 bg-background/50 border-2 border-border hover:border-primary/50 transition-all duration-500 hover:scale-105 hover:shadow-xl hover:shadow-primary/20 group cursor-pointer animate-[fade-in_0.6s_ease-out_0.6s_backwards]">
                       <div className="flex items-start gap-4">
-                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 group-hover:bg-primary/20">
+                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 transition-all duration-500 group-hover:scale-125 group-hover:rotate-12 group-hover:bg-primary/20 group-hover:shadow-lg group-hover:shadow-primary/30">
                           <User className="w-5 h-5 text-primary transition-transform duration-300 group-hover:scale-125" />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -269,14 +304,14 @@ const LookUp = () => {
                     </Card>
                   )}
 
-                  <Card className="p-5 bg-background/50 border-2 border-border hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group cursor-pointer">
+                  <Card className="p-5 bg-background/50 border-2 border-border hover:border-primary/50 transition-all duration-500 hover:scale-105 hover:shadow-xl hover:shadow-primary/20 group cursor-pointer animate-[fade-in_0.6s_ease-out_0.7s_backwards]">
                     <div className="flex items-start gap-4">
-                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 group-hover:bg-primary/20">
+                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 transition-all duration-500 group-hover:scale-125 group-hover:rotate-12 group-hover:bg-primary/20 group-hover:shadow-lg group-hover:shadow-primary/30">
                         <Calendar className="w-5 h-5 text-primary transition-transform duration-300 group-hover:scale-125" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-muted-foreground mb-1 transition-colors duration-300 group-hover:text-foreground">تاريخ الإنشاء</p>
-                        <p className="text-sm font-semibold text-foreground transition-all duration-300 group-hover:text-primary">{getCreationDate(userData.id)}</p>
+                        <p className="text-sm font-semibold text-foreground transition-all duration-300 group-hover:text-primary leading-relaxed">{getCreationDate(userData.id)}</p>
                       </div>
                     </div>
                   </Card>
