@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, render_template_string, request, jsonify
+from flask_cors import CORS
 import requests
 import json
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
+CORS(app, resources={r"/*": {"origins": "*", "methods": ["GET", "POST", "OPTIONS"], "allow_headers": ["Content-Type", "Authorization"]}})
 
 # HTML Template for testing
 HTML_TEMPLATE = '''
@@ -342,8 +344,8 @@ def check_usernames():
         if len(usernames) > 10:
             return jsonify({'error': 'الحد الأقصى 10 أسماء مستخدم'}), 400, {'Content-Type': 'application/json; charset=utf-8'}
         
-        # استدعاء Supabase Edge Function عبر Custom Domain
-        edge_function_url = 'https://discord-username.lovable.app/functions/v1/check-api-username'
+        # استدعاء Supabase Edge Function
+        edge_function_url = 'https://srqqxvhbzuvfjexvbkbq.supabase.co/functions/v1/check-api-username'
         
         headers = {
             'Content-Type': 'application/json',
@@ -362,13 +364,23 @@ def check_usernames():
             timeout=60
         )
         
+        print(f"Response status: {response.status_code}")
+        print(f"Response headers: {response.headers}")
+        print(f"Response text: {response.text[:200]}")  # First 200 chars for debugging
+        
         if response.status_code == 200:
-            return jsonify(response.json()), 200, {'Content-Type': 'application/json; charset=utf-8'}
+            try:
+                return jsonify(response.json()), 200, {'Content-Type': 'application/json; charset=utf-8'}
+            except Exception as e:
+                return jsonify({'error': f'خطأ في قراءة الاستجابة: {str(e)}'}), 500, {'Content-Type': 'application/json; charset=utf-8'}
         else:
-            error_data = response.json() if response.headers.get('content-type') == 'application/json' else {}
-            return jsonify({
-                'error': error_data.get('error', f'خطأ من الخادم: {response.status_code}')
-            }), response.status_code, {'Content-Type': 'application/json; charset=utf-8'}
+            try:
+                error_data = response.json()
+                error_msg = error_data.get('error', f'خطأ من الخادم: {response.status_code}')
+            except:
+                error_msg = f'خطأ من الخادم: {response.status_code} - {response.text[:100]}'
+            
+            return jsonify({'error': error_msg}), response.status_code, {'Content-Type': 'application/json; charset=utf-8'}
             
     except requests.exceptions.Timeout:
         return jsonify({'error': 'انتهت مهلة الطلب. حاول مرة أخرى.'}), 408, {'Content-Type': 'application/json; charset=utf-8'}
