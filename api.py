@@ -342,8 +342,8 @@ def check_usernames():
         if len(usernames) > 10:
             return jsonify({'error': 'الحد الأقصى 10 أسماء مستخدم'}), 400, {'Content-Type': 'application/json; charset=utf-8'}
         
-        # استدعاء Supabase Edge Function
-        edge_function_url = 'https://srqqxvhbzuvfjexvbkbq.supabase.co/functions/v1/check-discord-username'
+        # استدعاء Supabase Edge Function عبر Custom Domain
+        edge_function_url = 'https://discord-username.lovable.app/functions/v1/check-api-username'
         
         headers = {
             'Content-Type': 'application/json',

@@ -1,1 +1,7 @@
-project_id = "آيدي_بروجكتك_supbase"
+project_id = "srqqxvhbzuvfjexvbkbq"
+
+[functions.check-api-username]
+verify_jwt = false
+
+[functions.test-api]
+verify_jwt = false
