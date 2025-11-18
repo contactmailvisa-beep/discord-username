@@ -20,6 +20,12 @@ serve(async (req) => {
     const tokenName = req.headers.get("x-token-name");
     const { usernames } = await req.json();
 
+    console.log("Received request:", { 
+      hasApiKey: !!apiKey, 
+      tokenName, 
+      usernamesCount: usernames?.length 
+    });
+
     if (!apiKey || !tokenName) {
       return new Response(
         JSON.stringify({
@@ -58,6 +64,12 @@ serve(async (req) => {
       .eq("api_key", apiKey)
       .eq("status", "active")
       .maybeSingle();
+
+    console.log("API key verification:", { 
+      found: !!apiKeyData, 
+      error: apiKeyError,
+      userId: apiKeyData?.user_id 
+    });
 
     if (apiKeyError || !apiKeyData) {
       return new Response(
@@ -199,14 +211,21 @@ serve(async (req) => {
       .update({ is_processing: true })
       .eq("id", apiKeyData.id);
 
-    // Get user's token
+    // Get user's token by token name
     const { data: token, error: tokenError } = await supabase
       .from("user_tokens")
       .select("*")
       .eq("user_id", apiKeyData.user_id)
       .eq("token_name", tokenName)
       .eq("is_active", true)
-      .single();
+      .maybeSingle();
+
+    console.log("Token lookup:", { 
+      userId: apiKeyData.user_id, 
+      tokenName, 
+      found: !!token,
+      error: tokenError 
+    });
 
     if (tokenError || !token) {
       await supabase
