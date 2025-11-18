@@ -39,7 +39,7 @@ const DocsSidebar = ({
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        <div className="flex-1 flex flex-col bg-[#0a0a0a] rounded-3xl shadow-xl overflow-hidden border-2 border-[#22c55e]/50 shadow-[0_0_50px_rgba(34,197,94,0.6),0_0_100px_rgba(34,197,94,0.3)]">
+        <div className="flex-1 flex flex-col bg-[#0a0a0a] rounded-3xl shadow-xl overflow-hidden border-2 border-[#22c55e] shadow-[0_0_20px_rgba(34,197,94,0.8),0_0_40px_rgba(34,197,94,0.6),0_0_60px_rgba(34,197,94,0.4),0_0_80px_rgba(34,197,94,0.2)]">
           <div className="flex-1 overflow-hidden p-6">
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
