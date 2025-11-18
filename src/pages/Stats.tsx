@@ -80,9 +80,6 @@ const Stats = () => {
             <TrendingUp className="h-8 w-8 text-primary" />
             الإحصائيات
           </h1>
-          <p className="text-text-muted mt-1">
-            تحليل شامل لأداء حسابك
-          </p>
         </div>
 
         {/* Main Stats */}
