@@ -131,10 +131,21 @@ export const ApiKeyManager = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { data, error } = await supabase
+      const { data: keyValue, error: keyError } = await supabase
         .rpc("generate_api_key");
 
-      if (error) throw error;
+      if (keyError) throw keyError;
+
+      const { error: insertError } = await supabase
+        .from("api_keys")
+        .insert({
+          user_id: user.id,
+          api_key: keyValue,
+          label: "My API Key",
+          status: "active",
+        });
+
+      if (insertError) throw insertError;
 
       toast({
         title: "نجح",
@@ -167,10 +178,21 @@ export const ApiKeyManager = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { data, error } = await supabase
+      const { data: keyValue, error: keyError } = await supabase
         .rpc("generate_api_key");
 
-      if (error) throw error;
+      if (keyError) throw keyError;
+
+      const { error: insertError } = await supabase
+        .from("api_keys")
+        .insert({
+          user_id: user.id,
+          api_key: keyValue,
+          label: "My API Key",
+          status: "active",
+        });
+
+      if (insertError) throw insertError;
 
       await supabase
         .from("api_keys")
