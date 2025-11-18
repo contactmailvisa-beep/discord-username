@@ -41,20 +41,29 @@ const Profile = () => {
 
       setUser(authUser);
 
-      const { data: profileData } = await supabase
+      // Load profile data
+      const { data: profileData, error: profileError } = await supabase
         .from("profiles")
         .select("*")
         .eq("id", authUser.id)
         .single();
 
+      if (profileError) {
+        console.error("Profile error:", profileError);
+      }
       setProfile(profileData);
 
-      const { data: subData } = await supabase
-        .from("user_subscriptions")
+      // Load subscription data (may not exist, that's ok)
+      const { data: subData, error: subError } = await supabase
+        .from("subscriptions")
         .select("*")
         .eq("user_id", authUser.id)
-        .single();
+        .eq("status", "active")
+        .maybeSingle();
 
+      if (subError && subError.code !== "PGRST116") {
+        console.error("Subscription error:", subError);
+      }
       setSubscription(subData);
     } catch (error) {
       console.error("Error loading profile:", error);
@@ -92,7 +101,7 @@ const Profile = () => {
     );
   }
 
-  const isPremium = subscription?.plan_type === "premium";
+  const isPremium = subscription?.plan === "premium" || subscription?.plan_type === "premium";
 
   return (
     <DashboardLayout>
@@ -265,19 +274,19 @@ const Profile = () => {
                         <div className="flex-1">
                           <p className="text-xs text-muted-foreground">تاريخ البداية</p>
                           <p className="font-medium text-sm">
-                            {format(new Date(subscription.start_date), "dd MMMM yyyy", { locale: ar })}
+                            {format(new Date(subscription.created_at || subscription.start_date || subscription.current_period_start), "dd MMMM yyyy", { locale: ar })}
                           </p>
                         </div>
                       </div>
 
                       {/* End Date */}
-                      {subscription.end_date && (
+                      {(subscription.current_period_end || subscription.end_date) && (
                         <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
                           <Calendar className="h-4 w-4 text-primary" />
                           <div className="flex-1">
                             <p className="text-xs text-muted-foreground">تاريخ الانتهاء</p>
                             <p className="font-medium text-sm">
-                              {format(new Date(subscription.end_date), "dd MMMM yyyy", { locale: ar })}
+                              {format(new Date(subscription.current_period_end || subscription.end_date), "dd MMMM yyyy", { locale: ar })}
                             </p>
                           </div>
                         </div>
