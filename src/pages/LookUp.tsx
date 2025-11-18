@@ -22,6 +22,7 @@ const LookUp = () => {
   const [userId, setUserId] = useState("");
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState<DiscordUser | null>(null);
+  const [isVisible, setIsVisible] = useState(true);
 
   const getAvatarUrl = (userId: string, avatarHash: string | null) => {
     if (!avatarHash) return null;
@@ -41,6 +42,12 @@ const LookUp = () => {
       return;
     }
 
+    // إذا كان هناك بيانات موجودة، أخفِها أولاً
+    if (userData) {
+      setIsVisible(false);
+      await new Promise(resolve => setTimeout(resolve, 300)); // انتظر fade out
+    }
+
     setLoading(true);
     setUserData(null);
 
@@ -57,10 +64,12 @@ const LookUp = () => {
       }
 
       setUserData(data);
+      setIsVisible(true); // أظهر البيانات الجديدة
       toast.success("تم تحميل بيانات المستخدم بنجاح!");
     } catch (error: any) {
       console.error('Lookup error:', error);
       toast.error(error.message || "فشل في البحث عن المستخدم");
+      setIsVisible(true);
     } finally {
       setLoading(false);
     }
@@ -148,13 +157,12 @@ const LookUp = () => {
         {/* User Profile Card */}
         {userData && (
           <Card 
-            className="overflow-hidden border-2 transition-all duration-700 hover:scale-[1.02] relative"
+            className="overflow-hidden border-2 transition-all duration-300 hover:scale-[1.02]"
             style={{
               borderColor: `rgba(${getAccentColor()}, 0.3)`,
               boxShadow: `0 0 40px rgba(${getAccentColor()}, 0.2), 0 0 80px rgba(${getAccentColor()}, 0.1)`,
-              animation: 'fade-in 0.8s ease-out, scale-in 0.8s ease-out',
-              position: 'relative',
-              zIndex: 1
+              opacity: isVisible ? 1 : 0,
+              transition: 'opacity 0.3s ease-in-out'
             }}
           >
             {/* Banner */}
@@ -165,20 +173,18 @@ const LookUp = () => {
                   ? `url(${getBannerUrl(userData.id, userData.banner)}) center/cover`
                   : userData.banner_color 
                     ? userData.banner_color
-                    : `linear-gradient(135deg, rgb(${getAccentColor()}) 0%, rgba(${getAccentColor()}, 0.7) 100%)`,
-                transform: 'translateX(100%)',
-                animation: 'slide-in-right 1s ease-out 0.3s forwards'
+                    : `linear-gradient(135deg, rgb(${getAccentColor()}) 0%, rgba(${getAccentColor()}, 0.7) 100%)`
               }}
             >
-              <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent transition-opacity duration-500" />
+              <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent" />
             </div>
 
             {/* Profile Content */}
             <div className="p-8 pt-0 -mt-16 relative">
               {/* Avatar */}
-              <div className="relative inline-block mb-6" style={{ opacity: 0, transform: 'translateY(-40px)', animation: 'fade-in 0.8s ease-out 1s forwards' }}>
+              <div className="relative inline-block mb-6">
                 <div 
-                  className="w-32 h-32 rounded-3xl border-4 border-card overflow-hidden bg-card transition-all duration-500 hover:scale-110 hover:rotate-3 cursor-pointer"
+                  className="w-32 h-32 rounded-3xl border-4 border-card overflow-hidden bg-card transition-all duration-300 hover:scale-110 hover:rotate-3 cursor-pointer"
                   style={{
                     boxShadow: `0 0 30px rgba(${getAccentColor()}, 0.6), 0 0 60px rgba(${getAccentColor()}, 0.3)`
                   }}
@@ -187,11 +193,11 @@ const LookUp = () => {
                     <img 
                       src={getAvatarUrl(userData.id, userData.avatar)} 
                       alt="Avatar"
-                      className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
                     />
                   ) : (
                     <div 
-                      className="w-full h-full flex items-center justify-center transition-all duration-500"
+                      className="w-full h-full flex items-center justify-center transition-all duration-300"
                       style={{ background: `linear-gradient(135deg, rgb(${getAccentColor()}) 0%, rgba(${getAccentColor()}, 0.8) 100%)` }}
                     >
                       <User className="w-16 h-16 text-white transition-transform duration-300 hover:scale-125" />
@@ -200,12 +206,9 @@ const LookUp = () => {
                 </div>
                 {userData.public_flags > 0 && (
                   <div 
-                    className="absolute -bottom-2 -right-2 w-10 h-10 rounded-full flex items-center justify-center border-2 border-card transition-all duration-500 hover:scale-110"
+                    className="absolute -bottom-2 -right-2 w-10 h-10 rounded-full flex items-center justify-center border-2 border-card transition-all duration-300 hover:scale-110"
                     style={{ 
-                      background: `rgb(${getAccentColor()})`,
-                      opacity: 0,
-                      transform: 'rotate(180deg)',
-                      animation: 'fade-in 0.6s ease-out 1.8s forwards'
+                      background: `rgb(${getAccentColor()})`
                     }}
                   >
                     <Shield className="w-5 h-5 text-white transition-transform duration-300 hover:rotate-12" />
@@ -215,11 +218,11 @@ const LookUp = () => {
 
               {/* User Info */}
               <div className="space-y-6">
-                <div className="space-y-2" style={{ opacity: 0, transform: 'translateX(40px)', animation: 'fade-in 0.8s ease-out 1.5s forwards' }}>
+                <div className="space-y-2">
                   <h2 className="text-4xl font-bold text-foreground transition-all duration-300 hover:scale-105 inline-block">
                     {userData.global_name || userData.username}
                   </h2>
-                  <div className="flex items-center gap-2 text-xl text-muted-foreground transition-all duration-300 hover:gap-3" style={{ opacity: 0, transform: 'translateX(40px)', animation: 'fade-in 0.8s ease-out 1.8s forwards' }}>
+                  <div className="flex items-center gap-2 text-xl text-muted-foreground transition-all duration-300 hover:gap-3">
                     <AtSign className="w-5 h-5 transition-transform duration-300 hover:rotate-12" />
                     {userData.username}
                     {userData.discriminator !== "0" && `#${userData.discriminator}`}
@@ -228,9 +231,9 @@ const LookUp = () => {
 
                 {/* Info Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Card className="p-5 bg-background/50 border-2 border-border hover:border-primary/50 transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group cursor-pointer" style={{ opacity: 0, transform: 'translateX(-40px)', animation: 'fade-in 0.6s ease-out 2.2s forwards' }}>
+                  <Card className="p-5 bg-background/50 border-2 border-border hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group cursor-pointer">
                     <div className="flex items-start gap-4">
-                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 group-hover:bg-primary/20">
+                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 group-hover:bg-primary/20">
                         <Hash className="w-5 h-5 text-primary transition-transform duration-300 group-hover:scale-125" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -240,9 +243,9 @@ const LookUp = () => {
                     </div>
                   </Card>
 
-                  <Card className="p-5 bg-background/50 border-2 border-border hover:border-primary/50 transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group cursor-pointer" style={{ opacity: 0, transform: 'translateX(40px)', animation: 'fade-in 0.6s ease-out 2.5s forwards' }}>
+                  <Card className="p-5 bg-background/50 border-2 border-border hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group cursor-pointer">
                     <div className="flex items-start gap-4">
-                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 group-hover:bg-primary/20">
+                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 group-hover:bg-primary/20">
                         <AtSign className="w-5 h-5 text-primary transition-transform duration-300 group-hover:scale-125" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -253,9 +256,9 @@ const LookUp = () => {
                   </Card>
 
                   {userData.global_name && (
-                    <Card className="p-5 bg-background/50 border-2 border-border hover:border-primary/50 transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group cursor-pointer" style={{ opacity: 0, transform: 'translateY(-40px)', animation: 'fade-in 0.6s ease-out 2.8s forwards' }}>
+                    <Card className="p-5 bg-background/50 border-2 border-border hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group cursor-pointer">
                       <div className="flex items-start gap-4">
-                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 group-hover:bg-primary/20">
+                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 group-hover:bg-primary/20">
                           <User className="w-5 h-5 text-primary transition-transform duration-300 group-hover:scale-125" />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -266,9 +269,9 @@ const LookUp = () => {
                     </Card>
                   )}
 
-                  <Card className="p-5 bg-background/50 border-2 border-border hover:border-primary/50 transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group cursor-pointer" style={{ opacity: 0, transform: 'translateY(40px)', animation: 'fade-in 0.6s ease-out 3.1s forwards' }}>
+                  <Card className="p-5 bg-background/50 border-2 border-border hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group cursor-pointer">
                     <div className="flex items-start gap-4">
-                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 group-hover:bg-primary/20">
+                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 group-hover:bg-primary/20">
                         <Calendar className="w-5 h-5 text-primary transition-transform duration-300 group-hover:scale-125" />
                       </div>
                       <div className="flex-1 min-w-0">
