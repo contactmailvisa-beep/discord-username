@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Book, Code, Key, Shield, Zap, Database, Bell, GitBranch, Activity, Settings as SettingsIcon, Terminal, FileCode, Webhook, Lock, TrendingUp, Clock, AlertCircle } from "lucide-react";
+import { Book, Code, Key, Shield, Zap, Database, Bell, GitBranch, Activity, Settings as SettingsIcon, Terminal, FileCode, Webhook, Lock, TrendingUp, Clock, AlertCircle, Rocket } from "lucide-react";
 import DocsSidebar from "@/components/docs/DocsSidebar";
 import DocsHeader from "@/components/docs/DocsHeader";
 import Introduction from "@/components/docs/sections/Introduction";
+import GetStarted from "@/components/docs/sections/GetStarted";
 import QuickStart from "@/components/docs/sections/QuickStart";
 import Authentication from "@/components/docs/sections/Authentication";
 import ApiEndpoints from "@/components/docs/sections/ApiEndpoints";
@@ -45,6 +46,11 @@ const Docs = () => {
       icon: <Book className="w-4 h-4" />
     },
     {
+      id: "get-started",
+      title: "Get Started",
+      icon: <Rocket className="w-4 h-4" />
+    },
+    {
       id: "authentication",
       title: "Authentication",
       icon: <Key className="w-4 h-4" />
@@ -79,6 +85,7 @@ const Docs = () => {
 
   const searchableContent = [
     { id: "introduction", title: "Introduction", content: "Discord Username Checker API documentation getting started overview features" },
+    { id: "get-started", title: "Get Started", content: "beginner guide tutorial step by step start first time new user account token api key" },
     { id: "authentication", title: "Authentication", content: "API key authentication token bearer header authorization security" },
     { id: "api-endpoints", title: "API Endpoints", content: "check username endpoint POST request response available taken" },
     { id: "check-username", title: "Check Username", content: "check username availability endpoint POST request usernames batch" },
@@ -127,6 +134,8 @@ const Docs = () => {
     switch (activeSection) {
       case "introduction":
         return <Introduction />;
+      case "get-started":
+        return <GetStarted />;
       case "authentication":
         return <Authentication />;
       case "api-endpoints":
