@@ -115,6 +115,7 @@ useEffect(() => {
             <Route path="/payment" element={<Payment />} />
             <Route path="/admin/premium/add" element={<AddPremium />} />
             <Route path="/admin/premium/remove" element={<RemovePremium />} />
+            <Route path="/admin/founder-logs" element={<FounderLogs />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
