@@ -101,7 +101,11 @@ const Profile = () => {
     );
   }
 
-  const isPremium = subscription?.plan === "premium" || subscription?.plan_type === "premium";
+  // Check premium status: hardcoded UID, active premium subscription, or permanent admin subscription
+  const isPremium = 
+    user?.id === "54f4231d-9b07-4cd1-98f5-a483ac27db29" ||
+    (subscription?.status === "active" && subscription?.plan === "premium") ||
+    subscription?.paypal_subscription_id === "PERMANENT_ADMIN_SUBSCRIPTION";
 
   return (
     <DashboardLayout>
