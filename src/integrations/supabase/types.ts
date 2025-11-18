@@ -842,6 +842,36 @@ export type Database = {
         }
         Relationships: []
       }
+      global_account_usage: {
+        Row: {
+          checks_count: number
+          created_at: string
+          id: string
+          last_check_at: string
+          next_available_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          checks_count?: number
+          created_at?: string
+          id?: string
+          last_check_at?: string
+          next_available_at: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          checks_count?: number
+          created_at?: string
+          id?: string
+          last_check_at?: string
+          next_available_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       invite_usage: {
         Row: {
           created_at: string | null
@@ -2540,6 +2570,7 @@ export type Database = {
           previous_value: number
         }[]
       }
+      can_use_global_account: { Args: { p_user_id: string }; Returns: boolean }
       can_user_check: {
         Args: { p_user_id: string }
         Returns: {
@@ -2631,6 +2662,10 @@ export type Database = {
         Returns: boolean
       }
       is_user_banned: { Args: { _user_id: string }; Returns: boolean }
+      record_global_account_usage: {
+        Args: { p_user_id: string }
+        Returns: string
+      }
       reset_daily_api_counters: { Args: never; Returns: undefined }
       update_last_check: { Args: { p_user_id: string }; Returns: undefined }
     }
