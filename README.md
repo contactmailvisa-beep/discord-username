@@ -201,3 +201,39 @@ DUC آمن 100% ولا يتسبب بأي ضرر لحسابك على Discord.
 لا يستخدم أي إجراءات ممنوعة، ويقتصر عمله على فحص اليوزرات فقط.
 
 ---
+
+## **Our Official Website**
+
+## **الموقع الرسمي الخاص بنا**
+
+## **https://discord-username.lovable.app**
+
+---
+
+---
+
+# ✨ **Thank You — شكرًا لاستخدامك DUC**
+
+<p align="center">
+  <span style="color:#4F46E5; font-size:22px; font-weight:700;">
+    Thank you for using DUC 💙
+  </span>
+  <br/>
+  <span style="color:#64748B; font-size:16px;">
+    Your trust means everything to us. We’re committed to delivering accuracy, speed, and a premium user experience.
+  </span>
+</p>
+
+<br/>
+
+<p align="center">
+  <span style="color:#4F46E5; font-size:22px; font-weight:700;">
+    شكرًا لاستخدامك منصة DUC 💙
+  </span>
+  <br/>
+  <span style="color:#64748B; font-size:16px;">
+    ثقتك تعني لنا الكثير. نعدك بتجربة احترافية ودقة عالية وسرعة في الأداء بكل وقت.
+  </span>
+</p>
+
+---
