@@ -106,12 +106,6 @@ const Profile = () => {
   return (
     <DashboardLayout>
       <div className="container max-w-7xl mx-auto p-4 md:p-8 space-y-8">
-        {/* Header Section */}
-        <div className="space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight">الملف الشخصي</h1>
-          <p className="text-muted-foreground">إدارة معلومات حسابك وإعداداتك</p>
-        </div>
-
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Right Column - Account Information */}
           <div className="space-y-6">
