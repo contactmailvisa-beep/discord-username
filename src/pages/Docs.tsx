@@ -31,6 +31,9 @@ export interface NavSection {
 const Docs = () => {
   const [activeSection, setActiveSection] = useState("introduction");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<{id: string, title: string, preview: string}[]>([]);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const navSections: NavSection[] = [
     {
@@ -65,6 +68,48 @@ const Docs = () => {
     }
   ];
 
+  const searchableContent = [
+    { id: "introduction", title: "Introduction", content: "Discord Username Checker API documentation getting started overview features" },
+    { id: "authentication", title: "Authentication", content: "API key authentication token bearer header authorization security" },
+    { id: "api-endpoints", title: "API Endpoints", content: "check username endpoint POST request response available taken" },
+    { id: "error-handling", title: "Error Handling", content: "errors status codes 400 401 403 429 500 rate limit" },
+    { id: "rate-limits", title: "Rate Limits", content: "limits free premium requests per day 50 100 throttling" },
+    { id: "support", title: "Support", content: "help contact support discord community assistance" }
+  ];
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    
+    if (query.trim().length === 0) {
+      setSearchResults([]);
+      setIsSearchOpen(false);
+      return;
+    }
+
+    const lowerQuery = query.toLowerCase();
+    const results = searchableContent
+      .filter(item => 
+        item.title.toLowerCase().includes(lowerQuery) || 
+        item.content.toLowerCase().includes(lowerQuery)
+      )
+      .map(item => ({
+        id: item.id,
+        title: item.title,
+        preview: item.content.substring(0, 80) + "..."
+      }))
+      .slice(0, 5);
+
+    setSearchResults(results);
+    setIsSearchOpen(results.length > 0);
+  };
+
+  const handleResultClick = (sectionId: string) => {
+    setActiveSection(sectionId);
+    setSearchQuery("");
+    setSearchResults([]);
+    setIsSearchOpen(false);
+  };
+
   const renderSection = () => {
     switch (activeSection) {
       case "introduction":
@@ -89,6 +134,16 @@ const Docs = () => {
       <DocsHeader 
         onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} 
         isSidebarOpen={isSidebarOpen}
+        searchQuery={searchQuery}
+        onSearchChange={handleSearch}
+        searchResults={searchResults}
+        isSearchOpen={isSearchOpen}
+        onResultClick={handleResultClick}
+        onSearchClose={() => {
+          setIsSearchOpen(false);
+          setSearchQuery("");
+          setSearchResults([]);
+        }}
       />
       
       <div className="flex flex-1">
