@@ -22,7 +22,7 @@ const Switch = React.forwardRef<
       className={cn(
         "pointer-events-none block h-4 w-4 rounded-full bg-[#0f1622] shadow-lg ring-0 transition-transform",
         // تحريك الدائرة
-        "data-[state=unchecked]:translate-x-[2px]",
+        "data-[state=unchecked]:-translate-x-[10px]",
         "data-[state=checked]:translate-x-[22px]"
       )}
     />
