@@ -1,27 +1,44 @@
-import { Sparkles, Check, Zap, Shield, Code } from "lucide-react";
+import { Sparkles, Check, Zap, Shield, Code, Layers, Clock, Database, TrendingUp } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 const Introduction = () => {
   const features = [
     {
       icon: <Zap className="w-5 h-5" />,
       title: "Real-Time Checking",
-      description: "Direct integration with Discord's API for accurate, up-to-date results"
+      description: "Direct integration with Discord's API for instant, accurate username availability results. No cached or outdated data.",
+      badge: "Live"
     },
     {
       icon: <Shield className="w-5 h-5" />,
       title: "Secure Authentication",
-      description: "API key-based security with encryption and rate limiting"
+      description: "Enterprise-grade security with encrypted API keys, hashed tokens, and automatic rate limiting to protect your resources.",
+      badge: "Secure"
     },
     {
       icon: <Code className="w-5 h-5" />,
       title: "Developer-Friendly",
-      description: "Simple REST API with comprehensive documentation and examples"
+      description: "RESTful API design with clear endpoints, detailed error messages, and examples in multiple programming languages.",
+      badge: "Easy"
     },
     {
-      icon: <Check className="w-5 h-5" />,
+      icon: <Layers className="w-5 h-5" />,
       title: "Bulk Operations",
-      description: "Check up to 10 usernames simultaneously in a single request"
+      description: "Efficiently check up to 10 usernames in a single API request, reducing overhead and improving performance.",
+      badge: "Fast"
+    },
+    {
+      icon: <Clock className="w-5 h-5" />,
+      title: "Flexible Rate Limits",
+      description: "Choose between free tier (50 requests/day) or premium (100 requests/day) based on your application's needs.",
+      badge: "Scalable"
+    },
+    {
+      icon: <Database className="w-5 h-5" />,
+      title: "Usage Analytics",
+      description: "Track your API usage, monitor statistics, and optimize your integration with built-in analytics endpoints.",
+      badge: "Insights"
     }
   ];
 
@@ -50,20 +67,26 @@ const Introduction = () => {
       </div>
 
       <div>
-        <h2 className="text-2xl font-bold text-foreground mb-6">Key Features</h2>
+        <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-3">
+          <TrendingUp className="w-6 h-6 text-primary" />
+          Key Features
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {features.map((feature, index) => (
             <Card
               key={index}
-              className="p-6 bg-card border-border hover:border-primary/50 transition-all duration-300 hover:shadow-lg group"
+              className="p-6 bg-card border-border hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 group"
             >
               <div className="flex items-start gap-4">
-                <div className="p-3 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                <div className="p-3 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
                   {feature.icon}
                 </div>
-                <div className="space-y-1 flex-1">
-                  <h3 className="font-semibold text-foreground">{feature.title}</h3>
-                  <p className="text-sm text-muted-foreground">{feature.description}</p>
+                <div className="space-y-2 flex-1">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-semibold text-foreground">{feature.title}</h3>
+                    <Badge variant="secondary" className="text-xs">{feature.badge}</Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{feature.description}</p>
                 </div>
               </div>
             </Card>
