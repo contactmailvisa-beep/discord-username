@@ -36,183 +36,32 @@ const Docs = () => {
     {
       id: "introduction",
       title: "Introduction",
-      icon: <Book className="w-4 h-4" />,
-      subsections: [
-        { id: "overview", title: "Overview" },
-        { id: "features", title: "Key Features" },
-        { id: "getting-started", title: "Getting Started" }
-      ]
-    },
-    {
-      id: "quick-start",
-      title: "Quick Start",
-      icon: <Zap className="w-4 h-4" />,
-      subsections: [
-        { id: "create-account", title: "Create Account" },
-        { id: "generate-key", title: "Generate API Key" },
-        { id: "first-request", title: "First Request" }
-      ]
+      icon: <Book className="w-4 h-4" />
     },
     {
       id: "authentication",
       title: "Authentication",
-      icon: <Key className="w-4 h-4" />,
-      subsections: [
-        { id: "api-keys", title: "API Keys" },
-        { id: "token-names", title: "Token Names" },
-        { id: "security-headers", title: "Security Headers" }
-      ]
+      icon: <Key className="w-4 h-4" />
     },
     {
       id: "api-endpoints",
       title: "API Endpoints",
-      icon: <Terminal className="w-4 h-4" />,
-      subsections: [
-        { id: "check-username", title: "Check Username" },
-        { id: "bulk-check", title: "Bulk Check" },
-        { id: "endpoint-params", title: "Parameters" }
-      ]
-    },
-    {
-      id: "code-examples",
-      title: "Code Examples",
-      icon: <Code className="w-4 h-4" />,
-      subsections: [
-        { id: "javascript", title: "JavaScript" },
-        { id: "python", title: "Python" },
-        { id: "discord-js", title: "Discord.js" },
-        { id: "discord-py", title: "Discord.py" },
-        { id: "curl", title: "cURL" }
-      ]
-    },
-    {
-      id: "rate-limits",
-      title: "Rate Limits",
-      icon: <Clock className="w-4 h-4" />,
-      subsections: [
-        { id: "limits-overview", title: "Overview" },
-        { id: "free-plan", title: "Free Plan" },
-        { id: "premium-plan", title: "Premium Plan" }
-      ]
+      icon: <Terminal className="w-4 h-4" />
     },
     {
       id: "error-handling",
       title: "Error Handling",
-      icon: <AlertCircle className="w-4 h-4" />,
-      subsections: [
-        { id: "status-codes", title: "Status Codes" },
-        { id: "error-responses", title: "Error Responses" },
-        { id: "retry-logic", title: "Retry Logic" }
-      ]
+      icon: <AlertCircle className="w-4 h-4" />
     },
     {
-      id: "response-formats",
-      title: "Response Formats",
-      icon: <FileCode className="w-4 h-4" />,
-      subsections: [
-        { id: "success-response", title: "Success Response" },
-        { id: "error-format", title: "Error Format" },
-        { id: "status-values", title: "Status Values" }
-      ]
-    },
-    {
-      id: "best-practices",
-      title: "Best Practices",
-      icon: <Shield className="w-4 h-4" />,
-      subsections: [
-        { id: "security", title: "Security" },
-        { id: "performance", title: "Performance" },
-        { id: "error-handling-bp", title: "Error Handling" }
-      ]
-    },
-    {
-      id: "webhooks",
-      title: "Webhooks Guide",
-      icon: <Webhook className="w-4 h-4" />,
-      subsections: [
-        { id: "webhook-setup", title: "Setup" },
-        { id: "webhook-events", title: "Events" },
-        { id: "webhook-security", title: "Security" }
-      ]
-    },
-    {
-      id: "security",
-      title: "Security Guide",
-      icon: <Lock className="w-4 h-4" />,
-      subsections: [
-        { id: "api-key-security", title: "API Key Security" },
-        { id: "token-protection", title: "Token Protection" },
-        { id: "best-security", title: "Best Practices" }
-      ]
-    },
-    {
-      id: "analytics",
-      title: "Usage Analytics",
-      icon: <Activity className="w-4 h-4" />,
-      subsections: [
-        { id: "dashboard", title: "Dashboard" },
-        { id: "metrics", title: "Metrics" },
-        { id: "reports", title: "Reports" }
-      ]
-    },
-    {
-      id: "premium",
-      title: "Premium Features",
-      icon: <TrendingUp className="w-4 h-4" />,
-      subsections: [
-        { id: "premium-overview", title: "Overview" },
-        { id: "premium-limits", title: "Enhanced Limits" },
-        { id: "premium-support", title: "Priority Support" }
-      ]
-    },
-    {
-      id: "sdk-libraries",
-      title: "SDK & Libraries",
-      icon: <Database className="w-4 h-4" />,
-      subsections: [
-        { id: "official-sdks", title: "Official SDKs" },
-        { id: "community-libs", title: "Community Libraries" },
-        { id: "wrappers", title: "API Wrappers" }
-      ]
-    },
-    {
-      id: "troubleshooting",
-      title: "Troubleshooting",
-      icon: <SettingsIcon className="w-4 h-4" />,
-      subsections: [
-        { id: "common-issues", title: "Common Issues" },
-        { id: "debugging", title: "Debugging" },
-        { id: "faq", title: "FAQ" }
-      ]
-    },
-    {
-      id: "api-reference",
-      title: "API Reference",
-      icon: <GitBranch className="w-4 h-4" />,
-      subsections: [
-        { id: "endpoints-ref", title: "Endpoints" },
-        { id: "types-ref", title: "Types" },
-        { id: "models-ref", title: "Models" }
-      ]
-    },
-    {
-      id: "changelog",
-      title: "Changelog",
-      icon: <Bell className="w-4 h-4" />,
-      subsections: [
-        { id: "latest-updates", title: "Latest Updates" },
-        { id: "version-history", title: "Version History" }
-      ]
+      id: "rate-limits",
+      title: "Rate Limits",
+      icon: <Clock className="w-4 h-4" />
     },
     {
       id: "support",
       title: "Support",
-      icon: <Activity className="w-4 h-4" />,
-      subsections: [
-        { id: "contact", title: "Contact Us" },
-        { id: "community", title: "Community" },
-        { id: "resources", title: "Resources" }
-      ]
+      icon: <Activity className="w-4 h-4" />
     }
   ];
 
@@ -220,38 +69,14 @@ const Docs = () => {
     switch (activeSection) {
       case "introduction":
         return <Introduction />;
-      case "quick-start":
-        return <QuickStart />;
       case "authentication":
         return <Authentication />;
       case "api-endpoints":
         return <ApiEndpoints />;
-      case "code-examples":
-        return <CodeExamples />;
-      case "rate-limits":
-        return <RateLimits />;
       case "error-handling":
         return <ErrorHandling />;
-      case "response-formats":
-        return <ResponseFormats />;
-      case "best-practices":
-        return <BestPractices />;
-      case "webhooks":
-        return <WebhooksGuide />;
-      case "security":
-        return <SecurityGuide />;
-      case "analytics":
-        return <UsageAnalytics />;
-      case "premium":
-        return <PremiumFeatures />;
-      case "sdk-libraries":
-        return <SdkLibraries />;
-      case "troubleshooting":
-        return <TroubleShooting />;
-      case "api-reference":
-        return <ApiReference />;
-      case "changelog":
-        return <Changelog />;
+      case "rate-limits":
+        return <RateLimits />;
       case "support":
         return <Support />;
       default:
@@ -260,7 +85,7 @@ const Docs = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-[#0a0b0e] flex flex-col">
       <DocsHeader 
         onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} 
         isSidebarOpen={isSidebarOpen}
@@ -275,8 +100,8 @@ const Docs = () => {
           onClose={() => setIsSidebarOpen(false)}
         />
         
-        <main className="flex-1 overflow-y-auto">
-          <div className="container max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main className="flex-1 overflow-y-auto bg-[#0a0b0e]">
+          <div className="container max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             {renderSection()}
           </div>
         </main>

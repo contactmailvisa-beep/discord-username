@@ -18,10 +18,10 @@ const CodeTabs = ({ examples, title }: CodeTabsProps) => {
 
   return (
     <div className="space-y-3">
-      {title && <h3 className="text-lg font-semibold text-foreground">{title}</h3>}
+      {title && <h3 className="text-lg font-semibold text-white">{title}</h3>}
       
-      <div className="rounded-lg border border-border bg-background-secondary overflow-hidden">
-        <div className="flex items-center gap-1 p-1 bg-background-accent border-b border-border overflow-x-auto">
+      <div className="rounded-lg border border-[#1a1c20] bg-[#13141a] overflow-hidden">
+        <div className="flex items-center gap-1 p-1 bg-[#1a1c20] border-b border-[#27272a] overflow-x-auto">
           {examples.map((example, index) => (
             <button
               key={index}
@@ -29,8 +29,8 @@ const CodeTabs = ({ examples, title }: CodeTabsProps) => {
               className={cn(
                 "px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 whitespace-nowrap",
                 activeTab === index
-                  ? "bg-background text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground hover:bg-background/50"
+                  ? "bg-[#22c55e] text-white shadow-sm"
+                  : "text-[#a1a1aa] hover:text-white hover:bg-[#27272a]"
               )}
             >
               {example.label}
