@@ -23,6 +23,7 @@ import {
   FileText,
   Globe,
   Bookmark,
+  Users,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -46,6 +47,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const [subscription, setSubscription] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [adminSidebarOpen, setAdminSidebarOpen] = useState(false);
   const [isEmailUser, setIsEmailUser] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -116,6 +118,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
   const navItems: NavItemProps[] = [
     { icon: <Home className="h-5 w-5" />, label: "الصفحة الرئيسية", path: "/dashboard" },
+    { icon: <Users className="h-5 w-5" />, label: "Look Up", path: "/dashboard/lookup" },
     { icon: <Globe className="h-5 w-5" />, label: "الحساب العام", path: "/dashboard/global" },
     { icon: <Key className="h-5 w-5" />, label: "التوكنات", path: "/dashboard/tokens" },
     { icon: <Wand2 className="h-5 w-5" />, label: "فحص التوفر", path: "/dashboard/generator" },
@@ -212,42 +215,22 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         </div>
       </nav>
 
-      {/* Admin Section */}
-      {adminItems.length > 0 && (
+      {/* Admin Button */}
+      {isAdmin && (
         <div className="px-4 pb-4 border-t border-border/50 flex-shrink-0">
-          <div className="flex items-center gap-2 px-4 py-3 text-xs font-semibold text-text-muted uppercase tracking-wider">
-            <Shield className="h-4 w-4 text-primary" />
-            إدارة النظام
-          </div>
-          <div className="space-y-1.5">
-            {adminItems.map((item, index) => (
-              <button
-                key={item.path}
-                onClick={() => {
-                  navigate(item.path);
-                  setSidebarOpen(false);
-                }}
-                className={cn(
-                  "w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-300 ease-out",
-                  "hover:bg-background-accent/70 group relative overflow-hidden",
-                  location.pathname === item.path && "bg-gradient-to-r from-primary/10 to-primary/5 border-r-2 border-primary"
-                )}
-              >
-                <div className={cn(
-                  "transition-all duration-300 ease-out z-10",
-                  location.pathname === item.path ? "text-primary scale-110" : "text-text-muted group-hover:text-primary group-hover:scale-105"
-                )}>
-                  {item.icon}
-                </div>
-                <span className={cn(
-                  "flex-1 text-right font-semibold transition-all duration-300 ease-out z-10 text-sm",
-                  location.pathname === item.path ? "text-foreground" : "text-text-muted group-hover:text-foreground"
-                )}>
-                  {item.label}
-                </span>
-              </button>
-            ))}
-          </div>
+          <button
+            onClick={() => setAdminSidebarOpen(!adminSidebarOpen)}
+            className="w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-300 ease-out hover:bg-primary/10 group"
+          >
+            <Shield className="h-5 w-5 text-primary transition-transform duration-300 group-hover:scale-110" />
+            <span className="flex-1 text-right font-semibold text-sm">
+              إدارة النظام
+            </span>
+            <ChevronRight className={cn(
+              "h-5 w-5 transition-transform duration-300",
+              adminSidebarOpen && "rotate-180"
+            )} />
+          </button>
         </div>
       )}
 
@@ -265,12 +248,92 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     </div>
   );
 
+  const AdminSidebar = () => (
+    <div className="h-full flex flex-col bg-background-secondary text-sidebar-foreground rounded-3xl shadow-xl overflow-hidden border-2 border-primary/50">
+      {/* Admin Header */}
+      <div className="p-6 border-b border-border/50 rounded-t-3xl flex-shrink-0 bg-primary/5">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <Shield className="h-6 w-6 text-primary" />
+            </div>
+            <div>
+              <h3 className="font-bold text-foreground">إدارة النظام</h3>
+              <p className="text-xs text-text-muted">لوحة التحكم الإدارية</p>
+            </div>
+          </div>
+          <button
+            onClick={() => setAdminSidebarOpen(false)}
+            className="p-2 hover:bg-background-accent/50 rounded-lg transition-colors"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+        </div>
+      </div>
+
+      {/* Admin Navigation */}
+      <nav className="flex-1 p-4 space-y-1.5">
+        {adminItems.map((item) => (
+          <button
+            key={item.path}
+            onClick={() => {
+              navigate(item.path);
+              setSidebarOpen(false);
+              setAdminSidebarOpen(false);
+            }}
+            className={cn(
+              "w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-300 ease-out",
+              "hover:bg-background-accent/70 group relative overflow-hidden",
+              location.pathname === item.path && "bg-gradient-to-r from-primary/10 to-primary/5 border-r-2 border-primary"
+            )}
+          >
+            <div className={cn(
+              "transition-all duration-300 ease-out z-10",
+              location.pathname === item.path ? "text-primary scale-110" : "text-text-muted group-hover:text-primary group-hover:scale-105"
+            )}>
+              {item.icon}
+            </div>
+            <span className={cn(
+              "flex-1 text-right font-semibold transition-all duration-300 ease-out z-10 text-sm",
+              location.pathname === item.path ? "text-foreground" : "text-text-muted group-hover:text-foreground"
+            )}>
+              {item.label}
+            </span>
+            {location.pathname === item.path && (
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent" />
+            )}
+          </button>
+        ))}
+      </nav>
+
+      {/* Admin Footer */}
+      <div className="p-4 border-t border-border/50 rounded-b-3xl flex-shrink-0 bg-primary/5">
+        <div className="text-center text-xs text-text-muted">
+          <Shield className="h-4 w-4 inline-block mr-1" />
+          صلاحيات الإدارة الكاملة
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-background flex" dir="rtl">
       {/* Desktop Sidebar */}
       <aside className="hidden lg:flex w-64 sticky top-0 h-screen p-3">
         <SidebarContent />
       </aside>
+
+      {/* Admin Sidebar - Slides in from right */}
+      {isAdmin && (
+        <aside 
+          className={cn(
+            "hidden lg:flex w-64 sticky top-0 h-screen p-3 transition-all duration-500 ease-out",
+            adminSidebarOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0 pointer-events-none"
+          )}
+        >
+          <AdminSidebar />
+        </aside>
+      )}
 
       {/* Mobile Header */}
       <div className="lg:hidden fixed top-0 right-0 left-0 h-14 bg-background-secondary border-b border-border z-50 flex items-center px-4">
