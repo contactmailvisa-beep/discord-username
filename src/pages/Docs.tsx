@@ -54,10 +54,10 @@ const Docs = () => {
       title: "API Endpoints",
       icon: <Terminal className="w-4 h-4" />,
       subsections: [
-        { id: "check-username", title: "Check Username" },
-        { id: "user-info", title: "User Information" },
-        { id: "saved-usernames", title: "Saved Usernames" },
-        { id: "statistics", title: "Statistics" }
+        { id: "check-username", title: "Check Username Availability" },
+        { id: "statistics", title: "Get Statistics" },
+        { id: "saved-usernames", title: "Get Saved Usernames" },
+        { id: "user-info", title: "Get User Information" }
       ]
     },
     {
