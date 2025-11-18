@@ -35,15 +35,15 @@ const DocsSidebar = ({
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed top-0 left-0 z-50 h-screen w-[260px] p-3 transition-transform duration-300 lg:translate-x-0 flex flex-col",
+          "fixed top-4 left-0 z-[100] h-[calc(100vh-2rem)] w-[240px] p-3 transition-transform duration-300 lg:translate-x-0 flex flex-col",
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         <div className="flex-1 flex flex-col bg-[#0a0a0a] rounded-3xl shadow-xl overflow-hidden">
           <div className="flex-1 overflow-hidden p-6">
             {/* Header */}
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-[10px] font-bold text-[#6b7280] uppercase tracking-widest">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-[11px] font-bold text-[#6b7280] uppercase tracking-widest">
                 API & INTEGRATIONS
               </h2>
               <button
@@ -55,19 +55,19 @@ const DocsSidebar = ({
             </div>
 
             {/* Navigation */}
-            <nav className="space-y-0.5 overflow-y-auto">
+            <nav className="space-y-1.5 overflow-hidden">
               {navSections.map((section) => (
                 <button
                   key={section.id}
                   onClick={() => handleSectionClick(section.id)}
                   className={cn(
-                    "flex items-center justify-between w-full px-3 py-2.5 text-[13px] font-normal rounded-md transition-all duration-150 group",
+                    "flex items-center justify-between w-full px-4 py-3.5 text-[15px] font-medium rounded-xl transition-all duration-150 group",
                     activeSection === section.id
                       ? "bg-[#16a34a]/20 text-[#22c55e]"
                       : "text-[#9ca3af] hover:text-white hover:bg-[#1f1f1f]"
                   )}
                 >
-                  <div className="flex items-center gap-2.5">
+                  <div className="flex items-center gap-3">
                     <span className={cn(
                       "transition-colors",
                       activeSection === section.id ? "text-[#22c55e]" : "text-[#6b7280]"
@@ -77,7 +77,7 @@ const DocsSidebar = ({
                     <span>{section.title}</span>
                   </div>
                   {activeSection === section.id && (
-                    <ChevronRight className="w-3.5 h-3.5 text-[#22c55e]" />
+                    <ChevronRight className="w-4 h-4 text-[#22c55e]" />
                   )}
                 </button>
               ))}
@@ -86,8 +86,8 @@ const DocsSidebar = ({
 
           {/* Footer */}
           <div className="p-6 border-t border-[#1f1f1f] flex-shrink-0">
-            <div className="flex items-center gap-2 px-3 py-2 text-[11px] text-[#6b7280]">
-              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+            <div className="flex items-center gap-2 px-3 py-2 text-[12px] text-[#6b7280]">
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
               </svg>
               <span className="font-medium">Powered by DUC</span>
