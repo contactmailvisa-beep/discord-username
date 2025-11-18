@@ -1,0 +1,2 @@
+const RateLimits = () => <div className="space-y-4"><h1 className="text-4xl font-bold">Rate Limits</h1><p className="text-muted-foreground">Free: 50 req/day, Premium: 100 req/day. 60s cooldown between requests.</p></div>;
+export default RateLimits;

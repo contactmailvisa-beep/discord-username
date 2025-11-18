@@ -1,0 +1,2 @@
+const Changelog = () => <div className="space-y-4"><h1 className="text-4xl font-bold">Changelog</h1><p className="text-muted-foreground">v1.0.0 - Initial release with username checking API.</p></div>;
+export default Changelog;

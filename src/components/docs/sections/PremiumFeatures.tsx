@@ -1,0 +1,2 @@
+const PremiumFeatures = () => <div className="space-y-4"><h1 className="text-4xl font-bold">Premium</h1><p className="text-muted-foreground">$3/month: 100 requests/day, priority support, advanced analytics.</p></div>;
+export default PremiumFeatures;

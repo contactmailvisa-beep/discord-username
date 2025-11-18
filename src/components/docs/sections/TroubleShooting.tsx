@@ -1,0 +1,2 @@
+const TroubleShooting = () => <div className="space-y-4"><h1 className="text-4xl font-bold">Troubleshooting</h1><p className="text-muted-foreground">Common issues: Invalid API key, missing token name, rate limits, network errors.</p></div>;
+export default TroubleShooting;
