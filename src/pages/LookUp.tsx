@@ -148,22 +148,23 @@ const LookUp = () => {
         {/* User Profile Card */}
         {userData && (
           <Card 
-            className="overflow-hidden animate-scale-in border-2 transition-all duration-700 hover:scale-[1.02]"
+            className="overflow-hidden border-2 transition-all duration-700 hover:scale-[1.02] opacity-0"
             style={{
               borderColor: `rgba(${getAccentColor()}, 0.3)`,
               boxShadow: `0 0 40px rgba(${getAccentColor()}, 0.2), 0 0 80px rgba(${getAccentColor()}, 0.1)`,
-              animation: 'scale-in 0.5s ease-out, fade-in 0.5s ease-out'
+              animation: 'scale-in 1s ease-out forwards, fade-in 1s ease-out forwards'
             }}
           >
             {/* Banner */}
             <div 
-              className="h-48 relative bg-gradient-to-br from-primary/20 to-primary/5 transition-all duration-500"
+              className="h-48 relative bg-gradient-to-br from-primary/20 to-primary/5 opacity-0"
               style={{
                 background: userData.banner 
                   ? `url(${getBannerUrl(userData.id, userData.banner)}) center/cover`
                   : userData.banner_color 
                     ? userData.banner_color
-                    : `linear-gradient(135deg, rgb(${getAccentColor()}) 0%, rgba(${getAccentColor()}, 0.7) 100%)`
+                    : `linear-gradient(135deg, rgb(${getAccentColor()}) 0%, rgba(${getAccentColor()}, 0.7) 100%)`,
+                animation: 'fade-in 1.2s ease-out 0.5s forwards, slide-in-right 1.2s ease-out 0.5s forwards'
               }}
             >
               <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent transition-opacity duration-500" />
@@ -172,12 +173,11 @@ const LookUp = () => {
             {/* Profile Content */}
             <div className="p-8 pt-0 -mt-16 relative">
               {/* Avatar */}
-              <div className="relative inline-block mb-6 animate-[scale-in_0.6s_ease-out]">
+              <div className="relative inline-block mb-6 opacity-0" style={{ animation: 'scale-in 1s ease-out 1.8s forwards, fade-in 1s ease-out 1.8s forwards' }}>
                 <div 
                   className="w-32 h-32 rounded-3xl border-4 border-card overflow-hidden bg-card transition-all duration-500 hover:scale-110 hover:rotate-3 cursor-pointer"
                   style={{
-                    boxShadow: `0 0 30px rgba(${getAccentColor()}, 0.6), 0 0 60px rgba(${getAccentColor()}, 0.3)`,
-                    animation: 'scale-in 0.6s ease-out 0.2s backwards'
+                    boxShadow: `0 0 30px rgba(${getAccentColor()}, 0.6), 0 0 60px rgba(${getAccentColor()}, 0.3)`
                   }}
                 >
                   {userData.avatar ? (
@@ -197,8 +197,11 @@ const LookUp = () => {
                 </div>
                 {userData.public_flags > 0 && (
                   <div 
-                    className="absolute -bottom-2 -right-2 w-10 h-10 rounded-full flex items-center justify-center border-2 border-card transition-all duration-500 hover:scale-110 animate-[scale-in_0.8s_ease-out_0.4s_backwards]"
-                    style={{ background: `rgb(${getAccentColor()})` }}
+                    className="absolute -bottom-2 -right-2 w-10 h-10 rounded-full flex items-center justify-center border-2 border-card transition-all duration-500 hover:scale-110 opacity-0"
+                    style={{ 
+                      background: `rgb(${getAccentColor()})`,
+                      animation: 'scale-in 0.8s ease-out 2.5s forwards, fade-in 0.8s ease-out 2.5s forwards'
+                    }}
                   >
                     <Shield className="w-5 h-5 text-white transition-transform duration-300 hover:rotate-12" />
                   </div>
@@ -207,7 +210,7 @@ const LookUp = () => {
 
               {/* User Info */}
               <div className="space-y-6">
-                <div className="space-y-2 animate-[fade-in_0.8s_ease-out_0.3s_backwards]">
+                <div className="space-y-2 opacity-0" style={{ animation: 'fade-in 1s ease-out 3s forwards, slide-in-right 1s ease-out 3s forwards' }}>
                   <h2 className="text-4xl font-bold text-foreground transition-all duration-300 hover:scale-105 inline-block">
                     {userData.global_name || userData.username}
                   </h2>
@@ -220,7 +223,7 @@ const LookUp = () => {
 
                 {/* Info Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Card className="p-5 bg-background/50 border-2 border-border hover:border-primary/50 transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 animate-[fade-in_1s_ease-out_0.4s_backwards] group cursor-pointer">
+                  <Card className="p-5 bg-background/50 border-2 border-border hover:border-primary/50 transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group cursor-pointer opacity-0" style={{ animation: 'fade-in 0.8s ease-out 4s forwards, scale-in 0.8s ease-out 4s forwards' }}>
                     <div className="flex items-start gap-4">
                       <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 group-hover:bg-primary/20">
                         <Hash className="w-5 h-5 text-primary transition-transform duration-300 group-hover:scale-125" />
@@ -232,7 +235,7 @@ const LookUp = () => {
                     </div>
                   </Card>
 
-                  <Card className="p-5 bg-background/50 border-2 border-border hover:border-primary/50 transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 animate-[fade-in_1s_ease-out_0.5s_backwards] group cursor-pointer">
+                  <Card className="p-5 bg-background/50 border-2 border-border hover:border-primary/50 transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group cursor-pointer opacity-0" style={{ animation: 'fade-in 0.8s ease-out 4.5s forwards, scale-in 0.8s ease-out 4.5s forwards' }}>
                     <div className="flex items-start gap-4">
                       <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 group-hover:bg-primary/20">
                         <AtSign className="w-5 h-5 text-primary transition-transform duration-300 group-hover:scale-125" />
@@ -245,7 +248,7 @@ const LookUp = () => {
                   </Card>
 
                   {userData.global_name && (
-                    <Card className="p-5 bg-background/50 border-2 border-border hover:border-primary/50 transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 animate-[fade-in_1s_ease-out_0.6s_backwards] group cursor-pointer">
+                    <Card className="p-5 bg-background/50 border-2 border-border hover:border-primary/50 transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group cursor-pointer opacity-0" style={{ animation: 'fade-in 0.8s ease-out 5s forwards, scale-in 0.8s ease-out 5s forwards' }}>
                       <div className="flex items-start gap-4">
                         <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 group-hover:bg-primary/20">
                           <User className="w-5 h-5 text-primary transition-transform duration-300 group-hover:scale-125" />
@@ -258,7 +261,7 @@ const LookUp = () => {
                     </Card>
                   )}
 
-                  <Card className="p-5 bg-background/50 border-2 border-border hover:border-primary/50 transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 animate-[fade-in_1s_ease-out_0.7s_backwards] group cursor-pointer">
+                  <Card className="p-5 bg-background/50 border-2 border-border hover:border-primary/50 transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group cursor-pointer opacity-0" style={{ animation: 'fade-in 0.8s ease-out 5.5s forwards, scale-in 0.8s ease-out 5.5s forwards' }}>
                     <div className="flex items-start gap-4">
                       <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 group-hover:bg-primary/20">
                         <Calendar className="w-5 h-5 text-primary transition-transform duration-300 group-hover:scale-125" />
