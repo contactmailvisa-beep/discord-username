@@ -28,48 +28,88 @@ const CodeBlock = ({ code, language, title, showLineNumbers = false }: CodeBlock
       // HTTP highlighting
       if (lang === 'http') {
         highlightedLine = line
-          .replace(/^(GET|POST|PUT|DELETE|PATCH)/g, '<span class="text-[#22c55e] font-bold">$1</span>')
-          .replace(/(https?:\/\/[^\s]+)/g, '<span class="text-[#3b82f6]">$1</span>')
+          .replace(/^(GET|POST|PUT|DELETE|PATCH|HEAD|OPTIONS)/g, '<span class="text-[#22c55e] font-bold">$1</span>')
+          .replace(/HTTP\/[\d.]+/g, '<span class="text-[#f59e0b]">$&</span>')
           .replace(/^([A-Za-z-]+):/g, '<span class="text-[#a855f7]">$1</span>:')
-          .replace(/HTTP\/[\d.]+/g, '<span class="text-[#f59e0b]">$&</span>');
+          .replace(/(https?:\/\/[^\s]+)/g, '<span class="text-[#60a5fa]">$1</span>');
       }
       
       // JSON highlighting
       else if (lang === 'json') {
-        highlightedLine = line
-          .replace(/"([^"]+)":/g, '<span class="text-[#3b82f6]">"$1"</span>:')
+        // Escape HTML in the line first to prevent injection
+        let escapedLine = line
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
+        
+        highlightedLine = escapedLine
+          // Property keys
+          .replace(/"([^"]+)"(\s*):/g, '<span class="text-[#60a5fa]">"$1"</span>$2:')
+          // String values
           .replace(/:\s*"([^"]*)"/g, ': <span class="text-[#22c55e]">"$1"</span>')
-          .replace(/:\s*(true|false|null)/g, ': <span class="text-[#f59e0b]">$1</span>')
-          .replace(/:\s*(\d+)/g, ': <span class="text-[#f59e0b]">$1</span>');
+          // Boolean and null
+          .replace(/:\s*(true|false|null)\b/g, ': <span class="text-[#f59e0b]">$1</span>')
+          // Numbers
+          .replace(/:\s*(-?\d+\.?\d*)/g, ': <span class="text-[#f59e0b]">$1</span>')
+          // Brackets and braces
+          .replace(/([{}\[\]])/g, '<span class="text-[#e5e7eb]">$1</span>')
+          // Commas
+          .replace(/,/g, '<span class="text-[#6b7280]">,</span>');
       }
       
       // JavaScript highlighting
       else if (lang === 'javascript') {
         highlightedLine = line
-          .replace(/\b(const|let|var|function|async|await|return|if|else|for|while|try|catch|import|from|require)\b/g, '<span class="text-[#a855f7]">$1</span>')
-          .replace(/\b(fetch|console|JSON)\b/g, '<span class="text-[#3b82f6]">$1</span>')
+          // Keywords
+          .replace(/\b(const|let|var|function|async|await|return|if|else|for|while|try|catch|import|from|require|new|class|extends|export|default)\b/g, '<span class="text-[#a855f7]">$1</span>')
+          // Built-in objects/functions
+          .replace(/\b(fetch|console|JSON|axios|require)\b/g, '<span class="text-[#60a5fa]">$1</span>')
+          // Methods
+          .replace(/\.(\w+)(?=\()/g, '.<span class="text-[#fbbf24]">$1</span>')
+          // String literals (single quotes)
           .replace(/'([^']*)'/g, '<span class="text-[#22c55e]">\'$1\'</span>')
+          // String literals (double quotes)  
           .replace(/"([^"]*)"/g, '<span class="text-[#22c55e]">"$1"</span>')
-          .replace(/`([^`]*)`/g, '<span class="text-[#22c55e]">`$1`</span>');
+          // Template literals
+          .replace(/`([^`]*)`/g, '<span class="text-[#22c55e]">`$1`</span>')
+          // Comments
+          .replace(/\/\/(.*)/g, '<span class="text-[#6b7280]">//$1</span>');
       }
       
       // Python highlighting
       else if (lang === 'python') {
         highlightedLine = line
-          .replace(/\b(import|from|def|class|if|else|elif|for|while|try|except|return|async|await)\b/g, '<span class="text-[#a855f7]">$1</span>')
-          .replace(/\b(requests|json|print|str|int|dict|list)\b/g, '<span class="text-[#3b82f6]">$1</span>')
+          // Keywords
+          .replace(/\b(import|from|def|class|if|else|elif|for|while|try|except|return|async|await|with|as|pass|break|continue|raise|finally)\b/g, '<span class="text-[#a855f7]">$1</span>')
+          // Built-in functions
+          .replace(/\b(requests|json|print|str|int|dict|list|len|range|open)\b/g, '<span class="text-[#60a5fa]">$1</span>')
+          // Methods
+          .replace(/\.(\w+)(?=\()/g, '.<span class="text-[#fbbf24]">$1</span>')
+          // String literals (single quotes)
           .replace(/'([^']*)'/g, '<span class="text-[#22c55e]">\'$1\'</span>')
-          .replace(/"([^"]*)"/g, '<span class="text-[#22c55e]">"$1"</span>');
+          // String literals (double quotes)
+          .replace(/"([^"]*)"/g, '<span class="text-[#22c55e]">"$1"</span>')
+          // Decorators
+          .replace(/@(\w+)/g, '<span class="text-[#f59e0b]">@$1</span>')
+          // Comments
+          .replace(/#(.*)/g, '<span class="text-[#6b7280]">#$1</span>');
       }
       
       // Bash/cURL highlighting
       else if (lang === 'bash') {
         highlightedLine = line
-          .replace(/\b(curl)\b/g, '<span class="text-[#22c55e] font-bold">$1</span>')
-          .replace(/(-[A-Za-z])\b/g, '<span class="text-[#a855f7]">$1</span>')
-          .replace(/(https?:\/\/[^\s]+)/g, '<span class="text-[#3b82f6]">$1</span>')
-          .replace(/"([^"]*)"/g, '<span class="text-[#f59e0b]">"$1"</span>')
-          .replace(/'([^']*)'/g, '<span class="text-[#f59e0b]">\'$1\'</span>');
+          // Commands
+          .replace(/\b(curl|wget|git|cd|ls|mkdir|rm|cp|mv|echo)\b/g, '<span class="text-[#22c55e] font-bold">$1</span>')
+          // Flags
+          .replace(/\s(-[A-Za-z]|--[\w-]+)\b/g, ' <span class="text-[#a855f7]">$1</span>')
+          // URLs
+          .replace(/(https?:\/\/[^\s\\]+)/g, '<span class="text-[#60a5fa]">$1</span>')
+          // String literals (double quotes)
+          .replace(/"([^"]*)"/g, '<span class="text-[#22c55e]">"$1"</span>')
+          // String literals (single quotes)
+          .replace(/'([^']*)'/g, '<span class="text-[#22c55e]">\'$1\'</span>')
+          // Backslashes
+          .replace(/\\\s*$/g, '<span class="text-[#6b7280]">\\</span>');
       }
       
       return (
@@ -80,7 +120,7 @@ const CodeBlock = ({ code, language, title, showLineNumbers = false }: CodeBlock
             </span>
           )}
           <span 
-            className="table-cell"
+            className="table-cell whitespace-pre"
             dangerouslySetInnerHTML={{ __html: highlightedLine || '&nbsp;' }}
           />
         </div>
@@ -113,7 +153,7 @@ const CodeBlock = ({ code, language, title, showLineNumbers = false }: CodeBlock
 
         <div className="p-4 overflow-x-auto overflow-y-auto max-h-[500px]">
           <code className={cn(
-            "font-mono text-sm table w-full",
+            "font-mono text-[13px] leading-relaxed table w-full",
             showLineNumbers && "table"
           )}>
             {highlightCode(code, language)}
