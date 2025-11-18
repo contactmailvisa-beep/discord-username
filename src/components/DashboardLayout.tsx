@@ -134,7 +134,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const adminItems: NavItemProps[] = isAdmin ? [
     { icon: <UserPlus className="h-5 w-5" />, label: "إضافة البريميوم", path: "/admin/premium/add" },
     { icon: <UserMinus className="h-5 w-5" />, label: "حذف البريميوم", path: "/admin/premium/remove" },
-    { icon: <Shield className="h-5 w-5" />, label: "Founder Logs", path: "/admin/logs" },
+    { icon: <Shield className="h-5 w-5" />, label: "Founder Logs", path: "/admin/founder-logs" },
   ] : [];
 
   const SidebarContent = () => (
