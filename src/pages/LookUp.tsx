@@ -22,7 +22,6 @@ const LookUp = () => {
   const [userId, setUserId] = useState("");
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState<DiscordUser | null>(null);
-  const [isVisible, setIsVisible] = useState(true);
 
   const getAvatarUrl = (userId: string, avatarHash: string | null) => {
     if (!avatarHash) return null;
@@ -42,12 +41,6 @@ const LookUp = () => {
       return;
     }
 
-    // إذا كان هناك بيانات موجودة، أخفِها أولاً
-    if (userData) {
-      setIsVisible(false);
-      await new Promise(resolve => setTimeout(resolve, 300)); // انتظر fade out
-    }
-
     setLoading(true);
     setUserData(null);
 
@@ -64,12 +57,10 @@ const LookUp = () => {
       }
 
       setUserData(data);
-      setIsVisible(true); // أظهر البيانات الجديدة
       toast.success("تم تحميل بيانات المستخدم بنجاح!");
     } catch (error: any) {
       console.error('Lookup error:', error);
       toast.error(error.message || "فشل في البحث عن المستخدم");
-      setIsVisible(true);
     } finally {
       setLoading(false);
     }
@@ -136,7 +127,7 @@ const LookUp = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-background/95 flex items-center justify-center p-4 md:p-8 relative">
       <div className="w-full max-w-4xl space-y-8 animate-fade-in relative z-10">
         {/* Header */}
-        <div className="text-center space-y-3 opacity-0 animate-[fade-in_0.6s_ease-out_forwards]">
+        <div className="text-center space-y-3 animate-fade-in">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-4 transition-all duration-500 hover:scale-110 hover:rotate-6 hover:bg-primary/20 hover:shadow-lg hover:shadow-primary/30">
             <Search className="w-8 h-8 text-primary transition-transform duration-300" />
           </div>
@@ -149,7 +140,7 @@ const LookUp = () => {
         </div>
 
         {/* Search Card */}
-        <Card className="p-8 bg-card/50 backdrop-blur-xl border-2 border-primary/20 shadow-2xl shadow-primary/10 transition-all duration-500 hover:shadow-3xl hover:shadow-primary/20 hover:border-primary/30 hover:scale-[1.01] opacity-0 animate-[fade-in_0.8s_ease-out_0.2s_forwards]">
+        <Card className="p-8 bg-card/50 backdrop-blur-xl border-2 border-primary/20 shadow-2xl shadow-primary/10 transition-all duration-500 hover:shadow-3xl hover:shadow-primary/20 hover:border-primary/30 hover:scale-[1.01] animate-fade-in">
           <div className="space-y-4">
             <div className="space-y-2">
               <label className="text-sm font-semibold text-foreground flex items-center gap-2 transition-all duration-300 hover:gap-3 hover:text-primary">
@@ -191,13 +182,10 @@ const LookUp = () => {
         {/* User Profile Card */}
         {userData && (
           <Card 
-            className="overflow-hidden border-2 transition-all duration-500 hover:scale-[1.01]"
+            className="overflow-hidden border-2 transition-all duration-500 hover:scale-[1.01] animate-fade-in"
             style={{
               borderColor: `rgba(${getAccentColor()}, 0.3)`,
-              boxShadow: `0 0 40px rgba(${getAccentColor()}, 0.2), 0 0 80px rgba(${getAccentColor()}, 0.1)`,
-              opacity: isVisible ? 1 : 0,
-              transform: isVisible ? 'scale(1)' : 'scale(0.95)',
-              transition: 'all 0.5s ease-in-out'
+              boxShadow: `0 0 40px rgba(${getAccentColor()}, 0.2), 0 0 80px rgba(${getAccentColor()}, 0.1)`
             }}
           >
             {/* Banner */}
