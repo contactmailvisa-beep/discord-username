@@ -39,40 +39,34 @@ const Auth = () => {
 
     try {
       if (isLogin) {
-        // Try to sign in with password first
-        const { data, error } = await supabase.auth.signInWithPassword({
+        // For login, verify credentials first then send OTP
+        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
 
-        if (error) {
-          // If error is email not confirmed, send OTP
-          if (error.message.includes("Email not confirmed") || error.message.includes("not confirmed")) {
-            const { error: otpError } = await supabase.auth.signInWithOtp({
-              email,
-              options: {
-                shouldCreateUser: false,
-              }
-            });
-
-            if (otpError) throw otpError;
-
-            setNeedsVerification(true);
-            setAuthStep("otp");
-            toast.success("أرسلنا رمز التحقق", {
-              description: "حسابك غير مؤكد. تحقق من بريدك الإلكتروني للحصول على رمز التحقق",
-              icon: <Mail className="h-4 w-4" />,
-            });
-          } else {
-            throw error;
-          }
-        } else {
-          toast.success("تم تسجيل الدخول بنجاح!", {
-            description: "مرحباً بك مجدداً",
-            icon: <CheckCircle2 className="h-4 w-4" />,
-          });
-          navigate("/dashboard");
+        if (signInError) {
+          throw signInError;
         }
+
+        // Sign out immediately after verifying credentials
+        await supabase.auth.signOut();
+
+        // Send OTP for verification
+        const { error: otpError } = await supabase.auth.signInWithOtp({
+          email,
+          options: {
+            shouldCreateUser: false,
+          }
+        });
+
+        if (otpError) throw otpError;
+
+        setAuthStep("otp");
+        toast.success("تم إرسال رمز التحقق", {
+          description: "تحقق من بريدك الإلكتروني للحصول على رمز التحقق المكون من 6 أرقام",
+          icon: <Mail className="h-4 w-4" />,
+        });
       } else {
         // For signup, send OTP first
         const { error } = await supabase.auth.signInWithOtp({
@@ -122,9 +116,9 @@ const Auth = () => {
           icon: <CheckCircle2 className="h-4 w-4" />,
         });
       } else {
-        // For existing users verifying their account
-        toast.success("تم التحقق من حسابك!", {
-          description: "يمكنك الآن الاستمرار",
+        // For login OTP verification, redirect to dashboard
+        toast.success("تم تسجيل الدخول بنجاح!", {
+          description: "مرحباً بك مجدداً",
           icon: <CheckCircle2 className="h-4 w-4" />,
         });
         
