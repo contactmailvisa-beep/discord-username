@@ -2758,6 +2758,7 @@ export type Database = {
         Args: { _story_id: string; _user_id: string }
         Returns: boolean
       }
+      is_support_member: { Args: { _user_id: string }; Returns: boolean }
       is_user_banned: { Args: { _user_id: string }; Returns: boolean }
       record_global_account_usage: {
         Args: { p_user_id: string }
