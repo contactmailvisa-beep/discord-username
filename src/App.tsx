@@ -24,6 +24,7 @@ import RemovePremium from "./pages/admin/RemovePremium";
 import FounderLogs from "./pages/admin/FounderLogs";
 import Docs from "./pages/Docs";
 import SavedUsernames from "./pages/SavedUsernames";
+import LookUp from "./pages/LookUp";
 
 const queryClient = new QueryClient();
 
@@ -96,6 +97,7 @@ const App = () => {
             <Route path="/auth" element={<Auth />} />
             <Route path="/select-username" element={<SelectUsername />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard/lookup" element={<LookUp />} />
             <Route path="/dashboard/tokens" element={<Tokens />} />
           <Route path="/dashboard/generator" element={<Generator />} />
           <Route path="/dashboard/global" element={<GlobalAccount />} />
