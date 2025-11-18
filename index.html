@@ -12,15 +12,11 @@
 
     <meta name="author" content="Discord Username Checker" />
 
-    
-    
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="ar_AR" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@DiscordChecker" />
-    
-    
 
     <meta name="theme-color" content="#0d1117" />
 
@@ -55,6 +51,7 @@
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         transform: translateZ(0);
         will-change: transform, box-shadow;
+        cursor: pointer; /* مهم حتى يعرف المستخدم أنه قابل للضغط */
       }
 
       footer::before {
@@ -97,22 +94,16 @@
         pointer-events: none;
       }
     </style>
-    
-  
-  
-  
-  <link rel="icon" type="image/x-icon" href="https://storage.googleapis.com/gpt-engineer-file-uploads/vTGiSuvRy4Onf7oBNcHPYRCnZBu2/uploads/1763372009048-ChatGPT Image 6 أكتوبر 2025، 11_55_43 م.png">
-  
-  
-  
-  
-  <meta property="og:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/vTGiSuvRy4Onf7oBNcHPYRCnZBu2/social-images/social-1763380257363-image (29).png">
-  <meta name="twitter:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/vTGiSuvRy4Onf7oBNcHPYRCnZBu2/social-images/social-1763380257363-image (29).png">
-  <meta property="og:title" content="Discord Username Checker - فحص يوزرات Discord">
-  <meta name="twitter:title" content="Discord Username Checker - فحص يوزرات Discord">
-  <meta property="og:description" content="أداة احترافية وسريعة لفحص توفر يوزرات Discord بدقة عالية.">
-  <meta name="twitter:description" content="أداة احترافية وسريعة لفحص توفر يوزرات Discord بدقة عالية.">
-</head>
+
+    <link rel="icon" type="image/x-icon" href="https://storage.googleapis.com/gpt-engineer-file-uploads/vTGiSuvRy4Onf7oBNcHPYRCnZBu2/uploads/1763372009048-ChatGPT Image 6 أكتوبر 2025، 11_55_43 م.png">
+
+    <meta property="og:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/vTGiSuvRy4Onf7oBNcHPYRCnZBu2/social-images/social-1763380257363-image (29).png">
+    <meta name="twitter:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/vTGiSuvRy4Onf7oBNcHPYRCnZBu2/social-images/social-1763380257363-image (29).png">
+    <meta property="og:title" content="Discord Username Checker - فحص يوزرات Discord">
+    <meta name="twitter:title" content="Discord Username Checker - فحص يوزرات Discord">
+    <meta property="og:description" content="أداة احترافية وسريعة لفحص توفر يوزرات Discord بدقة عالية.">
+    <meta name="twitter:description" content="أداة احترافية وسريعة لفحص توفر يوزرات Discord بدقة عالية.">
+  </head>
 
   <body>
 
@@ -120,7 +111,7 @@
 
     <div id="root"></div>
 
-    <footer>DUC ©</footer>
+    <footer id="duc-footer">DUC ©</footer>
 
     <script type="module" src="/src/main.tsx"></script>
 
@@ -129,6 +120,10 @@
         const cover = document.getElementById("lovable-cover");
         if (cover) cover.remove();
       }, 1000);
+
+      document.getElementById("duc-footer").addEventListener("click", () => {
+        window.location.href = "/docs";
+      });
     </script>
 
   </body>
