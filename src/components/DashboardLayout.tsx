@@ -320,11 +320,6 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         </div>
       </div>
 
-      {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex w-64 bg-background-secondary border-l border-border flex-col">
-        <SidebarContent />
-      </aside>
-
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto lg:pt-0 pt-14">
         <div className="container max-w-7xl mx-auto p-4 lg:p-6">
