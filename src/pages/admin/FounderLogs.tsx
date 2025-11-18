@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import DashboardLayout from "@/components/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -41,11 +42,41 @@ export default function FounderLogs() {
   const [selectedUser, setSelectedUser] = useState<{ id: string; username: string } | null>(null);
   const [banReason, setBanReason] = useState("");
   const [banDuration, setBanDuration] = useState("1h");
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    loadLogs();
+    checkAdminAccess();
   }, []);
+
+  const checkAdminAccess = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        navigate("/auth");
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("email")
+        .eq("id", user.id)
+        .single();
+
+      if (profile?.email === "flepower7@gmail.com") {
+        setIsAdmin(true);
+        loadLogs();
+      } else {
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      navigate("/dashboard");
+    } finally {
+      setCheckingAuth(false);
+    }
+  };
 
   const loadLogs = async () => {
     try {
@@ -151,12 +182,21 @@ export default function FounderLogs() {
     return "bg-red-500/20 text-red-500";
   };
 
-  if (loading) {
+  if (checkingAuth || loading) {
     return (
       <DashboardLayout>
-        <div className="text-center py-8">جاري التحميل...</div>
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+            <p className="text-muted-foreground">جاري التحميل...</p>
+          </div>
+        </div>
       </DashboardLayout>
     );
+  }
+
+  if (!isAdmin) {
+    return null;
   }
 
   return (
