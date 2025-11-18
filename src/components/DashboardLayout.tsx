@@ -22,6 +22,7 @@ import {
   Search,
   FileText,
   Globe,
+  Bookmark,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -123,6 +124,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     { icon: <Key className="h-5 w-5" />, label: "التوكنات", path: "/dashboard/tokens" },
     { icon: <Wand2 className="h-5 w-5" />, label: "فحص التوفر", path: "/dashboard/generator" },
     { icon: <Search className="h-5 w-5" />, label: "الفحص اليدوي", path: "/dashboard/manual-check" },
+    { icon: <Bookmark className="h-5 w-5" />, label: "الأسماء المحفوظة", path: "/dashboard/saved" },
     { icon: <History className="h-5 w-5" />, label: "سجل الفحوصات", path: "/dashboard/history" },
     { icon: <TrendingUp className="h-5 w-5" />, label: "الإحصائيات", path: "/dashboard/stats" },
     { icon: <FileText className="h-5 w-5" />, label: "التوثيق", path: "/docs" },

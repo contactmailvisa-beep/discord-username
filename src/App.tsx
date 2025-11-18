@@ -23,6 +23,7 @@ import AddPremium from "./pages/admin/AddPremium";
 import RemovePremium from "./pages/admin/RemovePremium";
 import FounderLogs from "./pages/admin/FounderLogs";
 import Docs from "./pages/Docs";
+import SavedUsernames from "./pages/SavedUsernames";
 
 const queryClient = new QueryClient();
 
@@ -112,6 +113,7 @@ useEffect(() => {
           <Route path="/dashboard/manual-check" element={<ManualCheck />} />
           <Route path="/dashboard/history" element={<History />} />
             <Route path="/dashboard/stats" element={<Stats />} />
+            <Route path="/dashboard/saved" element={<SavedUsernames />} />
             <Route path="/dashboard/premium" element={<Premium />} />
             <Route path="/dashboard/settings" element={<Settings />} />
             <Route path="/dashboard/profile" element={<Profile />} />
