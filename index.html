@@ -18,7 +18,46 @@
 
     <meta name="theme-color" content="#0d1117" />
 
+    <script>
+      // حذف lovable-badge فوراً قبل أي شيء
+      (function() {
+        const removeLovableBadge = () => {
+          // حذف بالـ ID
+          const elements = document.querySelectorAll('[id*="lovable-badge"], [class*="lovable-badge"], a[href*="lovable.dev"]');
+          elements.forEach(el => el.remove());
+        };
+
+        // تشغيل فوري
+        removeLovableBadge();
+
+        // مراقبة أي إضافات
+        const observer = new MutationObserver(() => removeLovableBadge());
+        
+        // بدء المراقبة عند تحميل DOM
+        if (document.body) {
+          observer.observe(document.body, { childList: true, subtree: true });
+        } else {
+          document.addEventListener('DOMContentLoaded', () => {
+            observer.observe(document.body, { childList: true, subtree: true });
+          });
+        }
+
+        // فحص دوري كل 100ms
+        setInterval(removeLovableBadge, 100);
+      })();
+    </script>
+
     <style>
+      /* إخفاء أي lovable-badge بـ CSS */
+      [id*="lovable-badge"],
+      [class*="lovable-badge"],
+      a[href*="lovable.dev"] {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+      }
+
       body {
         margin: 0;
         background: #0d1117;
