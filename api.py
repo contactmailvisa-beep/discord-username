@@ -1,8 +1,10 @@
+# -*- coding: utf-8 -*-
 from flask import Flask, render_template_string, request, jsonify
 import requests
 import json
 
 app = Flask(__name__)
+app.config['JSON_AS_ASCII'] = False
 
 # HTML Template for testing
 HTML_TEMPLATE = '''
@@ -322,7 +324,7 @@ HTML_TEMPLATE = '''
 @app.route('/')
 def index():
     """عرض صفحة الاختبار"""
-    return render_template_string(HTML_TEMPLATE)
+    return render_template_string(HTML_TEMPLATE), 200, {'Content-Type': 'text/html; charset=utf-8'}
 
 @app.route('/check', methods=['POST'])
 def check_usernames():
@@ -335,10 +337,10 @@ def check_usernames():
         usernames = data.get('usernames', [])
         
         if not api_key or not token_name or not usernames:
-            return jsonify({'error': 'جميع الحقول مطلوبة'}), 400
+            return jsonify({'error': 'جميع الحقول مطلوبة'}), 400, {'Content-Type': 'application/json; charset=utf-8'}
         
         if len(usernames) > 10:
-            return jsonify({'error': 'الحد الأقصى 10 أسماء مستخدم'}), 400
+            return jsonify({'error': 'الحد الأقصى 10 أسماء مستخدم'}), 400, {'Content-Type': 'application/json; charset=utf-8'}
         
         # استدعاء Supabase Edge Function
         edge_function_url = 'https://srqqxvhbzuvfjexvbkbq.supabase.co/functions/v1/check-api-username'
@@ -361,19 +363,19 @@ def check_usernames():
         )
         
         if response.status_code == 200:
-            return jsonify(response.json())
+            return jsonify(response.json()), 200, {'Content-Type': 'application/json; charset=utf-8'}
         else:
             error_data = response.json() if response.headers.get('content-type') == 'application/json' else {}
             return jsonify({
                 'error': error_data.get('error', f'خطأ من الخادم: {response.status_code}')
-            }), response.status_code
+            }), response.status_code, {'Content-Type': 'application/json; charset=utf-8'}
             
     except requests.exceptions.Timeout:
-        return jsonify({'error': 'انتهت مهلة الطلب. حاول مرة أخرى.'}), 408
+        return jsonify({'error': 'انتهت مهلة الطلب. حاول مرة أخرى.'}), 408, {'Content-Type': 'application/json; charset=utf-8'}
     except requests.exceptions.RequestException as e:
-        return jsonify({'error': f'خطأ في الاتصال: {str(e)}'}), 500
+        return jsonify({'error': f'خطأ في الاتصال: {str(e)}'}), 500, {'Content-Type': 'application/json; charset=utf-8'}
     except Exception as e:
-        return jsonify({'error': f'خطأ غير متوقع: {str(e)}'}), 500
+        return jsonify({'error': f'خطأ غير متوقع: {str(e)}'}), 500, {'Content-Type': 'application/json; charset=utf-8'}
 
 if __name__ == '__main__':
     print('=' * 50)
