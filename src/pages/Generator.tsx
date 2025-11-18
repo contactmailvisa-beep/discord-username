@@ -371,9 +371,6 @@ const Generator = () => {
             <Wand2 className="h-8 w-8 text-primary" />
             فحص التوفر
           </h1>
-          <p className="text-text-muted mt-1">
-            ولّد يوزرات Discord مخصصة وافحص توفرها
-          </p>
         </div>
 
         {!canCheck && (
