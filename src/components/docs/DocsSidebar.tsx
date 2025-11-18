@@ -35,7 +35,7 @@ const DocsSidebar = ({
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed top-4 left-0 z-[100] h-[calc(100vh-2rem)] w-[240px] p-3 transition-transform duration-300 lg:translate-x-0 flex flex-col",
+          "fixed top-20 left-0 z-[1000] h-[calc(100vh-10rem)] w-[240px] p-3 transition-transform duration-300 lg:translate-x-0 flex flex-col",
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
