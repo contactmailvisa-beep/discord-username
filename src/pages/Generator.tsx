@@ -259,109 +259,87 @@ const Generator = () => {
         description: "قد يستغرق هذا بعض الوقت",
       });
 
-      // Check all usernames with 10 second delay between each
-      for (let i = 0; i < generatedUsernames.length; i++) {
+      // Mark all as checking
+      setGeneratedUsernames(prev =>
+        prev.map(u => ({ ...u, checking: true }))
+      );
+
+      try {
+        const usernamesToCheck = generatedUsernames.map(u => u.username);
+        
+        const { data, error } = await supabase.functions.invoke("check-discord-username", {
+          body: {
+            usernames: usernamesToCheck,
+            userId: user.id,
+            tokenName: null, // Will use user's own tokens
+          },
+        });
+
+        if (error) throw error;
+
+        if (!data.success) {
+          toast.error(data.error || "حدث خطأ أثناء الفحص");
+          setLoading(false);
+          setGeneratedUsernames(prev =>
+            prev.map(u => ({ ...u, checking: false }))
+          );
+          return;
+        }
+
+        // Process results
+        const results = data.results;
+        let hasRateLimit = false;
+        
         setGeneratedUsernames(prev =>
-          prev.map((u, idx) =>
-            idx === i ? { ...u, checking: true } : u
-          )
-        );
-
-        try {
-          const { data, error } = await supabase.functions.invoke("check-discord-username", {
-            body: {
-              username: generatedUsernames[i].username,
-              userId: user.id,
-            },
-          });
-
-          if (error) throw error;
-
-          // Check for rate limit in response
-          if (data.response?.message?.includes("rate limited")) {
-            const retryAfter = data.response?.retry_after || 1800; // Default 30 minutes
-            const minutes = Math.floor(retryAfter / 60);
-            const seconds = Math.floor(retryAfter % 60);
+          prev.map(u => {
+            const result = results[u.username];
             
-            // If this is happening again within first 10 checks, force 10 minute pause
-            if (checksAfterRateLimit > 0 && checksAfterRateLimit <= 10) {
-              const forcedCooldown = new Date(Date.now() + 600000); // 10 minutes
-              const message = "تم وضعك بتوقف إجباري لمدة 10 دقائق بسبب تكرار rate limit. سيتم استئناف الفحص تلقائياً";
-              
-              setNextCheckTime(forcedCooldown);
-              setCanCheck(false);
-              setRateLimitMessage(message);
-              
-              // Save to localStorage
-              localStorage.setItem('generator_rate_limit_cooldown', JSON.stringify({
-                nextCheckTime: forcedCooldown.toISOString(),
-                rateLimitMessage: message,
-                checksAfterRateLimit: checksAfterRateLimit
-              }));
-              
-              toast.error("توقف إجباري 10 دقائق بسبب تكرار rate limit");
-              
-              // Auto resume after 10 minutes
-              setTimeout(() => {
-                setChecksAfterRateLimit(0);
-                localStorage.removeItem('generator_rate_limit_cooldown');
-                toast.info("تم استئناف الفحص تلقائياً");
-              }, 600000);
-            } else {
-              const cooldownTime = new Date(Date.now() + retryAfter * 1000);
-              const message = `لحماية الحساب من الحظر. تم وضعك بتقييد مؤقت بسبب rate limited الخاص بدسكورد. يرجى الانتضار لمدة ${minutes} دقيقة و ${seconds} ثانية ثم المحاولة مرة اخرى`;
-              
-              setNextCheckTime(cooldownTime);
-              setCanCheck(false);
-              setRateLimitMessage(message);
-              
-              // Save to localStorage
-              localStorage.setItem('generator_rate_limit_cooldown', JSON.stringify({
-                nextCheckTime: cooldownTime.toISOString(),
-                rateLimitMessage: message,
-                checksAfterRateLimit: 0
-              }));
-              
-              toast.error(message);
+            if (result === "rate_limited") {
+              hasRateLimit = true;
+              return { ...u, checking: false, available: null };
             }
             
-            setLoading(false);
-            return; // Stop checking
-          }
+            if (result === "token_invalid") {
+              toast.error("التوكن غير صالح. يرجى تحديث التوكنات");
+              return { ...u, checking: false, available: null };
+            }
+            
+            return {
+              ...u,
+              checking: false,
+              available: result === "available"
+            };
+          })
+        );
 
-          setGeneratedUsernames(prev =>
-            prev.map((u, idx) =>
-              idx === i ? { ...u, checking: false, available: data.success ? data.available : null } : u
-            )
-          );
-
-          if (data.success && data.available) {
-            toast.success(`${generatedUsernames[i].username} متاح! ✓`);
-          }
+        if (hasRateLimit) {
+          const cooldownTime = new Date(Date.now() + 600000); // 10 minutes
+          setNextCheckTime(cooldownTime);
+          setCanCheck(false);
           
-          // Increment checks after rate limit
-          if (checksAfterRateLimit > 0 && checksAfterRateLimit < 10) {
-            setChecksAfterRateLimit(prev => prev + 1);
-          }
-        } catch (error: any) {
-          console.error("Error checking username:", error);
-          setGeneratedUsernames(prev =>
-            prev.map((u, idx) =>
-              idx === i ? { ...u, checking: false, available: null } : u
-            )
-          );
+          localStorage.setItem('generator_rate_limit_cooldown', JSON.stringify({
+            nextCheckTime: cooldownTime.toISOString(),
+            rateLimitMessage: "تم تجاوز حد الطلبات",
+            checksAfterRateLimit: 0
+          }));
+          
+          toast.error("تم تجاوز حد الطلبات. يجب الانتظار 10 دقائق");
+        } else {
+          toast.success("تم الفحص بنجاح!");
         }
 
-        if (i < generatedUsernames.length - 1) {
-          await new Promise(resolve => setTimeout(resolve, 10000));
-        }
+      } catch (error: any) {
+        console.error("Error checking usernames:", error);
+        toast.error("حدث خطأ أثناء الفحص");
+        setGeneratedUsernames(prev =>
+          prev.map(u => ({ ...u, checking: false }))
+        );
+      } finally {
+        setLoading(false);
       }
-
-      toast.success("تم الفحص بنجاح!");
     } catch (error: any) {
-      console.error("Error checking usernames:", error);
-      toast.error("حدث خطأ أثناء الفحص");
-    } finally {
+      console.error("Outer error:", error);
+      toast.error("حدث خطأ غير متوقع");
       setLoading(false);
     }
   };

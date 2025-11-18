@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { usernames, tokenName } = await req.json();
+    const { usernames, tokenName, userId } = await req.json();
 
     if (!usernames || !Array.isArray(usernames) || usernames.length === 0) {
       throw new Error("Missing or invalid usernames array");
@@ -23,42 +23,87 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    // Get the Global token from flepower7@gmail.com
-    const { data: authUsers } = await supabase.auth.admin.listUsers();
-    const globalUser = authUsers?.users?.find(u => u.email === "flepower7@gmail.com");
+    let activeToken;
+    
+    // Check if this is a Global Account request
+    if (tokenName === "Global") {
+      // Get the Global token from flepower7@gmail.com
+      const { data: authUsers } = await supabase.auth.admin.listUsers();
+      const globalUser = authUsers?.users?.find(u => u.email === "flepower7@gmail.com");
 
-    if (!globalUser) {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          error: "Global account not found",
-        }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
-      );
-    }
+      if (!globalUser) {
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: "Global account not found",
+          }),
+          {
+            status: 400,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          }
+        );
+      }
 
-    const { data: globalToken, error: tokenError } = await supabase
-      .from("user_tokens")
-      .select("*")
-      .eq("user_id", globalUser.id)
-      .eq("token_name", tokenName || "Global")
-      .eq("is_active", true)
-      .maybeSingle();
+      const { data: globalToken, error: tokenError } = await supabase
+        .from("user_tokens")
+        .select("*")
+        .eq("user_id", globalUser.id)
+        .eq("token_name", "Global")
+        .eq("is_active", true)
+        .maybeSingle();
 
-    if (tokenError || !globalToken) {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          error: "Global token not found or inactive",
-        }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
-      );
+      if (tokenError || !globalToken) {
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: "Global token not found or inactive",
+          }),
+          {
+            status: 400,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          }
+        );
+      }
+      
+      activeToken = globalToken;
+    } else {
+      // Get user's own active token
+      if (!userId) {
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: "User ID is required for personal token usage",
+          }),
+          {
+            status: 400,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          }
+        );
+      }
+
+      const { data: userToken, error: tokenError } = await supabase
+        .from("user_tokens")
+        .select("*")
+        .eq("user_id", userId)
+        .eq("is_active", true)
+        .order("last_used_at", { ascending: true, nullsFirst: true })
+        .limit(1)
+        .maybeSingle();
+
+      if (tokenError || !userToken) {
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: "No active token found. Please add a token first.",
+          }),
+          {
+            status: 400,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          }
+        );
+      }
+      
+      activeToken = userToken;
     }
 
     // Check all usernames in parallel
@@ -70,7 +115,7 @@ serve(async (req) => {
           {
             method: "POST",
             headers: {
-              Authorization: globalToken.token_value,
+              Authorization: activeToken.token_value,
               "Content-Type": "application/json",
             },
             body: JSON.stringify({ username }),
@@ -88,7 +133,7 @@ serve(async (req) => {
           await supabase
             .from("user_tokens")
             .update({ is_active: false })
-            .eq("id", globalToken.id);
+            .eq("id", activeToken.id);
           results[username] = "token_invalid";
           return;
         }
@@ -107,9 +152,9 @@ serve(async (req) => {
       .from("user_tokens")
       .update({
         last_used_at: new Date().toISOString(),
-        usage_count: (globalToken.usage_count || 0) + usernames.length,
+        usage_count: (activeToken.usage_count || 0) + usernames.length,
       })
-      .eq("id", globalToken.id);
+      .eq("id", activeToken.id);
 
     return new Response(
       JSON.stringify({
