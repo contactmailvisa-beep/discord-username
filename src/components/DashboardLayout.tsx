@@ -20,6 +20,7 @@ import {
   UserMinus,
   Shield,
   Search,
+  FileText,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -134,6 +135,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const adminItems: NavItemProps[] = isAdmin ? [
     { icon: <UserPlus className="h-5 w-5" />, label: "إضافة للبريميوم", path: "/admin/premium/add" },
     { icon: <UserMinus className="h-5 w-5" />, label: "حذف من البريميوم", path: "/admin/premium/remove" },
+    { icon: <FileText className="h-5 w-5" />, label: "Founder Logs", path: "/admin/founder-logs" },
   ] : [];
 
   if (loading) {

@@ -14,6 +14,140 @@ export type Database = {
   }
   public: {
     Tables: {
+      api_bans: {
+        Row: {
+          banned_at: string | null
+          banned_by: string
+          expires_at: string
+          id: string
+          is_active: boolean | null
+          reason: string
+          user_id: string
+        }
+        Insert: {
+          banned_at?: string | null
+          banned_by: string
+          expires_at: string
+          id?: string
+          is_active?: boolean | null
+          reason: string
+          user_id: string
+        }
+        Update: {
+          banned_at?: string | null
+          banned_by?: string
+          expires_at?: string
+          id?: string
+          is_active?: boolean | null
+          reason?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      api_keys: {
+        Row: {
+          api_key: string
+          created_at: string | null
+          daily_limit: number | null
+          id: string
+          is_processing: boolean | null
+          label: string | null
+          last_request_at: string | null
+          last_reset_at: string | null
+          last_used_at: string | null
+          rate_limit: number | null
+          requests_today: number | null
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          api_key: string
+          created_at?: string | null
+          daily_limit?: number | null
+          id?: string
+          is_processing?: boolean | null
+          label?: string | null
+          last_request_at?: string | null
+          last_reset_at?: string | null
+          last_used_at?: string | null
+          rate_limit?: number | null
+          requests_today?: number | null
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          api_key?: string
+          created_at?: string | null
+          daily_limit?: number | null
+          id?: string
+          is_processing?: boolean | null
+          label?: string | null
+          last_request_at?: string | null
+          last_reset_at?: string | null
+          last_used_at?: string | null
+          rate_limit?: number | null
+          requests_today?: number | null
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      api_logs: {
+        Row: {
+          api_key_id: string
+          created_at: string | null
+          endpoint: string
+          error_message: string | null
+          id: string
+          ip_address: string | null
+          processing_time: number | null
+          results: Json | null
+          status_code: number | null
+          token_name: string | null
+          user_agent: string | null
+          user_id: string
+          usernames_checked: Json | null
+        }
+        Insert: {
+          api_key_id: string
+          created_at?: string | null
+          endpoint: string
+          error_message?: string | null
+          id?: string
+          ip_address?: string | null
+          processing_time?: number | null
+          results?: Json | null
+          status_code?: number | null
+          token_name?: string | null
+          user_agent?: string | null
+          user_id: string
+          usernames_checked?: Json | null
+        }
+        Update: {
+          api_key_id?: string
+          created_at?: string | null
+          endpoint?: string
+          error_message?: string | null
+          id?: string
+          ip_address?: string | null
+          processing_time?: number | null
+          results?: Json | null
+          status_code?: number | null
+          token_name?: string | null
+          user_agent?: string | null
+          user_id?: string
+          usernames_checked?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_logs_api_key_id_fkey"
+            columns: ["api_key_id"]
+            isOneToOne: false
+            referencedRelation: "api_keys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       auto_replies: {
         Row: {
           created_at: string | null
@@ -2419,6 +2553,7 @@ export type Database = {
         Returns: boolean
       }
       delete_expired_stories: { Args: never; Returns: undefined }
+      generate_api_key: { Args: never; Returns: string }
       generate_clip_code: { Args: never; Returns: string }
       generate_invite_code: { Args: never; Returns: string }
       generate_url_slug: { Args: { user_discord_id: string }; Returns: string }
@@ -2483,11 +2618,20 @@ export type Database = {
       }
       is_admin_by_email: { Args: never; Returns: boolean }
       is_admin_user: { Args: never; Returns: boolean }
+      is_api_banned: {
+        Args: { check_user_id: string }
+        Returns: {
+          expires_at: string
+          is_banned: boolean
+          reason: string
+        }[]
+      }
       is_story_recipient: {
         Args: { _story_id: string; _user_id: string }
         Returns: boolean
       }
       is_user_banned: { Args: { _user_id: string }; Returns: boolean }
+      reset_daily_api_counters: { Args: never; Returns: undefined }
       update_last_check: { Args: { p_user_id: string }; Returns: undefined }
     }
     Enums: {
