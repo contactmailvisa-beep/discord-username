@@ -83,18 +83,6 @@
           inset 0 2px 2px rgba(255, 255, 255, 0.15);
         border-color: rgba(99, 179, 255, 0.4);
       }
-
-      #lovable-cover {
-        position: fixed;
-        bottom: 0;
-        right: 0;
-        width: 280px;
-        height: 120px;
-        background: #2A2C32;
-        border-radius: 12px 0 0 0;
-        z-index: 9999999999;
-        pointer-events: none;
-      }
     </style>
 
     <link rel="icon" type="image/x-icon" href="https://storage.googleapis.com/gpt-engineer-file-uploads/vTGiSuvRy4Onf7oBNcHPYRCnZBu2/uploads/1763372009048-ChatGPT Image 6 أكتوبر 2025، 11_55_43 م.png">
@@ -118,12 +106,6 @@
     <script type="module" src="/src/main.tsx"></script>
 
     <script>
-      // إزالة الغطاء بعد ثانية
-      setTimeout(() => {
-        const cover = document.getElementById("lovable-cover");
-        if (cover) cover.remove();
-      }, 1000);
-
       // جعل الفوتر قابل للضغط -> يفتح /docs
       document.getElementById("duc-footer").addEventListener("click", () => {
         window.location.href = "/docs";
