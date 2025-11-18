@@ -8,80 +8,120 @@ All colors MUST be HSL.
 
 @layer base {
 :root {
-    /* Discord-inspired Color System */
+    /* Modern Color System with Glows */
     --blurple: 235 85.6% 64.7%;
     --blurple-dark: 235 51.4% 52.4%;
     --blurple-light: 235 85.6% 74.7%;
     
-    --background: 220 13% 18%;
-    --background-secondary: 223 7% 20%;
-    --background-tertiary: 225 6% 12.5%;
-    --background-accent: 228 6% 32.5%;
-    --foreground: 0 0% 100%;
+    --background: 222 47% 11%;
+    --background-secondary: 217 33% 17%;
+    --background-tertiary: 215 28% 17%;
+    --background-accent: 220 13% 25%;
+    --foreground: 210 40% 98%;
     
-    --card: 223 7% 20%;
-    --card-foreground: 0 0% 100%;
+    --card: 217 33% 17%;
+    --card-foreground: 210 40% 98%;
     
-    --popover: 223 7% 20%;
-    --popover-foreground: 0 0% 100%;
+    --popover: 217 33% 17%;
+    --popover-foreground: 210 40% 98%;
     
-    --primary: 235 85.6% 64.7%;
+    --primary: 217 91% 60%;
     --primary-foreground: 0 0% 100%;
     
-    --secondary: 228 6% 32.5%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 217 33% 24%;
+    --secondary-foreground: 210 40% 98%;
     
-    --muted: 228 6% 32.5%;
-    --muted-foreground: 220 8% 46%;
+    --muted: 215 20% 25%;
+    --muted-foreground: 217 11% 65%;
     
-    --accent: 235 85.6% 64.7%;
+    --accent: 217 91% 60%;
     --accent-foreground: 0 0% 100%;
     
-    --success: 139 47.3% 47.1%;
+    --success: 142 76% 36%;
     --success-foreground: 0 0% 100%;
     
-    --warning: 38 91.7% 54.9%;
+    --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
     
-    --destructive: 359 82.6% 59.4%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
     
-    --border: 228 6% 32.5%;
-    --input: 228 6% 32.5%;
-    --ring: 235 85.6% 64.7%;
+    --border: 215 28% 20%;
+    --input: 215 28% 20%;
+    --ring: 217 91% 60%;
     
-    --radius: 0.375rem;
+    --radius: 0.75rem;
     
     /* Text Colors */
-    --text-normal: 0 0% 100%;
-    --text-muted: 215 8.8% 73.3%;
-    --text-link: 197 100% 47.8%;
+    --text-normal: 210 40% 98%;
+    --text-muted: 215 16% 47%;
+    --text-link: 217 91% 60%;
     
     /* Status Colors */
-    --online: 139 47.3% 47.1%;
-    --idle: 38 91.7% 54.9%;
-    --dnd: 359 82.6% 59.4%;
-    --offline: 214 9.9% 50.4%;
+    --online: 142 76% 36%;
+    --idle: 38 92% 50%;
+    --dnd: 0 84% 60%;
+    --offline: 215 16% 47%;
     
-    /* Gradient */
-    --gradient-primary: linear-gradient(135deg, hsl(235 85.6% 64.7%), hsl(197 100% 47.8%));
-    --gradient-success: linear-gradient(135deg, hsl(139 47.3% 47.1%), hsl(142 71% 45%));
+    /* Glow Effects */
+    --glow-primary: 0 0 20px hsla(217, 91%, 60%, 0.5);
+    --glow-success: 0 0 20px hsla(142, 76%, 36%, 0.5);
+    --glow-warning: 0 0 20px hsla(38, 92%, 50%, 0.5);
+    --glow-danger: 0 0 20px hsla(0, 84%, 60%, 0.5);
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(235 85.6% 74.7%));
+    --gradient-success: linear-gradient(135deg, hsl(142 76% 36%), hsl(158 64% 52%));
+    --gradient-card: linear-gradient(135deg, hsl(217 33% 17%), hsl(220 13% 20%));
     
     /* Shadows */
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.5);
+    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.6);
+    --shadow-glow: 0 0 30px hsla(217, 91%, 60%, 0.3);
     
     /* Animation */
-    --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
 
 .light {
-    /* Light mode not primary focus but included for completeness */
     --background: 0 0% 100%;
-    --foreground: 220 13% 18%;
+    --background-secondary: 210 20% 98%;
+    --background-tertiary: 214 32% 91%;
+    --background-accent: 214 32% 95%;
+    --foreground: 222 47% 11%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 214 32% 91%;
+    --secondary-foreground: 222 47% 11%;
+    
+    --muted: 214 32% 91%;
+    --muted-foreground: 215 16% 47%;
+    
+    --accent: 214 32% 91%;
+    --accent-foreground: 222 47% 11%;
+    
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 217 91% 60%;
+    
+    --text-normal: 222 47% 11%;
+    --text-muted: 215 16% 47%;
+    
+    --glow-primary: 0 0 20px hsla(217, 91%, 60%, 0.3);
+    --glow-success: 0 0 20px hsla(142, 76%, 36%, 0.3);
+    --glow-warning: 0 0 20px hsla(38, 92%, 50%, 0.3);
+    --glow-danger: 0 0 20px hsla(0, 84%, 60%, 0.3);
   }
 }
 
@@ -116,18 +156,39 @@ All colors MUST be HSL.
 }
 
 @layer utilities {
-  .discord-embed {
-    @apply rounded-lg border-l-4 border-primary bg-card p-4 shadow-md;
+  .glow-effect {
+    box-shadow: var(--glow-primary);
   }
   
-  .discord-button {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 font-medium transition-all duration-200 ease-out;
-    @apply hover:scale-105 active:scale-95;
+  .glow-success {
+    box-shadow: var(--glow-success);
   }
   
-  .discord-input {
-    @apply w-full rounded-lg border-none bg-background-accent px-4 py-2.5 text-foreground transition-all duration-200 ease-out;
-    @apply focus:ring-2 focus:ring-primary focus:outline-none;
+  .glow-warning {
+    box-shadow: var(--glow-warning);
+  }
+  
+  .glow-danger {
+    box-shadow: var(--glow-danger);
+  }
+  
+  .card-gradient {
+    background: var(--gradient-card);
+  }
+  
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .hover-lift {
+    @apply transition-all duration-300;
+  }
+  
+  .hover-lift:hover {
+    @apply -translate-y-1 shadow-xl;
   }
   
   .status-indicator {

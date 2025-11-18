@@ -11,6 +11,7 @@ import SelectUsername from "./pages/SelectUsername";
 import Dashboard from "./pages/Dashboard";
 import Tokens from "./pages/Tokens";
 import Generator from "./pages/Generator";
+import GlobalAccount from "./pages/GlobalAccount";
 import ManualCheck from "./pages/ManualCheck";
 import History from "./pages/History";
 import Stats from "./pages/Stats";
@@ -106,9 +107,10 @@ useEffect(() => {
             <Route path="/select-username" element={<SelectUsername />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/dashboard/tokens" element={<Tokens />} />
-            <Route path="/dashboard/generator" element={<Generator />} />
-            <Route path="/dashboard/manual-check" element={<ManualCheck />} />
-            <Route path="/dashboard/history" element={<History />} />
+          <Route path="/dashboard/generator" element={<Generator />} />
+          <Route path="/dashboard/global" element={<GlobalAccount />} />
+          <Route path="/dashboard/manual-check" element={<ManualCheck />} />
+          <Route path="/dashboard/history" element={<History />} />
             <Route path="/dashboard/stats" element={<Stats />} />
             <Route path="/dashboard/premium" element={<Premium />} />
             <Route path="/dashboard/settings" element={<Settings />} />
