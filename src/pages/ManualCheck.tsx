@@ -98,33 +98,46 @@ const ManualCheck = () => {
 
       const { data, error } = await supabase.functions.invoke("check-discord-username", {
         body: {
-          username: username.trim(),
+          usernames: [username.trim()],
           userId: user.id,
+          tokenName: null, // Will use user's own tokens
         },
       });
 
       if (error) throw error;
 
-      // Check for rate limit in response
-      if (data.response?.message?.includes("rate limited")) {
-        const retryAfter = data.response?.retry_after || 1800;
-        const minutes = Math.floor(retryAfter / 60);
-        const seconds = Math.floor(retryAfter % 60);
-        
-        const cooldownTime = new Date(Date.now() + retryAfter * 1000);
+      if (!data.success) {
+        toast.error(data.error || "حدث خطأ أثناء الفحص");
+        setChecking(false);
+        return;
+      }
+
+      // Get result for the single username
+      const usernameResult = data.results[username.trim()];
+      
+      if (usernameResult === "rate_limited") {
+        const cooldownTime = new Date(Date.now() + 600000); // 10 minutes
         setNextCheckTime(cooldownTime);
         setCanCheck(false);
         
-        // Save to localStorage
         localStorage.setItem('manual_check_cooldown', JSON.stringify({
           nextCheckTime: cooldownTime.toISOString()
         }));
         
-        toast.error(`لحماية الحساب من الحظر. تم وضعك بتقييد مؤقت بسبب rate limited الخاص بدسكورد. يرجى الانتضار لمدة ${minutes} دقيقة و ${seconds} ثانية ثم المحاولة مرة اخرى`);
+        toast.error("تم تجاوز حد الطلبات. يجب الانتظار 10 دقائق");
+        setChecking(false);
         return;
       }
 
-      setResult(data.success ? data.available : null);
+      if (usernameResult === "token_invalid") {
+        toast.error("التوكن غير صالح. يرجى تحديث التوكنات");
+        setChecking(false);
+        return;
+      }
+
+      // Set result based on availability
+      const isAvailable = usernameResult === "available";
+      setResult(isAvailable);
       
       if (data.success) {
         if (data.available) {
