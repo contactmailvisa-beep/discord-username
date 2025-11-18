@@ -29,32 +29,42 @@ const queryClient = new QueryClient();
 
 const App = () => {
 
-  // Remove Lovable Badge from DOM completely
+  // حذف Lovable Badge من DOM بشكل كامل وقوي
   useEffect(() => {
     const removeLovableBadge = () => {
-      // Remove by ID
-      const badgeById = document.getElementById('lovable-badge');
-      if (badgeById) {
-        badgeById.remove();
-      }
+      // حذف جميع العناصر المرتبطة بـ lovable
+      const selectors = [
+        '[id*="lovable-badge"]',
+        '[class*="lovable-badge"]',
+        '[id^="lovable-"]',
+        'a[href*="lovable.dev"]',
+        'button[id*="lovable"]',
+        '#lovable-cover',
+        '[data-lovable]',
+        '.lovable-badge'
+      ];
 
-      // Remove all elements with IDs containing 'lovable-badge'
-      const allElements = document.querySelectorAll('[id*="lovable-badge"]');
-      allElements.forEach(el => el.remove());
+      selectors.forEach(selector => {
+        const elements = document.querySelectorAll(selector);
+        elements.forEach(el => el.remove());
+      });
 
-      // Remove all links pointing to lovable.dev
-      const lovableLinks = document.querySelectorAll('a[href*="lovable.dev"]');
-      lovableLinks.forEach(link => link.remove());
-
-      // Remove buttons with lovable-badge in ID
-      const lovableButtons = document.querySelectorAll('button[id*="lovable-badge"]');
-      lovableButtons.forEach(btn => btn.remove());
+      // حذف أي سكربت يحتوي على كود lovable
+      const scripts = document.querySelectorAll('script');
+      scripts.forEach(script => {
+        const content = script.textContent || script.innerHTML || '';
+        if (content.includes('lovable-badge') || 
+            content.includes('lovable.dev') ||
+            content.includes('lovable-cover')) {
+          script.remove();
+        }
+      });
     };
 
-    // Initial cleanup
+    // تشغيل فوري
     removeLovableBadge();
 
-    // Watch for DOM changes and remove badge if added dynamically
+    // مراقبة التغييرات في DOM
     const observer = new MutationObserver(() => {
       removeLovableBadge();
     });
@@ -62,10 +72,12 @@ const App = () => {
     observer.observe(document.body, {
       childList: true,
       subtree: true,
+      attributes: true,
+      attributeFilter: ['id', 'class']
     });
 
-    // Periodic check every 500ms
-    const interval = setInterval(removeLovableBadge, 500);
+    // فحص دوري كل 50ms للتأكد
+    const interval = setInterval(removeLovableBadge, 50);
 
     return () => {
       observer.disconnect();
