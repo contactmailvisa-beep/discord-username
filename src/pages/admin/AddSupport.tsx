@@ -31,10 +31,19 @@ const AddSupport = () => {
       const { data, error } = await supabase
         .from("profiles")
         .select("id, username, email, avatar_url")
-        .ilike("email", `%${searchQuery}%`)
+        .or(`email.ilike.%${searchQuery}%,username.ilike.%${searchQuery}%`)
         .limit(10);
 
       if (error) throw error;
+      
+      if (!data || data.length === 0) {
+        toast({
+          title: "No Results",
+          description: "No users found with that email or username",
+          variant: "default"
+        });
+      }
+      
       setSearchResults(data || []);
     } catch (error: any) {
       toast({
@@ -113,7 +122,7 @@ const AddSupport = () => {
         <div className="flex gap-2">
           <div className="flex-1">
             <Input
-              placeholder="Search by email..."
+              placeholder="Search by email or username..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
