@@ -1,4 +1,4 @@
-project_id = "supabase_id"
+project_id = "srqqxvhbzuvfjexvbkbq"
 
 [functions.check-api-username]
 verify_jwt = false
