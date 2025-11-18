@@ -20,6 +20,7 @@ import Profile from "./pages/Profile";
 import Payment from "./pages/Payment";
 import AddPremium from "./pages/admin/AddPremium";
 import RemovePremium from "./pages/admin/RemovePremium";
+import FounderLogs from "./pages/admin/FounderLogs";
 
 const queryClient = new QueryClient();
 
