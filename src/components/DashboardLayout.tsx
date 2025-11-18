@@ -76,14 +76,11 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
       setUser(authUser);
 
-      // Check if user is email user (has password)
       const providers = authUser.app_metadata?.providers || [];
       setIsEmailUser(providers.includes('email') || authUser.app_metadata?.provider === 'email');
       
-      // Check if user is admin
       setIsAdmin(authUser.email === "flepower7@gmail.com");
 
-      // Load profile
       const { data: profileData } = await supabase
         .from("profiles")
         .select("*")
@@ -97,7 +94,6 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
       setProfile(profileData);
 
-      // Load subscription
       const { data: subData } = await supabase
         .from("user_subscriptions")
         .select("*")
@@ -128,36 +124,23 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     { icon: <History className="h-5 w-5" />, label: "سجل الفحوصات", path: "/dashboard/history" },
     { icon: <TrendingUp className="h-5 w-5" />, label: "الإحصائيات", path: "/dashboard/stats" },
     { icon: <FileText className="h-5 w-5" />, label: "التوثيق", path: "/docs" },
-    { 
-      icon: <Crown className="h-5 w-5" />,
-      label: "البريميوم", 
-      path: "/dashboard/premium",
-      badge: subscription?.plan_type === "premium" ? "نشط" : "ترقية"
-    },
-    ...(isEmailUser ? [{ icon: <Settings className="h-5 w-5" />, label: "الإعدادات", path: "/dashboard/settings" }] : []),
+    { icon: <Crown className="h-5 w-5" />, label: "البريميوم", path: "/dashboard/premium", badge: subscription?.plan_type === "premium" ? undefined : "جديد" },
   ];
 
-  const adminItems: NavItemProps[] = isAdmin ? [
-    { icon: <UserPlus className="h-5 w-5" />, label: "إضافة للبريميوم", path: "/admin/premium/add" },
-    { icon: <UserMinus className="h-5 w-5" />, label: "حذف من البريميوم", path: "/admin/premium/remove" },
-    { icon: <FileText className="h-5 w-5" />, label: "Founder Logs", path: "/admin/founder-logs" },
+  const settingsItems: NavItemProps[] = isEmailUser ? [
+    { icon: <Settings className="h-5 w-5" />, label: "الإعدادات", path: "/dashboard/settings" },
   ] : [];
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-text-muted">جاري التحميل...</p>
-        </div>
-      </div>
-    );
-  }
+  const adminItems: NavItemProps[] = isAdmin ? [
+    { icon: <UserPlus className="h-5 w-5" />, label: "إضافة البريميوم", path: "/admin/premium/add" },
+    { icon: <UserMinus className="h-5 w-5" />, label: "حذف البريميوم", path: "/admin/premium/remove" },
+    { icon: <Shield className="h-5 w-5" />, label: "Founder Logs", path: "/admin/logs" },
+  ] : [];
 
   const SidebarContent = () => (
-    <div className="h-full flex flex-col bg-sidebar text-sidebar-foreground rounded-3xl m-3 shadow-lg">
+    <div className="h-full flex flex-col bg-sidebar text-sidebar-foreground rounded-3xl shadow-xl overflow-hidden">
       {/* Profile Section */}
-      <div className="p-6 border-b border-border/50 rounded-t-3xl">
+      <div className="p-6 border-b border-border/50 rounded-t-3xl flex-shrink-0">
         <button
           onClick={() => {
             navigate("/dashboard/profile");
@@ -184,52 +167,54 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-1.5 overflow-y-auto">
-        {navItems.map((item, index) => (
-          <button
-            key={index}
-            onClick={() => {
-              navigate(item.path);
-              setSidebarOpen(false);
-            }}
-            className={cn(
-              "w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-300 ease-out",
-              "hover:bg-background-accent/70 group relative overflow-hidden",
-              location.pathname === item.path && "bg-gradient-to-r from-primary/10 to-primary/5 border-r-2 border-primary"
-            )}
-          >
-            <div className={cn(
-              "transition-all duration-300 ease-out z-10",
-              location.pathname === item.path ? "text-primary scale-110" : "text-text-muted group-hover:text-primary group-hover:scale-105"
-            )}>
-              {item.icon}
-            </div>
-            <span className={cn(
-              "flex-1 text-right font-semibold transition-all duration-300 ease-out z-10",
-              location.pathname === item.path ? "text-foreground" : "text-text-muted group-hover:text-foreground"
-            )}>
-              {item.label}
-            </span>
-            {item.badge && (
-              <span className={cn(
-                "px-2.5 py-1 text-xs font-bold rounded-full z-10 transition-all",
-                subscription?.plan_type === "premium"
-                  ? "bg-success/20 text-success"
-                  : "bg-primary/20 text-primary"
+      <nav className="flex-1 p-4 space-y-1.5 overflow-hidden">
+        <div className="space-y-1.5">
+          {navItems.map((item, index) => (
+            <button
+              key={index}
+              onClick={() => {
+                navigate(item.path);
+                setSidebarOpen(false);
+              }}
+              className={cn(
+                "w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-300 ease-out",
+                "hover:bg-background-accent/70 group relative overflow-hidden",
+                location.pathname === item.path && "bg-gradient-to-r from-primary/10 to-primary/5 border-r-2 border-primary"
+              )}
+            >
+              <div className={cn(
+                "transition-all duration-300 ease-out z-10",
+                location.pathname === item.path ? "text-primary scale-110" : "text-text-muted group-hover:text-primary group-hover:scale-105"
               )}>
-                {item.badge}
+                {item.icon}
+              </div>
+              <span className={cn(
+                "flex-1 text-right font-semibold transition-all duration-300 ease-out z-10 text-sm",
+                location.pathname === item.path ? "text-foreground" : "text-text-muted group-hover:text-foreground"
+              )}>
+                {item.label}
               </span>
-            )}
-            {location.pathname === item.path && (
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent" />
-            )}
-          </button>
-        ))}
+              {item.badge && (
+                <span className={cn(
+                  "px-2.5 py-1 text-xs font-bold rounded-full z-10 transition-all",
+                  subscription?.plan_type === "premium"
+                    ? "bg-success/20 text-success"
+                    : "bg-primary/20 text-primary"
+                )}>
+                  {item.badge}
+                </span>
+              )}
+              {location.pathname === item.path && (
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent" />
+              )}
+            </button>
+          ))}
+        </div>
       </nav>
 
       {/* Admin Section */}
       {adminItems.length > 0 && (
-        <div className="px-4 pb-4 border-t border-border/50">
+        <div className="px-4 pb-4 border-t border-border/50 flex-shrink-0">
           <div className="flex items-center gap-2 px-4 py-3 text-xs font-semibold text-text-muted uppercase tracking-wider">
             <Shield className="h-4 w-4 text-primary" />
             إدارة النظام
@@ -243,39 +228,31 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                   setSidebarOpen(false);
                 }}
                 className={cn(
-                  "w-full flex items-center gap-3 px-4 py-3 rounded-xl relative overflow-hidden group transition-all duration-300 ease-out backdrop-blur-sm hover:scale-[1.02] active:scale-[0.98]",
-                  location.pathname === item.path 
-                    ? "bg-primary/10 text-primary shadow-lg shadow-primary/20" 
-                    : "hover:bg-background-accent/80 text-text-muted hover:text-foreground"
+                  "w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-300 ease-out",
+                  "hover:bg-background-accent/70 group relative overflow-hidden",
+                  location.pathname === item.path && "bg-gradient-to-r from-primary/10 to-primary/5 border-r-2 border-primary"
                 )}
-                style={{
-                  animationDelay: `${index * 50}ms`,
-                  animationFillMode: 'both'
-                }}
               >
                 <div className={cn(
-                  "transition-transform duration-300 group-hover:scale-110",
-                  location.pathname === item.path ? "text-primary" : "text-text-muted group-hover:text-foreground"
+                  "transition-all duration-300 ease-out z-10",
+                  location.pathname === item.path ? "text-primary scale-110" : "text-text-muted group-hover:text-primary group-hover:scale-105"
                 )}>
                   {item.icon}
                 </div>
                 <span className={cn(
-                  "font-medium transition-colors duration-300",
+                  "flex-1 text-right font-semibold transition-all duration-300 ease-out z-10 text-sm",
                   location.pathname === item.path ? "text-foreground" : "text-text-muted group-hover:text-foreground"
                 )}>
                   {item.label}
                 </span>
-                {location.pathname === item.path && (
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent" />
-                )}
               </button>
             ))}
           </div>
         </div>
       )}
 
-      {/* Logout */}
-      <div className="p-4 border-t border-border/50 mt-auto rounded-b-3xl">
+      {/* Logout Button */}
+      <div className="p-4 border-t border-border/50 rounded-b-3xl flex-shrink-0">
         <Button
           onClick={handleLogout}
           variant="ghost"
@@ -291,7 +268,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   return (
     <div className="min-h-screen bg-background flex" dir="rtl">
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex w-72 flex-col sticky top-0 h-screen">
+      <aside className="hidden lg:flex w-64 sticky top-0 h-screen p-3">
         <SidebarContent />
       </aside>
 
