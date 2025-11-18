@@ -154,6 +154,25 @@ bot.run('YOUR_BOT_TOKEN')`
   ]
 }`;
 
+  const authorizationsExample = `Headers:
+  x-api-key: string (required)
+    Your DUC API key for authentication
+    
+  x-token-name: string (required)
+    Name of the Discord token to use for checking
+    
+  Content-Type: application/json`;
+
+  const bodyExample = `{
+  "usernames": ["user1", "user2", "user3"]
+}
+
+Field Details:
+  usernames: array[string] (required)
+    - Array of Discord usernames to check
+    - Maximum 10 usernames per request
+    - Each username must be 3-32 characters`;
+
   return (
     <div className="space-y-8">
       <div>
@@ -192,42 +211,87 @@ bot.run('YOUR_BOT_TOKEN')`
       </div>
 
       <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-white">Request Parameters</h2>
-        <Card className="border-[#1a1c20] bg-[#13141a]">
-          <div className="divide-y divide-[#1a1c20]">
-            <div className="p-4">
-              <div className="flex items-start justify-between gap-4">
-                <div className="space-y-1 flex-1">
-                  <div className="flex items-center gap-2">
-                    <code className="text-sm font-mono text-[#22c55e]">usernames</code>
-                    <Badge variant="destructive" className="text-xs">required</Badge>
-                  </div>
-                  <p className="text-sm text-[#a1a1aa]">
-                    Array of usernames to check (maximum 10 per request)
-                  </p>
-                </div>
-                <Badge variant="outline" className="border-[#27272a] text-[#a1a1aa]">array[string]</Badge>
-              </div>
-            </div>
+        <h2 className="text-2xl font-bold text-white">Authorizations</h2>
+        <div className="rounded-lg border border-[#1a1c20] bg-[#0a0b0e] overflow-hidden">
+          <div className="flex items-center justify-between px-4 py-2 bg-[#1a1c20] border-b border-[#27272a]">
+            <span className="text-sm font-medium text-white">Request Headers</span>
+            <span className="text-xs text-[#a1a1aa]">ApiKeyAuth</span>
           </div>
-        </Card>
+          <div className="p-4 overflow-x-auto">
+            <code className="font-mono text-sm text-[#e5e7eb] whitespace-pre">
+              {authorizationsExample}
+            </code>
+          </div>
+        </div>
       </div>
 
       <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-          <Database className="w-6 h-6 text-[#22c55e]" />
-          Response Format
-        </h2>
-        <div className="rounded-lg border border-[#1a1c20] bg-[#13141a] overflow-hidden">
+        <h2 className="text-2xl font-bold text-white">Body</h2>
+        <div className="rounded-lg border border-[#1a1c20] bg-[#0a0b0e] overflow-hidden">
           <div className="flex items-center justify-between px-4 py-2 bg-[#1a1c20] border-b border-[#27272a]">
-            <span className="text-sm font-medium text-white">API Response (200 OK)</span>
-            <span className="text-xs text-[#a1a1aa] uppercase">json</span>
+            <span className="text-sm font-medium text-white">Request Body</span>
+            <span className="text-xs text-[#a1a1aa]">application/json</span>
           </div>
-          <pre className="p-4 overflow-x-auto text-sm">
-            <code className="text-[#e5e7eb] font-mono">
-              {responseExample}
+          <div className="p-4 overflow-x-auto">
+            <code className="font-mono text-sm text-[#e5e7eb] whitespace-pre">
+              {bodyExample}
             </code>
-          </pre>
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <h2 className="text-2xl font-bold text-white">Responses</h2>
+        
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <Badge className="bg-[#22c55e] hover:bg-[#16a34a] text-white">200</Badge>
+            <span className="text-white font-medium">Successful operation</span>
+            <span className="text-xs text-[#a1a1aa] ml-auto">application/json</span>
+          </div>
+          
+          <div className="rounded-lg border border-[#1a1c20] bg-[#0a0b0e] overflow-hidden">
+            <div className="flex items-center justify-between px-4 py-2 bg-[#1a1c20] border-b border-[#27272a]">
+              <span className="text-sm font-medium text-white">Response</span>
+              <span className="text-xs text-[#a1a1aa]">object</span>
+            </div>
+            <div className="p-4 overflow-x-auto max-h-[400px] overflow-y-auto">
+              <code className="font-mono text-sm">
+                <div className="text-[#e5e7eb]">{'{'}</div>
+                <div className="ml-4">
+                  <span className="text-[#3b82f6]">"results"</span>
+                  <span className="text-[#e5e7eb]">: [</span>
+                </div>
+                <div className="ml-8 text-[#e5e7eb]">{'{'}</div>
+                <div className="ml-12">
+                  <span className="text-[#3b82f6]">"username"</span>
+                  <span className="text-[#e5e7eb]">: </span>
+                  <span className="text-[#22c55e]">"user1"</span>
+                  <span className="text-[#e5e7eb]">,</span>
+                </div>
+                <div className="ml-12">
+                  <span className="text-[#3b82f6]">"available"</span>
+                  <span className="text-[#e5e7eb]">: </span>
+                  <span className="text-[#f59e0b]">true</span>
+                  <span className="text-[#e5e7eb]">,</span>
+                </div>
+                <div className="ml-12">
+                  <span className="text-[#3b82f6]">"status"</span>
+                  <span className="text-[#e5e7eb]">: </span>
+                  <span className="text-[#22c55e]">"available"</span>
+                </div>
+                <div className="ml-8 text-[#e5e7eb]">{'}'}</div>
+                <div className="ml-4 text-[#e5e7eb]">]</div>
+                <div className="text-[#e5e7eb]">{'}'}</div>
+              </code>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 mt-4">
+            <Badge variant="destructive">401</Badge>
+            <span className="text-white font-medium">Authentication error</span>
+            <span className="text-xs text-[#a1a1aa] ml-auto">application/json</span>
+          </div>
         </div>
       </div>
 
