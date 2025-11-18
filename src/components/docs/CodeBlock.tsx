@@ -1,7 +1,8 @@
 import { Check, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { cn } from "@/lib/utils";
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface CodeBlockProps {
   code: string;
@@ -19,113 +20,24 @@ const CodeBlock = ({ code, language, title, showLineNumbers = false }: CodeBlock
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const highlightCode = (code: string, lang: string) => {
-    const lines = code.split('\n');
-    
-    return lines.map((line, index) => {
-      let highlightedLine = line;
-      
-      // HTTP highlighting
-      if (lang === 'http') {
-        highlightedLine = line
-          .replace(/^(GET|POST|PUT|DELETE|PATCH|HEAD|OPTIONS)/g, '<span class="text-[#22c55e] font-bold">$1</span>')
-          .replace(/HTTP\/[\d.]+/g, '<span class="text-[#f59e0b]">$&</span>')
-          .replace(/^([A-Za-z-]+):/g, '<span class="text-[#a855f7]">$1</span>:')
-          .replace(/(https?:\/\/[^\s]+)/g, '<span class="text-[#60a5fa]">$1</span>');
-      }
-      
-      // JSON highlighting
-      else if (lang === 'json') {
-        // Escape HTML in the line first to prevent injection
-        let escapedLine = line
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;');
-        
-        highlightedLine = escapedLine
-          // Property keys
-          .replace(/"([^"]+)"(\s*):/g, '<span class="text-[#60a5fa]">"$1"</span>$2:')
-          // String values
-          .replace(/:\s*"([^"]*)"/g, ': <span class="text-[#22c55e]">"$1"</span>')
-          // Boolean and null
-          .replace(/:\s*(true|false|null)\b/g, ': <span class="text-[#f59e0b]">$1</span>')
-          // Numbers
-          .replace(/:\s*(-?\d+\.?\d*)/g, ': <span class="text-[#f59e0b]">$1</span>')
-          // Brackets and braces
-          .replace(/([{}\[\]])/g, '<span class="text-[#e5e7eb]">$1</span>')
-          // Commas
-          .replace(/,/g, '<span class="text-[#6b7280]">,</span>');
-      }
-      
-      // JavaScript highlighting
-      else if (lang === 'javascript') {
-        highlightedLine = line
-          // Keywords
-          .replace(/\b(const|let|var|function|async|await|return|if|else|for|while|try|catch|import|from|require|new|class|extends|export|default)\b/g, '<span class="text-[#a855f7]">$1</span>')
-          // Built-in objects/functions
-          .replace(/\b(fetch|console|JSON|axios|require)\b/g, '<span class="text-[#60a5fa]">$1</span>')
-          // Methods
-          .replace(/\.(\w+)(?=\()/g, '.<span class="text-[#fbbf24]">$1</span>')
-          // String literals (single quotes)
-          .replace(/'([^']*)'/g, '<span class="text-[#22c55e]">\'$1\'</span>')
-          // String literals (double quotes)  
-          .replace(/"([^"]*)"/g, '<span class="text-[#22c55e]">"$1"</span>')
-          // Template literals
-          .replace(/`([^`]*)`/g, '<span class="text-[#22c55e]">`$1`</span>')
-          // Comments
-          .replace(/\/\/(.*)/g, '<span class="text-[#6b7280]">//$1</span>');
-      }
-      
-      // Python highlighting
-      else if (lang === 'python') {
-        highlightedLine = line
-          // Keywords
-          .replace(/\b(import|from|def|class|if|else|elif|for|while|try|except|return|async|await|with|as|pass|break|continue|raise|finally)\b/g, '<span class="text-[#a855f7]">$1</span>')
-          // Built-in functions
-          .replace(/\b(requests|json|print|str|int|dict|list|len|range|open)\b/g, '<span class="text-[#60a5fa]">$1</span>')
-          // Methods
-          .replace(/\.(\w+)(?=\()/g, '.<span class="text-[#fbbf24]">$1</span>')
-          // String literals (single quotes)
-          .replace(/'([^']*)'/g, '<span class="text-[#22c55e]">\'$1\'</span>')
-          // String literals (double quotes)
-          .replace(/"([^"]*)"/g, '<span class="text-[#22c55e]">"$1"</span>')
-          // Decorators
-          .replace(/@(\w+)/g, '<span class="text-[#f59e0b]">@$1</span>')
-          // Comments
-          .replace(/#(.*)/g, '<span class="text-[#6b7280]">#$1</span>');
-      }
-      
-      // Bash/cURL highlighting
-      else if (lang === 'bash') {
-        highlightedLine = line
-          // Commands
-          .replace(/\b(curl|wget|git|cd|ls|mkdir|rm|cp|mv|echo)\b/g, '<span class="text-[#22c55e] font-bold">$1</span>')
-          // Flags
-          .replace(/\s(-[A-Za-z]|--[\w-]+)\b/g, ' <span class="text-[#a855f7]">$1</span>')
-          // URLs
-          .replace(/(https?:\/\/[^\s\\]+)/g, '<span class="text-[#60a5fa]">$1</span>')
-          // String literals (double quotes)
-          .replace(/"([^"]*)"/g, '<span class="text-[#22c55e]">"$1"</span>')
-          // String literals (single quotes)
-          .replace(/'([^']*)'/g, '<span class="text-[#22c55e]">\'$1\'</span>')
-          // Backslashes
-          .replace(/\\\s*$/g, '<span class="text-[#6b7280]">\\</span>');
-      }
-      
-      return (
-        <div key={index} className="table-row">
-          {showLineNumbers && (
-            <span className="table-cell pr-4 text-[#52525b] select-none text-right">
-              {index + 1}
-            </span>
-          )}
-          <span 
-            className="table-cell whitespace-pre"
-            dangerouslySetInnerHTML={{ __html: highlightedLine || '&nbsp;' }}
-          />
-        </div>
-      );
-    });
+  // Map language names to syntax highlighter supported names
+  const languageMap: Record<string, string> = {
+    'javascript': 'javascript',
+    'python': 'python',
+    'bash': 'bash',
+    'http': 'http',
+    'json': 'json',
+  };
+
+  const highlighterLanguage = languageMap[language] || 'text';
+
+  const customStyle = {
+    margin: 0,
+    padding: '1rem',
+    background: '#0a0b0e',
+    fontSize: '13px',
+    lineHeight: '1.6',
+    fontFamily: '"JetBrains Mono", "Fira Code", "Consolas", "Monaco", monospace',
   };
 
   return (
@@ -151,13 +63,21 @@ const CodeBlock = ({ code, language, title, showLineNumbers = false }: CodeBlock
           )}
         </Button>
 
-        <div className="p-4 overflow-x-auto overflow-y-auto max-h-[500px]">
-          <code className={cn(
-            "font-mono text-[13px] leading-relaxed table w-full",
-            showLineNumbers && "table"
-          )}>
-            {highlightCode(code, language)}
-          </code>
+        <div className="overflow-x-auto max-h-[500px] overflow-y-auto">
+          <SyntaxHighlighter
+            language={highlighterLanguage}
+            style={vscDarkPlus}
+            customStyle={customStyle}
+            showLineNumbers={showLineNumbers}
+            wrapLines={false}
+            codeTagProps={{
+              style: {
+                fontFamily: '"JetBrains Mono", "Fira Code", "Consolas", "Monaco", monospace',
+              }
+            }}
+          >
+            {code}
+          </SyntaxHighlighter>
         </div>
       </div>
     </div>
