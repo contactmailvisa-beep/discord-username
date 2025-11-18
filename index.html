@@ -19,39 +19,52 @@
     <meta name="theme-color" content="#0d1117" />
 
     <script>
-      // حذف lovable-badge فوراً قبل أي شيء
+      // حذف lovable-badge وأي سكربت له علاقة قبل ظهوره
       (function() {
         const removeLovableBadge = () => {
-          // حذف بالـ ID
-          const elements = document.querySelectorAll('[id*="lovable-badge"], [class*="lovable-badge"], a[href*="lovable.dev"]');
-          elements.forEach(el => el.remove());
+          // حذف العناصر بالـ ID / class أو روابط lovable.dev وأيضاً الـ cover
+          const elements = document.querySelectorAll('[id*="lovable-badge"], [class*="lovable-badge"], [id^="lovable-"], a[href*="lovable.dev"], #lovable-cover');
+          elements.forEach((el) => el.remove());
+
+          // حذف أي سكربت داخله كود lovable-badge أو روابط lovable.dev
+          const scripts = document.querySelectorAll('script');
+          scripts.forEach((script) => {
+            const content = script.textContent || "";
+            if (content.includes('lovable-badge') || content.includes('lovable.dev')) {
+              script.remove();
+            }
+          });
         };
 
         // تشغيل فوري
         removeLovableBadge();
 
-        // مراقبة أي إضافات
+        // مراقبة أي إضافات جديدة للـ DOM
         const observer = new MutationObserver(() => removeLovableBadge());
-        
-        // بدء المراقبة عند تحميل DOM
-        if (document.body) {
+
+        const startObserver = () => {
+          if (!document.body) return;
           observer.observe(document.body, { childList: true, subtree: true });
+        };
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', startObserver);
         } else {
-          document.addEventListener('DOMContentLoaded', () => {
-            observer.observe(document.body, { childList: true, subtree: true });
-          });
+          startObserver();
         }
 
-        // فحص دوري كل 100ms
+        // فحص دوري سريع
         setInterval(removeLovableBadge, 100);
       })();
     </script>
 
     <style>
-      /* إخفاء أي lovable-badge بـ CSS */
+      /* إخفاء أي lovable-badge أو عناصر مرتبطة به عبر CSS */
       [id*="lovable-badge"],
       [class*="lovable-badge"],
-      a[href*="lovable.dev"] {
+      [id^="lovable-"],
+      a[href*="lovable.dev"],
+      #lovable-cover {
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
