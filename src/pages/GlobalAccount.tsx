@@ -9,6 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
 import { Globe, CheckCircle2, XCircle, Loader2, AlertCircle, Clock, Sparkles } from "lucide-react";
+import { SaveUsernameButton } from "@/components/SaveUsernameButton";
 
 interface GeneratedUsername {
   username: string;
@@ -372,13 +373,18 @@ const GlobalAccount = () => {
                     className="flex items-center justify-between p-3 rounded-lg bg-background-accent/50 border border-border/50 transition-all hover:bg-background-accent"
                   >
                     <span className="font-mono">{item.username}</span>
-                    {item.checking ? (
-                      <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                    ) : item.available === true ? (
-                      <CheckCircle2 className="h-5 w-5 text-success" />
-                    ) : item.available === false ? (
-                      <XCircle className="h-5 w-5 text-destructive" />
-                    ) : null}
+                    <div className="flex items-center gap-2">
+                      {item.checking ? (
+                        <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                      ) : item.available === true ? (
+                        <>
+                          <CheckCircle2 className="h-5 w-5 text-success" />
+                          <SaveUsernameButton username={item.username} />
+                        </>
+                      ) : item.available === false ? (
+                        <XCircle className="h-5 w-5 text-destructive" />
+                      ) : null}
+                    </div>
                   </div>
                 ))}
               </div>

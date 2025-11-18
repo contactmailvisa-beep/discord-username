@@ -9,6 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
 import { Wand2, CheckCircle2, XCircle, Loader2, AlertCircle, Download, Save, Clock } from "lucide-react";
+import { SaveUsernameButton } from "@/components/SaveUsernameButton";
 
 interface GeneratedUsername {
   username: string;
@@ -569,19 +570,24 @@ const Generator = () => {
                           : "border-border bg-background-secondary"
                       }`}
                     >
-                      <div className="flex items-center gap-2">
-                        {item.checking ? (
-                          <Loader2 className="h-4 w-4 animate-spin text-primary flex-shrink-0" />
-                        ) : item.available === true ? (
-                          <CheckCircle2 className="h-4 w-4 text-success flex-shrink-0" />
-                        ) : item.available === false ? (
-                          <XCircle className="h-4 w-4 text-destructive flex-shrink-0" />
-                        ) : (
-                          <AlertCircle className="h-4 w-4 text-text-muted flex-shrink-0" />
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 flex-1 min-w-0">
+                          {item.checking ? (
+                            <Loader2 className="h-4 w-4 animate-spin text-primary flex-shrink-0" />
+                          ) : item.available === true ? (
+                            <CheckCircle2 className="h-4 w-4 text-success flex-shrink-0" />
+                          ) : item.available === false ? (
+                            <XCircle className="h-4 w-4 text-destructive flex-shrink-0" />
+                          ) : (
+                            <AlertCircle className="h-4 w-4 text-text-muted flex-shrink-0" />
+                          )}
+                          <span className="text-sm font-mono truncate">
+                            {item.username}
+                          </span>
+                        </div>
+                        {item.available === true && (
+                          <SaveUsernameButton username={item.username} />
                         )}
-                        <span className="text-sm font-mono truncate">
-                          {item.username}
-                        </span>
                       </div>
                     </div>
                   ))}
