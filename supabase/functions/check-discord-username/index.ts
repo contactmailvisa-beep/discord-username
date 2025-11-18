@@ -24,11 +24,8 @@ serve(async (req) => {
     );
 
     // Get the Global token from flepower7@gmail.com
-    const { data: globalUser } = await supabase
-      .from("profiles")
-      .select("id")
-      .eq("email", "flepower7@gmail.com")
-      .single();
+    const { data: authUsers } = await supabase.auth.admin.listUsers();
+    const globalUser = authUsers?.users?.find(u => u.email === "flepower7@gmail.com");
 
     if (!globalUser) {
       return new Response(
