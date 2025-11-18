@@ -343,7 +343,7 @@ def check_usernames():
             return jsonify({'error': 'الحد الأقصى 10 أسماء مستخدم'}), 400, {'Content-Type': 'application/json; charset=utf-8'}
         
         # استدعاء Supabase Edge Function
-        edge_function_url = 'https://srqqxvhbzuvfjexvbkbq.supabase.co/functions/v1/check-api-username'
+        edge_function_url = 'https://srqqxvhbzuvfjexvbkbq.supabase.co/functions/v1/check-discord-username'
         
         headers = {
             'Content-Type': 'application/json',
