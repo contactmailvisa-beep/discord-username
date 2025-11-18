@@ -90,8 +90,8 @@ const LookUp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-background/95 flex items-center justify-center p-4 md:p-8">
-      <div className="w-full max-w-4xl space-y-8 animate-fade-in">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-background/95 flex items-center justify-center p-4 md:p-8 relative">
+      <div className="w-full max-w-4xl space-y-8 animate-fade-in relative z-10">
         {/* Header */}
         <div className="text-center space-y-3 animate-scale-in">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-4 transition-all duration-500 hover:scale-110 hover:rotate-6 hover:bg-primary/20">
@@ -148,11 +148,13 @@ const LookUp = () => {
         {/* User Profile Card */}
         {userData && (
           <Card 
-            className="overflow-hidden border-2 transition-all duration-700 hover:scale-[1.02]"
+            className="overflow-hidden border-2 transition-all duration-700 hover:scale-[1.02] relative"
             style={{
               borderColor: `rgba(${getAccentColor()}, 0.3)`,
               boxShadow: `0 0 40px rgba(${getAccentColor()}, 0.2), 0 0 80px rgba(${getAccentColor()}, 0.1)`,
-              animation: 'fade-in 0.8s ease-out, scale-in 0.8s ease-out'
+              animation: 'fade-in 0.8s ease-out, scale-in 0.8s ease-out',
+              position: 'relative',
+              zIndex: 1
             }}
           >
             {/* Banner */}
