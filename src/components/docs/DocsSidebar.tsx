@@ -55,7 +55,7 @@ const DocsSidebar = ({
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        <div className="flex-1 flex flex-col bg-[#0a0a0a] rounded-3xl shadow-xl overflow-hidden border-2 border-[#22c55e] shadow-[0_0_20px_rgba(34,197,94,0.6),0_0_40px_rgba(34,197,94,0.4),0_0_60px_rgba(34,197,94,0.3),0_0_80px_rgba(34,197,94,0.2)] animate-pulse-glow">
+        <div className="flex-1 flex flex-col bg-[#0a0a0a] rounded-3xl shadow-xl overflow-hidden border-2 border-[#22c55e] shadow-[0_0_15px_rgba(34,197,94,0.4),0_0_30px_rgba(34,197,94,0.25),0_0_45px_rgba(34,197,94,0.15)] animate-pulse-glow">
           <div className="flex-1 overflow-hidden p-6">
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
