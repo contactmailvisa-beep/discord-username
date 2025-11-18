@@ -20,11 +20,11 @@ const CodeBlock = ({ code, language, title, showLineNumbers = false }: CodeBlock
   };
 
   return (
-    <div className="relative group rounded-lg overflow-hidden border border-border bg-background-tertiary">
+    <div className="relative group rounded-lg overflow-hidden border border-[#1a1c20] bg-[#0a0b0e]">
       {title && (
-        <div className="flex items-center justify-between px-4 py-2 bg-background-accent border-b border-border">
-          <span className="text-sm font-medium text-foreground">{title}</span>
-          <span className="text-xs text-muted-foreground uppercase">{language}</span>
+        <div className="flex items-center justify-between px-4 py-2 bg-[#1a1c20] border-b border-[#27272a]">
+          <span className="text-sm font-medium text-white">{title}</span>
+          <span className="text-xs text-[#a1a1aa] uppercase">{language}</span>
         </div>
       )}
       
@@ -33,10 +33,10 @@ const CodeBlock = ({ code, language, title, showLineNumbers = false }: CodeBlock
           variant="ghost"
           size="icon"
           onClick={copyToClipboard}
-          className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+          className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10 hover:bg-[#1a1c20] text-white"
         >
           {copied ? (
-            <Check className="h-4 w-4 text-success" />
+            <Check className="h-4 w-4 text-[#22c55e]" />
           ) : (
             <Copy className="h-4 w-4" />
           )}
@@ -46,7 +46,7 @@ const CodeBlock = ({ code, language, title, showLineNumbers = false }: CodeBlock
           "p-4 overflow-x-auto text-sm",
           showLineNumbers && "pl-12"
         )}>
-          <code className="text-foreground font-mono">
+          <code className="text-[#e5e7eb] font-mono">
             {code}
           </code>
         </pre>

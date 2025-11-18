@@ -11,13 +11,13 @@ interface DocsHeaderProps {
 
 const DocsHeader = ({ onMenuClick, isSidebarOpen }: DocsHeaderProps) => {
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-[#1a1c20] bg-[#13141a]">
       <div className="container flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-4">
           <Button
             variant="ghost"
             size="icon"
-            className="lg:hidden"
+            className="lg:hidden text-white hover:bg-[#1a1c20]"
             onClick={onMenuClick}
           >
             {isSidebarOpen ? (
@@ -34,10 +34,10 @@ const DocsHeader = ({ onMenuClick, isSidebarOpen }: DocsHeaderProps) => {
               className="h-10 w-10 transition-transform group-hover:scale-110"
             />
             <div className="flex flex-col">
-              <span className="text-xl font-bold bg-gradient-to-r from-blurple to-text-link bg-clip-text text-transparent">
+              <span className="text-xl font-bold text-white">
                 DUC Docs
               </span>
-              <span className="text-xs text-muted-foreground">
+              <span className="text-xs text-[#a1a1aa]">
                 API Documentation
               </span>
             </div>
@@ -46,31 +46,16 @@ const DocsHeader = ({ onMenuClick, isSidebarOpen }: DocsHeaderProps) => {
 
         <div className="flex items-center gap-3">
           <div className="hidden md:flex relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#a1a1aa]" />
             <Input
               type="search"
               placeholder="Search docs..."
-              className="w-64 pl-9 bg-background-secondary border-border"
+              className="w-64 pl-9 bg-[#1a1c20] border-[#27272a] text-white placeholder:text-[#71717a]"
             />
           </div>
 
-          <Button
-            variant="ghost"
-            size="icon"
-            asChild
-            className="hidden sm:flex"
-          >
-            <a
-              href="https://github.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Github className="h-5 w-5" />
-            </a>
-          </Button>
-
           <Link to="/dashboard">
-            <Button variant="default" size="sm" className="gap-2">
+            <Button className="gap-2 bg-[#22c55e] hover:bg-[#16a34a] text-white">
               <span className="hidden sm:inline">Dashboard</span>
               <ExternalLink className="h-4 w-4" />
             </Button>
