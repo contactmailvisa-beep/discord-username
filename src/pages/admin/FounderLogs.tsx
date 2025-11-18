@@ -59,19 +59,15 @@ export default function FounderLogs() {
         return;
       }
 
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("email")
-        .eq("id", user.id)
-        .single();
-
-      if (profile?.email === "flepower7@gmail.com") {
+      // Check email directly from auth user object
+      if (user.email === "flepower7@gmail.com") {
         setIsAdmin(true);
         loadLogs();
       } else {
         navigate("/dashboard");
       }
     } catch (error) {
+      console.error("Admin check error:", error);
       navigate("/dashboard");
     } finally {
       setCheckingAuth(false);
