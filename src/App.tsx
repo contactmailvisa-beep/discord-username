@@ -29,72 +29,49 @@ const queryClient = new QueryClient();
 
 const App = () => {
 
-useEffect(() => {
-  // 1) بناء طبقة تغطي مكان البادج قبل ظهوره
-  const cover = document.createElement("div");
-  cover.id = "lovable-cover";
-  cover.style.position = "fixed";
-  cover.style.bottom = "0";
-  cover.style.right = "0";
-  cover.style.width = "300px";
-  cover.style.height = "300px";
-  cover.style.zIndex = "999999";
-  cover.style.background = "transparent"; 
-  cover.style.pointerEvents = "none";
-  document.body.appendChild(cover);
+  // Remove Lovable Badge from DOM completely
+  useEffect(() => {
+    const removeLovableBadge = () => {
+      // Remove by ID
+      const badgeById = document.getElementById('lovable-badge');
+      if (badgeById) {
+        badgeById.remove();
+      }
 
-  // Selectors تحذف البادج
-  const selectors = [
-    '#lovable-badge',
-    '[id*="lovable"]',
-    '[class*="lovable"]',
-    'a[href*="lovable"]',
-    'iframe[src*="lovable"]',
-    'script[src*="lovable"]',
-    '[data-testid*="lovable"]'
-  ];
+      // Remove all elements with IDs containing 'lovable-badge'
+      const allElements = document.querySelectorAll('[id*="lovable-badge"]');
+      allElements.forEach(el => el.remove());
 
-  const removeLovable = () => {
-    selectors.forEach((selector) => {
-      document.querySelectorAll(selector).forEach(el => el.remove());
+      // Remove all links pointing to lovable.dev
+      const lovableLinks = document.querySelectorAll('a[href*="lovable.dev"]');
+      lovableLinks.forEach(link => link.remove());
+
+      // Remove buttons with lovable-badge in ID
+      const lovableButtons = document.querySelectorAll('button[id*="lovable-badge"]');
+      lovableButtons.forEach(btn => btn.remove());
+    };
+
+    // Initial cleanup
+    removeLovableBadge();
+
+    // Watch for DOM changes and remove badge if added dynamically
+    const observer = new MutationObserver(() => {
+      removeLovableBadge();
     });
-  };
 
-  // 2) إزالة قوية + متكررة
-  removeLovable();
-  Promise.resolve().then(removeLovable);
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
 
-  let rafId: number;
-  const loop = () => {
-    removeLovable();
-    rafId = requestAnimationFrame(loop);
-  };
-  loop();
+    // Periodic check every 500ms
+    const interval = setInterval(removeLovableBadge, 500);
 
-  // 3) MutationObserver يراقب DOM ويحذف لحظيًا
-  const observer = new MutationObserver(() => {
-    removeLovable();
-  });
-
-  observer.observe(document.documentElement, {
-    childList: true,
-    subtree: true,
-  });
-
-  // 4) بعد التأكد من مسح البادج بالكامل… نخفي الـ Cover بسلاسة
-  setTimeout(() => {
-    cover.style.transition = "opacity 200ms ease-out";
-    cover.style.opacity = "0";
-
-    setTimeout(() => cover.remove(), 250);
-  }, 500);
-
-  return () => {
-    cancelAnimationFrame(rafId);
-    observer.disconnect();
-    cover.remove();
-  };
-}, []);
+    return () => {
+      observer.disconnect();
+      clearInterval(interval);
+    };
+  }, []);
   
   return (
     <QueryClientProvider client={queryClient}>
