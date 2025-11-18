@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Search, CheckCircle2, XCircle, Loader2, Clock } from "lucide-react";
+import { SaveUsernameButton } from "@/components/SaveUsernameButton";
 
 const ManualCheck = () => {
   const [username, setUsername] = useState("");
@@ -240,32 +241,35 @@ const ManualCheck = () => {
             {result !== null && (
               <Card className={result ? "bg-success/10 border-success" : "bg-destructive/10 border-destructive"}>
                 <CardContent className="pt-6">
-                  <div className="flex items-center gap-3">
-                    {result ? (
-                      <>
-                        <CheckCircle2 className="h-6 w-6 text-success flex-shrink-0" />
-                        <div>
-                          <p className="font-semibold text-success">
-                            اليوزر متاح! ✓
-                          </p>
-                          <p className="text-sm text-text-muted mt-1">
-                            يمكنك استخدام هذا الاسم
-                          </p>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <XCircle className="h-6 w-6 text-destructive flex-shrink-0" />
-                        <div>
-                          <p className="font-semibold text-destructive">
-                            اليوزر غير متاح
-                          </p>
-                          <p className="text-sm text-text-muted mt-1">
-                            هذا الاسم محجوز بالفعل
-                          </p>
-                        </div>
-                      </>
-                    )}
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      {result ? (
+                        <>
+                          <CheckCircle2 className="h-6 w-6 text-success flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold text-success">
+                              اليوزر متاح! ✓
+                            </p>
+                            <p className="text-sm text-text-muted mt-1">
+                              يمكنك استخدام هذا الاسم
+                            </p>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <XCircle className="h-6 w-6 text-destructive flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold text-destructive">
+                              اليوزر غير متاح
+                            </p>
+                            <p className="text-sm text-text-muted mt-1">
+                              هذا الاسم محجوز بالفعل
+                            </p>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                    {result && <SaveUsernameButton username={username} />}
                   </div>
                 </CardContent>
               </Card>

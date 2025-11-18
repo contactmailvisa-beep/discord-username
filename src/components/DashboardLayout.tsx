@@ -155,15 +155,15 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   }
 
   const SidebarContent = () => (
-    <>
+    <div className="h-full flex flex-col bg-sidebar text-sidebar-foreground rounded-3xl m-3 shadow-lg">
       {/* Profile Section */}
-      <div className="p-6 border-b border-border/50">
+      <div className="p-6 border-b border-border/50 rounded-t-3xl">
         <button
           onClick={() => {
             navigate("/dashboard/profile");
             setSidebarOpen(false);
           }}
-          className="w-full flex items-center gap-4 p-4 rounded-xl hover:bg-background-accent/50 transition-all duration-300 ease-out group backdrop-blur-sm"
+          className="w-full flex items-center gap-4 p-4 rounded-2xl hover:bg-background-accent/50 transition-all duration-300 ease-out group backdrop-blur-sm"
         >
           <Avatar className="h-12 w-12 ring-2 ring-primary/30 group-hover:ring-primary/50 transition-all">
             <AvatarImage src={profile?.avatar_url || user?.user_metadata?.avatar_url} />
@@ -184,7 +184,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-1.5 overflow-hidden">
+      <nav className="flex-1 p-4 space-y-1.5 overflow-y-auto">
         {navItems.map((item, index) => (
           <button
             key={index}
@@ -193,7 +193,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               setSidebarOpen(false);
             }}
             className={cn(
-              "w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-300 ease-out",
+              "w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-300 ease-out",
               "hover:bg-background-accent/70 group relative overflow-hidden",
               location.pathname === item.path && "bg-gradient-to-r from-primary/10 to-primary/5 border-r-2 border-primary"
             )}
@@ -275,21 +275,26 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       )}
 
       {/* Logout */}
-      <div className="p-4 border-t border-border">
+      <div className="p-4 border-t border-border/50 mt-auto rounded-b-3xl">
         <Button
           onClick={handleLogout}
           variant="ghost"
-          className="w-full justify-start gap-3 text-destructive hover:text-destructive hover:bg-destructive/10"
+          className="w-full justify-start gap-3 rounded-2xl text-sidebar-foreground hover:text-destructive hover:bg-destructive/10"
         >
           <LogOut className="h-5 w-5" />
           تسجيل الخروج
         </Button>
       </div>
-    </>
+    </div>
   );
 
   return (
     <div className="min-h-screen bg-background flex" dir="rtl">
+      {/* Desktop Sidebar */}
+      <aside className="hidden lg:flex w-72 flex-col sticky top-0 h-screen">
+        <SidebarContent />
+      </aside>
+
       {/* Mobile Header */}
       <div className="lg:hidden fixed top-0 right-0 left-0 h-14 bg-background-secondary border-b border-border z-50 flex items-center px-4">
         <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
