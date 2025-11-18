@@ -2073,6 +2073,103 @@ export type Database = {
         }
         Relationships: []
       }
+      support_messages: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_support: boolean | null
+          message: string
+          sender_id: string
+          ticket_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_support?: boolean | null
+          message: string
+          sender_id: string
+          ticket_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_support?: boolean | null
+          message?: string
+          sender_id?: string
+          ticket_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_messages_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "support_tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      support_team: {
+        Row: {
+          added_at: string | null
+          added_by: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          added_at?: string | null
+          added_by: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          added_at?: string | null
+          added_by?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      support_tickets: {
+        Row: {
+          assigned_to: string | null
+          closed_at: string | null
+          created_at: string | null
+          id: string
+          status: Database["public"]["Enums"]["ticket_status"] | null
+          title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          closed_at?: string | null
+          created_at?: string | null
+          id?: string
+          status?: Database["public"]["Enums"]["ticket_status"] | null
+          title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          assigned_to?: string | null
+          closed_at?: string | null
+          created_at?: string | null
+          id?: string
+          status?: Database["public"]["Enums"]["ticket_status"] | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_tickets_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "support_team"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       updates: {
         Row: {
           created_at: string
@@ -2691,6 +2788,13 @@ export type Database = {
       report_status: "pending" | "reviewed" | "resolved" | "dismissed"
       subscription_plan: "free" | "basic" | "premium"
       task_status: "pending" | "completed" | "cancelled"
+      ticket_status:
+        | "pending"
+        | "urgent"
+        | "emergency"
+        | "status_7"
+        | "scheduled"
+        | "closed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -2841,6 +2945,14 @@ export const Constants = {
       report_status: ["pending", "reviewed", "resolved", "dismissed"],
       subscription_plan: ["free", "basic", "premium"],
       task_status: ["pending", "completed", "cancelled"],
+      ticket_status: [
+        "pending",
+        "urgent",
+        "emergency",
+        "status_7",
+        "scheduled",
+        "closed",
+      ],
     },
   },
 } as const

@@ -137,6 +137,8 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const adminItems: NavItemProps[] = isAdmin ? [
     { icon: <UserPlus className="h-5 w-5" />, label: "إضافة البريميوم", path: "/admin/premium/add" },
     { icon: <UserMinus className="h-5 w-5" />, label: "حذف البريميوم", path: "/admin/premium/remove" },
+    { icon: <Users className="h-5 w-5" />, label: "إضافة دعم", path: "/admin/support/add" },
+    { icon: <UserMinus className="h-5 w-5" />, label: "حذف دعم", path: "/admin/support/remove" },
     { icon: <Shield className="h-5 w-5" />, label: "Founder Logs", path: "/admin/founder-logs" },
   ] : [];
 

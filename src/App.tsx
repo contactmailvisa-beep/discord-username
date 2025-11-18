@@ -22,6 +22,9 @@ import Payment from "./pages/Payment";
 import AddPremium from "./pages/admin/AddPremium";
 import RemovePremium from "./pages/admin/RemovePremium";
 import FounderLogs from "./pages/admin/FounderLogs";
+import AddSupport from "./pages/admin/AddSupport";
+import RemoveSupport from "./pages/admin/RemoveSupport";
+import SupportManagement from "./pages/admin/SupportManagement";
 import Docs from "./pages/Docs";
 import SavedUsernames from "./pages/SavedUsernames";
 import LookUp from "./pages/LookUp";
@@ -111,7 +114,10 @@ const App = () => {
             <Route path="/payment" element={<Payment />} />
             <Route path="/admin/premium/add" element={<AddPremium />} />
             <Route path="/admin/premium/remove" element={<RemovePremium />} />
+            <Route path="/admin/support/add" element={<AddSupport />} />
+            <Route path="/admin/support/remove" element={<RemoveSupport />} />
             <Route path="/admin/founder-logs" element={<FounderLogs />} />
+            <Route path="/support" element={<SupportManagement />} />
             <Route path="/docs" element={<Docs />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
