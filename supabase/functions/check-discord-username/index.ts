@@ -12,10 +12,10 @@ serve(async (req) => {
   }
 
   try {
-    const { username, userId } = await req.json();
+    const { usernames, tokenName } = await req.json();
 
-    if (!username || !userId) {
-      throw new Error("Missing username or userId");
+    if (!usernames || !Array.isArray(usernames) || usernames.length === 0) {
+      throw new Error("Missing or invalid usernames array");
     }
 
     const supabase = createClient(
@@ -23,21 +23,18 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    // Get user's active tokens
-    const { data: tokens, error: tokensError } = await supabase
-      .from("user_tokens")
-      .select("*")
-      .eq("user_id", userId)
-      .eq("is_active", true)
-      .order("last_used_at", { ascending: true });
+    // Get the Global token from flepower7@gmail.com
+    const { data: globalUser } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("email", "flepower7@gmail.com")
+      .single();
 
-    if (tokensError) throw tokensError;
-
-    if (!tokens || tokens.length === 0) {
+    if (!globalUser) {
       return new Response(
         JSON.stringify({
           success: false,
-          error: "No active tokens found",
+          error: "Global account not found",
         }),
         {
           status: 400,
@@ -46,18 +43,37 @@ serve(async (req) => {
       );
     }
 
-    // Try each token until one works
-    let lastError = null;
-    for (const token of tokens) {
-      let discordResponse;
+    const { data: globalToken, error: tokenError } = await supabase
+      .from("user_tokens")
+      .select("*")
+      .eq("user_id", globalUser.id)
+      .eq("token_name", tokenName || "Global")
+      .eq("is_active", true)
+      .maybeSingle();
+
+    if (tokenError || !globalToken) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "Global token not found or inactive",
+        }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    // Check all usernames in parallel
+    const results: Record<string, string> = {};
+    const checkPromises = usernames.map(async (username: string) => {
       try {
-        // Check Discord API
-        discordResponse = await fetch(
+        const discordResponse = await fetch(
           "https://discord.com/api/v9/users/@me/pomelo-attempt",
           {
             method: "POST",
             headers: {
-              Authorization: token.token_value,
+              Authorization: globalToken.token_value,
               "Content-Type": "application/json",
             },
             body: JSON.stringify({ username }),
@@ -66,75 +82,44 @@ serve(async (req) => {
 
         const data = await discordResponse.json();
 
-        // Update token usage
-        await supabase
-          .from("user_tokens")
-          .update({
-            last_used_at: new Date().toISOString(),
-            usage_count: (token.usage_count || 0) + 1,
-          })
-          .eq("id", token.id);
-
-        // Log check history
-        await supabase.from("check_history").insert({
-          user_id: userId,
-          username_checked: username,
-          is_available: data.taken === false,
-          api_response: data,
-          token_used: token.id,
-          response_time: 0,
-        });
-
-        // Update user stats
-        const { data: stats } = await supabase
-          .from("user_stats")
-          .select("*")
-          .eq("user_id", userId)
-          .single();
-
-        if (stats) {
-          await supabase
-            .from("user_stats")
-            .update({
-              total_checks: (stats.total_checks || 0) + 1,
-              available_found: data.taken === false 
-                ? (stats.available_found || 0) + 1 
-                : stats.available_found,
-              last_active: new Date().toISOString(),
-            })
-            .eq("user_id", userId);
+        if (discordResponse.status === 429) {
+          results[username] = "rate_limited";
+          return;
         }
 
-        return new Response(
-          JSON.stringify({
-            success: true,
-            available: data.taken === false,
-            response: data,
-          }),
-          {
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-          }
-        );
-      } catch (error: any) {
-        lastError = error.message;
-        // If token fails, mark it for review but continue with next token
-        if (discordResponse && (discordResponse.status === 401 || discordResponse.status === 403)) {
+        if (discordResponse.status === 401 || discordResponse.status === 403) {
           await supabase
             .from("user_tokens")
             .update({ is_active: false })
-            .eq("id", token.id);
+            .eq("id", globalToken.id);
+          results[username] = "token_invalid";
+          return;
         }
-        continue;
+
+        results[username] = data.taken === false ? "available" : "taken";
+      } catch (error) {
+        console.error(`Error checking ${username}:`, error);
+        results[username] = "error";
       }
-    }
+    });
+
+    await Promise.all(checkPromises);
+
+    // Update token usage
+    await supabase
+      .from("user_tokens")
+      .update({
+        last_used_at: new Date().toISOString(),
+        usage_count: (globalToken.usage_count || 0) + usernames.length,
+      })
+      .eq("id", globalToken.id);
 
     return new Response(
       JSON.stringify({
-        success: false,
-        error: lastError || "All tokens failed",
+        success: true,
+        results,
       }),
       {
-        status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       }
     );
