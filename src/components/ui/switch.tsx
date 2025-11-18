@@ -23,7 +23,7 @@ const Switch = React.forwardRef<
         "pointer-events-none block h-4 w-4 rounded-full bg-[#0f1622] shadow-lg ring-0 transition-transform",
         // تحريك الدائرة
         "data-[state=unchecked]:-translate-x-[20px]",
-        "data-[state=checked]:translate-x-[2px]"
+        "data-[state=checked]:translate-x-[5px]"
       )}
     />
   </SwitchPrimitives.Root>
