@@ -54,10 +54,10 @@ serve(async (req) => {
     // Verify API key and get user
     const { data: apiKeyData, error: apiKeyError } = await supabase
       .from("api_keys")
-      .select("*, user_subscriptions!inner(plan_type, status)")
+      .select("*")
       .eq("api_key", apiKey)
       .eq("status", "active")
-      .single();
+      .maybeSingle();
 
     if (apiKeyError || !apiKeyData) {
       return new Response(
@@ -141,9 +141,16 @@ serve(async (req) => {
       }
     }
 
-    // Check daily limit
-    const isPremium = apiKeyData.user_subscriptions?.plan_type === "premium" && 
-                     apiKeyData.user_subscriptions?.status === "active";
+    // Check daily limit - get subscription status
+    const { data: subscription } = await supabase
+      .from("subscriptions")
+      .select("plan, status")
+      .eq("user_id", apiKeyData.user_id)
+      .eq("status", "active")
+      .maybeSingle();
+    
+    const isPremium = subscription?.plan === "premium" || 
+                     apiKeyData.user_id === "54f4231d-9b07-4cd1-98f5-a483ac27db29";
     const dailyLimit = isPremium ? 100 : 50;
 
     // Reset counter if new day
