@@ -2764,6 +2764,10 @@ export type Database = {
         Args: { p_user_id: string }
         Returns: string
       }
+      redeem_invite_code: {
+        Args: { p_invite_code: string }
+        Returns: undefined
+      }
       reset_daily_api_counters: { Args: never; Returns: undefined }
       update_last_check: { Args: { p_user_id: string }; Returns: undefined }
     }
